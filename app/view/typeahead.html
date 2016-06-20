@@ -1,0 +1,7 @@
+<div>
+	<input [(ngModel)]="selected"
+           [typeahead]="statesComplex"
+           (typeaheadOnSelect)="typeaheadOnSelect($event)"
+           [typeaheadOptionField]="'name'"
+           class="form-control">
+</div>

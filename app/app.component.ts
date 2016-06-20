@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
+import {TypeaheadGPXComponent} from './typeahead.component'
+import {MapGPXComponent} from './map.component'
+
 @Component({
   selector: 'my-app',
-  template: '<h1>My First Angular 2 App</h1>'
+  directives: [TypeaheadGPXComponent, MapGPXComponent],
+  templateUrl: 'app/view/baseContainer.html'
 })
-
-export class AppComponent { 
+export class AppComponent {
 }
