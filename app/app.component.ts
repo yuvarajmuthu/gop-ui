@@ -4,11 +4,11 @@ import { TAB_DIRECTIVES } from 'ng2-bootstrap/components/tabs';
 import {MapGPXComponent} from './map.component'
 import {OrgProfileGPXComponent} from './orgprofile.component'
 import {StructureGPXComponent} from './structure.component'
-import {TestComponent} from './test.component';
+//import {TestComponent} from './test.component';
 
 @Component({
   selector: 'my-app',
-  directives: [TypeaheadGPXComponent, TAB_DIRECTIVES, MapGPXComponent, OrgProfileGPXComponent, StructureGPXComponent, TestComponent],
+  directives: [TypeaheadGPXComponent, TAB_DIRECTIVES, MapGPXComponent, OrgProfileGPXComponent, StructureGPXComponent],
   templateUrl: 'app/view/baseContainer.html'
 })
 export class AppComponent {

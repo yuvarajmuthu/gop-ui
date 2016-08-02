@@ -14,14 +14,14 @@ var tabs_1 = require('ng2-bootstrap/components/tabs');
 var map_component_1 = require('./map.component');
 var orgprofile_component_1 = require('./orgprofile.component');
 var structure_component_1 = require('./structure.component');
-var test_component_1 = require('./test.component');
+//import {TestComponent} from './test.component';
 var AppComponent = (function () {
     function AppComponent() {
     }
     AppComponent = __decorate([
         core_1.Component({
             selector: 'my-app',
-            directives: [typeahead_component_1.TypeaheadGPXComponent, tabs_1.TAB_DIRECTIVES, map_component_1.MapGPXComponent, orgprofile_component_1.OrgProfileGPXComponent, structure_component_1.StructureGPXComponent, test_component_1.TestComponent],
+            directives: [typeahead_component_1.TypeaheadGPXComponent, tabs_1.TAB_DIRECTIVES, map_component_1.MapGPXComponent, orgprofile_component_1.OrgProfileGPXComponent, structure_component_1.StructureGPXComponent],
             templateUrl: 'app/view/baseContainer.html'
         }), 
         __metadata('design:paramtypes', [])
