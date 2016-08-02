@@ -1,2 +1,32 @@
-<sebm-google-map [latitude]="lat" [longitude]="lng">
-		</sebm-google-map>
+<sebm-google-map 
+      [latitude]="lat"
+      [longitude]="lng"
+      [zoom]="zoom"
+      [disableDefaultUI]="false"
+      [zoomControl]="false"
+      (mapClick)="mapClicked($event)">
+
+      <sebm-google-map-marker 
+          *ngFor="let m of markers; let i = index"
+          (markerClick)="clickedMarker(m.label, i)"
+          [latitude]="m.lat"
+          [longitude]="m.lng"
+          [label]="m.label"
+          [markerDraggable]="m.draggable"
+          (dragEnd)="markerDragEnd(m, $event)">
+          
+        <sebm-google-map-info-window>
+          <strong>{{m.label}},{{m.lat}},{{m.lng}}</strong>
+        </sebm-google-map-info-window>
+        
+      </sebm-google-map-marker>
+
+<!--
+	<sebm-google-map-circle [latitude]="lat" [longitude]="lng" 
+          [radius]="5000"
+          [fillColor]="'red'"
+          [circleDraggable]="true"
+          [editable]="true">
+      </sebm-google-map-circle>
+      -->
+</sebm-google-map>

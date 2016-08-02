@@ -51,15 +51,29 @@
 
            <div class="col-sm-2">
 
-              <h2>Left</h2>
+              <h2>Left Naviagation Container</h2>
 
            </div>
 
            <div class="col-xs-12 col-sm-10">
 
-             <map-gpx></map-gpx>
 
+            <tabset>
+              <tab heading='MapView'>
+                <map-gpx></map-gpx>
+              </tab>
+              <tab heading='Party Profile' removable='true'>
+                <orgprofile-gpx></orgprofile-gpx>
+              </tab>
+              <tab heading='Party Structure' removable='true'>
+                <test-Comp></test-Comp>
+              </tab>
+            </tabset>
+<!--
+<structure-gpx></structure-gpx>
+-->
           </div>
+
 
           
 

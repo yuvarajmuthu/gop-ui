@@ -12,7 +12,9 @@
     'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api',
     'rxjs':                       'node_modules/rxjs',
     'ng2-bootstrap':   'node_modules/ng2-bootstrap',
-    'angular2-google-maps' : 'node_modules/angular2-google-maps'
+    'angular2-google-maps' : 'node_modules/angular2-google-maps',
+    'd3': 'node_modules/d3'
+
   };
 
   // packages tells the System loader how to load when no filename and/or no extension
@@ -21,7 +23,8 @@
     'rxjs':                       { defaultExtension: 'js' },
     'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
     'node_modules/ng2-bootstrap': { defaultExtension: 'js' },
-    'node_modules/angular2-google-maps/core': { main: 'index.js', defaultExtension: 'js' }
+    'node_modules/angular2-google-maps/core': { main: 'index.js', defaultExtension: 'js' },
+    'd3' : {main:'d3.js', defaultExtension: 'js'}
   };
 
   var ngPackageNames = [
@@ -31,8 +34,6 @@
     'http',
     'platform-browser',
     'platform-browser-dynamic',
-    'router',
-    'router-deprecated',
     'upgrade',
   ];
 

@@ -49,3 +49,5 @@ node_modules
 typings
 *.js !systemjs.config.js
 *.js.map
+
+./app/*.js
