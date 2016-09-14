@@ -1,0 +1,15 @@
+
+<div class="row personshortprofile" (mouseover)='hoverme()' (mouseout)='away()'>
+   <div class="col-xs-4">
+    <img class="img-circle" src="kitten.jpg">
+  </div>
+  <div class="col-xs-8">
+  
+    {{personip.name}}
+  
+    <br/>
+    {{personip.designation}}
+    <br/>
+    <button (click)="sayHello()">Connect</button>
+  </div>
+</div>

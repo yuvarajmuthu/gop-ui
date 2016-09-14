@@ -1,0 +1,30 @@
+
+<div class="col-xs-12">
+	<div class="col-xs-12">
+			<banner-gpx [imageUrl]="'../../images/yeoman.png'"></banner-gpx>
+	</div>
+	<div class="col-md-8">
+	</div>
+	<div class="col-md-4">
+		Elected members:
+	    <tabset>
+	    	<tab heading='State'>
+		<!--
+		    	<div *ngFor="let electedPerson of electedPersons">
+					{{electedPerson.id}} - {{electedPerson.name}} - {{electedPerson.designation}}
+				</div>
+    -->
+	
+				<person 
+		        *ngFor="let electedPerson of electedPersons" 
+		        [personip]="electedPerson"
+		        (hello)="saidHello($event)">
+		    	</person>
+
+	    	</tab>
+	    	<tab heading='Central'>
+	    	</tab>
+
+	    </tabset>  
+	</div>
+</div>
