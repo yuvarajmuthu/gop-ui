@@ -4,27 +4,63 @@
 			<banner-gpx [imageUrl]="'../../images/yeoman.png'"></banner-gpx>
 	</div>
 	<div class="col-md-8">
+<!--
+	<rating [(ngModel)]="x" max="10" readonly="false"
+        (onHover)="hoveringOver($event)" (onLeave)="resetStar($event)"
+        titles="['one','two','three']"></rating>
+        -->
+
+
+
+
 	</div>
 	<div class="col-md-4">
-		Elected members:
-	    <tabset>
-	    	<tab heading='State'>
-		<!--
-		    	<div *ngFor="let electedPerson of electedPersons">
-					{{electedPerson.id}} - {{electedPerson.name}} - {{electedPerson.designation}}
-				</div>
-    -->
-	
+	    <button type="button" class="btn btn-primary"
+            (click)="isCollapsed = !isCollapsed">Elected Persons
+	    </button>
+
+	    <div (collapsed)="collapsed($event)"
+	         (expanded)="expanded($event)"
+	         [collapse]="isCollapsed"
+	         class="card card-block card-header">
+	      <div class="well well-lg">
+	      	Elected members:
+		    <tabset>
+		    	<tab>
+					<person 
+			        *ngFor="let electedPerson of electedPersons" 
+			        [personip]="electedPerson"
+			        (hello)="saidHello($event)">
+			    	</person>
+
+		    	</tab>
+		    </tabset> 
+		  </div>
+	    </div>
+	    <hr>
+
+		<button type="button" class="btn btn-primary"
+            (click)="isCMCollapsed = !isCMCollapsed">Contested Person
+	    </button>
+	  
+	    <div (collapsed)="collapsed($event)"
+	         (expanded)="expanded($event)"
+	         [collapse]="isCMCollapsed"
+	         class="card card-block card-header">
+	      <div class="well well-lg">
+	      	Contested members:
+		    <tabset>
+		    	<tab>
 				<person 
-		        *ngFor="let electedPerson of electedPersons" 
-		        [personip]="electedPerson"
+		        *ngFor="let contestedPerson of contestedPersons" 
+		        [personip]="contestedPerson"
 		        (hello)="saidHello($event)">
 		    	</person>
 
-	    	</tab>
-	    	<tab heading='Central'>
-	    	</tab>
+		    	</tab>
+		    </tabset> 
+		  </div>
+	    </div>	 
 
-	    </tabset>  
 	</div>
 </div>
