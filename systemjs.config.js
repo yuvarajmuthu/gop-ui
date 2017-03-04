@@ -13,7 +13,9 @@
     'rxjs':                       'node_modules/rxjs',
     'ng2-bootstrap':   'node_modules/ng2-bootstrap',
     'angular2-google-maps' : 'node_modules/angular2-google-maps',
-    'd3': 'node_modules/d3'
+    'd3': 'node_modules/d3',
+    'angular2-click-to-edit': 'node_modules/angular2-click-to-edit',
+    //'congress-maps-us': 'node_modules/congress-maps-us',
 
   };
 
@@ -24,7 +26,8 @@
     'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
     'node_modules/ng2-bootstrap': { defaultExtension: 'js' },
     'node_modules/angular2-google-maps/core': { main: 'index.js', defaultExtension: 'js' },
-    'd3' : {main:'d3.js', defaultExtension: 'js'}
+    'd3' : {main:'d3.js', defaultExtension: 'js'},
+    //'angular2-click-to-edit': { main: 'index.js', defaultExtension: 'js'  },
   };
 
   var ngPackageNames = [

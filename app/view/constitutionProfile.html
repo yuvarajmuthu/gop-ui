@@ -1,66 +1,96 @@
 
-<div class="col-xs-12">
-	<div class="col-xs-12">
-			<banner-gpx [imageUrl]="'../../images/yeoman.png'"></banner-gpx>
+<div class="col-xs-12 constitutionProfile">
+	<div class="constitutionTop">
+		<div class="col-md-10">
+	<!--
+		<rating [(ngModel)]="x" [max]="10" [readonly]="false"
+	        (onHover)="hoveringOver($event)" (onLeave)="resetStar($event)"
+	        [titles]="['one','two','three']"></rating>
+	    -->
+		    <div class="banner col-md-2">
+		 
+				<banner-gpx [imageUrl]="'../../images/yeoman.png'"></banner-gpx>
+		
+			</div>
+
+
+		    <div id="constitutionHeader" class="constitutionHeader col-md-10">
+				Royapuram	
+		    </div>
+		</div>
+
+		<div class="col-md-2">
+				 <button type="button" class="btn btn-primary">Follow</button>
+		</div>	
 	</div>
-	<div class="col-md-8">
-<!--
-	<rating [(ngModel)]="x" max="10" readonly="false"
-        (onHover)="hoveringOver($event)" (onLeave)="resetStar($event)"
-        titles="['one','two','three']"></rating>
-        -->
 
+<hr>
+<!-- BODY -->
+	<div>
+		<div class="col-md-8">
+			Description:
+			<div id="constitutionDescription" class="constitutionDescription">
+		    	<p>
+					Royapuram is a legislative assembly constituency, that includes the locality, Royapuram. Royapuram assembly constituency is part of Chennai North Parliamentary constituency.
+										Royapuram is a legislative assembly constituency, that includes the locality, Royapuram. Royapuram assembly constituency is part of Chennai North Parliamentary constituency.
+															Royapuram is a legislative assembly constituency, that includes the locality, Royapuram. Royapuram assembly constituency is part of Chennai North Parliamentary constituency.
+																				Royapuram is a legislative assembly constituency, that includes the locality, Royapuram. Royapuram assembly constituency is part of Chennai North Parliamentary constituency.
+				</p>	
+		    </div>
+		</div>
+		<div class="col-md-4">
+		    <button type="button" class="btn btn-primary"
+	            (click)="isCollapsed = !isCollapsed">Elected Persons
+		    </button>
 
+		    <div (collapsed)="collapsed($event)"
+		         (expanded)="expanded($event)"
+		         [collapse]="isCollapsed"
+		         class="card card-block card-header">
+		      <div>
+			    <ul class="heroes">
+					<li *ngFor="let electedPerson of electedPersons"
+					        [class.selected]="selectedPerson === electedPerson"
+					        (click)="onSelect(selectedPerson)">
+						<person 
+				         
+				        [personip]="electedPerson"
+				        (hello)="saidHello($event)">
+				    	</person>
+				  </li>
+				</ul>
+			    
+			  </div>
+		    </div>
+		    <hr>
 
-
-	</div>
-	<div class="col-md-4">
-	    <button type="button" class="btn btn-primary"
-            (click)="isCollapsed = !isCollapsed">Elected Persons
-	    </button>
-
-	    <div (collapsed)="collapsed($event)"
-	         (expanded)="expanded($event)"
-	         [collapse]="isCollapsed"
-	         class="card card-block card-header">
-	      <div class="well well-lg">
-	      	Elected members:
-		    <tabset>
-		    	<tab>
+			<button type="button" class="btn btn-primary"
+	            (click)="isCMCollapsed = !isCMCollapsed">Contested Person
+		    </button>
+		  
+		    <div (collapsed)="collapsed($event)"
+		         (expanded)="expanded($event)"
+		         [collapse]="isCMCollapsed"
+		         class="card card-block card-header">
+		      <div class="well well-lg">
+			    <tabset>
+			    	<tab>
 					<person 
-			        *ngFor="let electedPerson of electedPersons" 
-			        [personip]="electedPerson"
+			        *ngFor="let contestedPerson of contestedPersons" 
+			        [personip]="contestedPerson"
 			        (hello)="saidHello($event)">
 			    	</person>
 
-		    	</tab>
-		    </tabset> 
-		  </div>
-	    </div>
-	    <hr>
+			    	</tab>
+			    </tabset> 
+			  </div>
+		    </div>	 
+		    <hr>
 
-		<button type="button" class="btn btn-primary"
-            (click)="isCMCollapsed = !isCMCollapsed">Contested Person
-	    </button>
-	  
-	    <div (collapsed)="collapsed($event)"
-	         (expanded)="expanded($event)"
-	         [collapse]="isCMCollapsed"
-	         class="card card-block card-header">
-	      <div class="well well-lg">
-	      	Contested members:
-		    <tabset>
-		    	<tab>
-				<person 
-		        *ngFor="let contestedPerson of contestedPersons" 
-		        [personip]="contestedPerson"
-		        (hello)="saidHello($event)">
-		    	</person>
+			<button type="button" class="btn btn-primary"
+	            (click)="isPartiesCollapsed = !isPartiesCollapsed">Parties
+		    </button>
 
-		    	</tab>
-		    </tabset> 
-		  </div>
-	    </div>	 
-
+		</div>
 	</div>
 </div>
