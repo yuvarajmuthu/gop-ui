@@ -1,10 +1,17 @@
 import { Injectable } from '@angular/core';
 import {People} from '../object/people';
+import {PARTIES} from './../data/mock/party-mock';
+import { Party } from './../object/party';
 
 
 @Injectable()
 export class PartyService {
-    getParties(type:String) { 
+
+	getParties(): Party[]{
+		return PARTIES;
+	}
+
+    getPartiesByParam(type:String) { 
   	var parties = [
 	  { id: 11, name: 'Mr. Nice', designation: 'President' },
 	  { id: 12, name: 'Narco', designation: 'General Secretary' },

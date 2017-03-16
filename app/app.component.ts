@@ -8,12 +8,13 @@ import {StructureGPXComponent} from './structure.component';
 import {ConstitutionProfileGPX} from './constitutionProfile';
 import {PostGPX} from './post';
 import {NewPostGPX} from './newPost';
+import {PartyListComponentGPX} from './partyList.component';
 //import {CongressMapComponent} from './congressmap.component';
 
 @Component({
   selector: 'my-app',
   directives: [TypeaheadGPXComponent, TAB_DIRECTIVES, MapGPXComponent, OrgProfileGPXComponent, 
-  StructureGPXComponent, ConstitutionProfileGPX, PostGPX, NewPostGPX],
+  StructureGPXComponent, ConstitutionProfileGPX, PostGPX, NewPostGPX, PartyListComponentGPX],
   templateUrl: 'app/view/baseContainer.html'
 })
 export class AppComponent {

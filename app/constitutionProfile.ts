@@ -14,6 +14,29 @@ import {RatingComponent} from 'ng2-bootstrap/components/rating';
   directives: [BannerGPXComponent, TAB_DIRECTIVES, People, CollapseDirective, RatingComponent],
   providers:[PeopleService, PartyService],
   styles: [`
+    .constitutionTop{
+      padding: .1px 1.5em;
+      background: #f5f2f0;
+      margin-top: 1.5em;
+      margin-bottom: 1.5em;
+    }
+    
+    .constitutionTop{
+      padding-bottom: 5px;
+    }
+
+    .constitutionHeader,
+    .constitutionDescription{
+      border: 1px solid lightblue;
+      border-radius: 5px;
+    }
+
+    .constitutionProfile .banner{
+        max-width: 100%;
+        height: auto;
+        width:auto/9;
+    }
+
     .selected {
       background-color: #CFD8DC !important;
       color: white;

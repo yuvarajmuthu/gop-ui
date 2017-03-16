@@ -12,21 +12,6 @@ img-circle {
     border-radius: 50%;
 }
 
-.constitutionTop{
-	padding-bottom: 5px;
-}
-
-.constitutionHeader,
-.constitutionDescription{
-	border: 1px solid lightblue;
-  border-radius: 5px;
-}
-
-.constitutionProfile .banner{
-	  max-width: 100%;
-    height: auto;
-    width:auto/9;
-}
 
  /*
   * See https://github.com/angular/angular.io/blob/master/public/docs/_examples/styles.css
