@@ -51,14 +51,10 @@
 
 
            <div class="col-xs-12 col-sm-10">
-
-
+           <!-- {{legislator.first_name}}
+<userAccessControl></userAccessControl>
+-->
             <tabset>
-
-              <tab heading='Constituency'>
-                <constitutionProfile-gpx></constitutionProfile-gpx>      
-              </tab>
-
               <tab heading='Party'>
 <!--
                 <orgprofile-gpx></orgprofile-gpx>
@@ -66,14 +62,23 @@
                 -->
                 <party-list></party-list>
               </tab>
-              <!--
-              <tab heading='Constitution' removable='true'>
+
+
+              <tab heading='Map'>
+                <map-gpx></map-gpx>
+              </tab>
+
+              <tab heading='Constituency/District'>
                 <constitutionProfile-gpx></constitutionProfile-gpx>      
               </tab>
 
-              -->
-              <tab heading='Politician'>
-              
+              <tab heading='Legislators'>
+    <ul style="list-style-type:none">
+
+      <li *ngFor="let legislator of legislators" class="legisBoundary">
+        Legislator: {{legislator | json}}
+      </li>
+    </ul>              
               </tab>
               
               

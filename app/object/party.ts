@@ -1,4 +1,5 @@
 export class Party {
+	id:number;
 	name: string;
 	type: string;
 	establishedDate: string;

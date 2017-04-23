@@ -1,21 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Party } from './object/party';
+import { Legislator } from './object/legislator';
 import {BannerGPXComponent} from './banner.component';
 
 @Component({
-  selector: 'party-list-profile',
+  selector: 'legislator',
   template: `
-    <div *ngIf="party" class="partyBoundary" (click)="clickme()">
-      <div class="col-xs-2 smProfileImg">
-        <banner-gpx [imageUrl]="imageName" [height]="50" [width]="50"></banner-gpx>
-      </div>
+    <div *ngIf="legislator" class="partyBoundary" (click)="clickme()">
       <div class="col-xs10 shortProfileInfo">
         <ul style="list-style-type:none">
-          <li>Name: {{party.name}}</li>   
-          <li>Type: {{party.type}}</li>
-          <li>Established Date: {{party.establishedDate}}</li>
-          <li>Registered Address: {{party.registeredAddress}}</li>
-          <li>Ideology: {{party.ideology}}</li>
+          <li>First Name: {{legislator.first_name}}</li>   
+          <li>Last Name: {{legislator.last_name}}</li>
+          <li>Chamber: {{legislator.chamber}}</li>
+          <li>District: {{legislator.district}}</li>
+          <li>Party: {{legislator.party}}</li>
+          <li>State: {{legislator.state}}</li>
         </ul>
       </div>
   </div>
@@ -44,13 +42,13 @@ import {BannerGPXComponent} from './banner.component';
     `],
   directives: [BannerGPXComponent]
 })
-export class PartyListProfileComponentGPX implements OnInit{
-  @Input() party: Party;
+export class LegislatorComponentGPX implements OnInit{
+  @Input() legislator: Legislator;
   imageName:String;
 
   ngOnInit(): void {
-    this.imageName = '../../images/'+this.party.profileImage;
-    console.log(this.imageName);
+    //this.imageName = '../../images/'+this.party.profileImage;
+    //console.log(this.imageName);
   }
 
   clickme():void{

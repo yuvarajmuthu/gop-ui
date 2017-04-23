@@ -97,7 +97,7 @@ export class ConstitutionProfileGPX {
 		//this.getElectedMembers("state");
 		this.electedPersons = peopleService.getElectedMembers('');
 		this.contestedPersons = peopleService.getContestedMembers('');
-		this.parties = partyService.getParties('');
+		this.parties = partyService.getPartiesByParam('');
 	}
 
 	getElectedMembers(type:String){

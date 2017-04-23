@@ -15,6 +15,9 @@
     'angular2-google-maps' : 'node_modules/angular2-google-maps',
     'd3': 'node_modules/d3',
     'angular2-click-to-edit': 'node_modules/angular2-click-to-edit',
+    //'register': 'node_modules/register',
+    //'userManagement':   'node_modules/userManagement',
+    //'identitymgmt':'node_modules/identitymgmt',
     //'congress-maps-us': 'node_modules/congress-maps-us',
 
   };
@@ -27,7 +30,9 @@
     'node_modules/ng2-bootstrap': { defaultExtension: 'js' },
     'node_modules/angular2-google-maps/core': { main: 'index.js', defaultExtension: 'js' },
     'd3' : {main:'d3.js', defaultExtension: 'js'},
+    //'register' : {main:'app.43a45297bc7249e35ee9.js', defaultExtension: 'js'},
     //'angular2-click-to-edit': { main: 'index.js', defaultExtension: 'js'  },
+    //'node_modules/identitymgmt': { main: 'app.43a45297bc7249e35ee9.js',  defaultExtension: 'js' },
   };
 
   var ngPackageNames = [
