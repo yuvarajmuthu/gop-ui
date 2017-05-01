@@ -5,16 +5,24 @@ import {BannerGPXComponent} from './banner.component';
 @Component({
   selector: 'legislator',
   template: `
-    <div *ngIf="legislator" class="partyBoundary" (click)="clickme()">
-      <div class="col-xs10 shortProfileInfo">
-        <ul style="list-style-type:none">
-          <li>First Name: {{legislator.first_name}}</li>   
-          <li>Last Name: {{legislator.last_name}}</li>
-          <li>Chamber: {{legislator.chamber}}</li>
-          <li>District: {{legislator.district}}</li>
-          <li>Party: {{legislator.party}}</li>
-          <li>State: {{legislator.state}}</li>
-        </ul>
+    <div *ngIf="legislator" (click)="gotoLegislator(legislator)">
+      <div class="shortProfileInfo">
+        <div>
+          <div class="col-xs-4">
+            <a href="#" class="glyphicon glyphicon-user" aria-hidden="true"></a>
+          </div>
+          <div>
+              <ul style="list-style-type:none">
+                <li>{{legislator.first_name}} {{legislator.last_name}}</li>   
+                <li>Title: {{legislator.title}}</li>
+                <li>Chamber: {{legislator.chamber}}</li>
+                <li>District: {{legislator.district}}</li>
+                <li>Party: {{legislator.party}}</li>
+                <li>State: {{legislator.state}}</li>
+                <li>Term: {{legislator.term_start}} until {{legislator.term_end}}</li>
+              </ul>
+          </div>    
+        </div>
       </div>
   </div>
   `,
@@ -51,7 +59,7 @@ export class LegislatorComponentGPX implements OnInit{
     //console.log(this.imageName);
   }
 
-  clickme():void{
-    alert('clicked');
+  gotoLegislator(legislator: Legislator):void{
+    alert(legislator.first_name);
   }
 }

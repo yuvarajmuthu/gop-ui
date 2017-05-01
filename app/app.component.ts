@@ -1,4 +1,6 @@
 import { Component, Directive, Attribute, ElementRef, OnInit } from '@angular/core';
+import { Routes, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "@angular/router";
+
 import {TypeaheadGPXComponent} from './typeahead.component';
 import { TAB_DIRECTIVES } from 'ng2-bootstrap/components/tabs';
 import {MapGPXComponent} from './map.component';
@@ -12,6 +14,7 @@ import {PartyListComponentGPX} from './partyList.component';
 import { LegislatorsService } from './service/legislators.service';
 import { Legislator } from './object/legislator';
 import {LegislatorComponentGPX} from './legislator.component';
+import {SearchLegislatorComponentGPX} from './search.component';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
@@ -25,10 +28,10 @@ import 'rxjs/add/operator/catch';
 
 @Component({
   selector: 'my-app',
-  directives: [TypeaheadGPXComponent, TAB_DIRECTIVES, MapGPXComponent, OrgProfileGPXComponent, 
-  StructureGPXComponent, ConstitutionProfileGPX, PostGPX, NewPostGPX, PartyListComponentGPX, LegislatorComponentGPX],
+  directives: [ROUTER_DIRECTIVES, TypeaheadGPXComponent, TAB_DIRECTIVES, MapGPXComponent, OrgProfileGPXComponent, 
+  StructureGPXComponent, ConstitutionProfileGPX, PostGPX, NewPostGPX, PartyListComponentGPX, LegislatorComponentGPX, SearchLegislatorComponentGPX],
   templateUrl: 'app/view/baseContainer.html',
-   providers: [LegislatorsService],
+   providers: [ LegislatorsService],
   styles: [`
    .legisBoundary{
       border: 1px solid lightblue;
@@ -44,7 +47,16 @@ import 'rxjs/add/operator/catch';
     `]
 
 })
+
+@Routes([
+    {path: "/search", component: SearchLegislatorComponentGPX }
+])
+
+
 export class AppComponent  implements OnInit{
+    legislators: Array<Legislator> = [];
+    constructor(private  router: Router) {}
+  /*
   legislators: Array<Legislator> = [];
   resultop:any;
   constructor(private legislatorsService: LegislatorsService) { }
@@ -65,15 +77,20 @@ export class AppComponent  implements OnInit{
 
     //console.log(this.legislators.length + ' legislators');
   }
-
+*/
+onSearch(legislators: Array<Legislator>){
+  console.log(legislators);
+  this.legislators = legislators;
+}
+/*
 toLegis(r:any){
   let person = <Legislator>(r);
   //this.legislators.push(person);
   console.log('Parsed person:', person);
  
 }
-
+*/
   ngOnInit(): void {
-    this.getLegislatorsByZipCode('15220');
+    //this.getLegislatorsByZipCode('15220');
   }
 }
