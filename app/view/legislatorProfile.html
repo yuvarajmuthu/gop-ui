@@ -1,0 +1,20 @@
+    <div *ngIf="legislator">
+      <div class="shortProfileInfo">
+        <div>
+          <div class="col-xs-4">
+            <a href="#" class="glyphicon glyphicon-user" aria-hidden="true"></a>
+          </div>
+          <div>
+              <ul style="list-style-type:none">
+                <li>{{legislator.first_name}} {{legislator.last_name}}</li>   
+                <li>Title: {{legislator.title}}</li>
+                <li>Chamber: {{legislator.chamber}}</li>
+                <li>District: {{legislator.district}}</li>
+                <li>Party: {{legislator.party}}</li>
+                <li>State: {{legislator.state}}</li>
+                <li>Term: {{legislator.term_start}} until {{legislator.term_end}}</li>
+              </ul>
+          </div>    
+        </div>
+      </div>
+  </div>

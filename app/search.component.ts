@@ -1,64 +1,85 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { LegislatorsService } from './service/legislators.service';
 import { Legislator } from './object/legislator';
+import {LegislatorComponentGPX} from './legislator.component';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'search-legislator',
+  directives:[LegislatorComponentGPX],
   //outputs: ['success'],
   template: `
-
 
       <label>Find your legislators: </label>
    
       <input class="form-control" [(ngModel)]="ipZipcode" placeholder="Zipcode" />
 
-    <!--  <input (click)="search(ipZipcode)" type="submit" value="Search" /> -->
+      <label class="btn btn-success" uncheckable (click)="search(ipZipcode)">Search</label>
+
+      <ul style="list-style-type:none">
+        <li *ngFor="let legislator of legislators" class="legisBoundary">
+          <legislator [legislator]=legislator (click)="gotoLegislator(legislator)"></legislator>
+        </li>
+      </ul>
+
+  `,
+  styles: [`
+   .legisBoundary{
+      border: 1px solid lightblue;
+      border-radius: 5px;
+      margin: 10px;
+    }
+
+    .legisBoundary:hover{
+      border: 2px solid lightblue;
+    }
 
 
-    <label class="btn btn-success" uncheckable (click)="search(ipZipcode)">Search</label>
-<!--      <label class="btn btn-default glyphicon glyphicon-search" (click)="search(ipZipcode)"></label> -->
-
-  `
+    `]
 })
 export class SearchLegislatorComponentGPX {
   legislators: Array<Legislator> = [];
   resultop:any;
   ipZipcode:String = '';
+  public selectedlegislator: Legislator;
 
   @Output()
   success = new EventEmitter();
   
-  constructor(private legislatorsService: LegislatorsService) {
+  constructor(private  router: Router, private legislatorsService: LegislatorsService) {
     //this.success = new EventEmitter();
   }
 
   search(query: string) {
     console.log("Search value: " + query);
-    //$event.preventDefault()
-    //let results = this.languageRepository.search(query);
-    //this.success.next({ results: results });
     this.legislators = [];
-    this.getLegislatorsByZipCode(query);
+    this.getLegislators(query, 'zipcode');
   }
 
   
-  getLegislatorsByZipCode(zipcode:string) {
-    this.legislatorsService.getLegislature(zipcode)
+  getLegislators(searchParam:string, type:string) {
+    this.legislatorsService.getLegislature(searchParam, type)
     .map(result => this.resultop = result.results)
     .subscribe((result) => {
               for(var i = 0;i<result.length;i++) {
                this.legislators.push(result[i]);
               }
-            //this.resultop = result;
-              //this.legislators = result.map(this.toLegis);
-               //result.map(this.toLegis);
               console.log("Emitting: " + this.legislators);
-              //this.success.emit(this.legislators);
-              this.success.emit({legislators : this.legislators});
+           
+              //this.success.emit({legislators : this.legislators});
             });
 
     //console.log(this.legislators.length + ' legislators');
+  }
+
+  gotoLegislator(legislator: Legislator):void{
+    this.selectedlegislator = legislator;
+
+    console.log('selected item - ' +  this.selectedlegislator);    
+    console.log('bioguide_id of selected item - ' +  this.selectedlegislator.bioguide_id);
+
+    this.router.navigate(['/legislator', this.selectedlegislator.bioguide_id]);
   }
 }

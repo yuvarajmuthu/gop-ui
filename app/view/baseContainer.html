@@ -8,7 +8,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">GPX</a>
+      <a class="navbar-brand" href="/">GPX</a>
 
 
     </div>
@@ -46,74 +46,68 @@
 </nav>
 
 <div class="container">
-  <div class="wrapper">
-      <router-outlet></router-outlet>
-  </div>
-
        <div class="row">
-
            <div class="col-xs-12 col-sm-10">
-           <!-- {{legislator.first_name}}
-<userAccessControl></userAccessControl>
--->
             <tabset type="pills">
               <tab heading='Legislators'>
+              <!--
+                <search-legislator>
+                    
+                </search-legislator>
+                -->
+              <!--
                 <search-legislator (success)="onSearch($event.legislators)">
                   
                 </search-legislator>
               
-                <!--
-                Find your legislators:
-                <input type="input" name="" value="key in zip or lat/long">
-                <button>Search</button>
-                -->
                 <ul style="list-style-type:none">
 
                   <li *ngFor="let legislator of legislators" class="legisBoundary">
-
-                    <!--Legislator: {{legislator | json}} -->
-                    <legislator [legislator]=legislator></legislator>
+                    <legislator [legislator]=legislator (click)="gotoLegislator(legislator)"></legislator>
                   </li>
-                </ul>              
+                </ul>
+                -->              
               </tab>
+
               <tab heading='Legislator Profile'>
+              <!--
                 <legislator [legislator]=legislator></legislator>
-              </tab>            
-              <tab heading='News'>
+                -->
+              </tab>  
+
+              <tab heading='News' [active]=true>
+              <!--
                 <newPost-gpx></newPost-gpx>
                 <post-gpx></post-gpx>
                 <post-gpx></post-gpx>
                 <post-gpx></post-gpx>
                 <post-gpx></post-gpx>
-                <post-gpx></post-gpx>      
+                <post-gpx></post-gpx>
+                -->      
               </tab>
 
               <tab heading='Parties'>
-<!--
-                <orgprofile-gpx></orgprofile-gpx>
-                <structure-gpx></structure-gpx>
-                -->
+              <!--
                 <party-list></party-list>
+                -->
               </tab>
 
               <tab heading='Party Profile'>
               </tab>
 
               <tab heading='Map'>
+              <!--
                 <map-gpx></map-gpx>
+                -->
               </tab>
 
               <tab heading='Constituency/District Profile'>
-                <constitutionProfile-gpx></constitutionProfile-gpx>      
+              <!--
+                <constitutionProfile-gpx></constitutionProfile-gpx>
+                -->      
               </tab>
 
-              
-              
-
             </tabset>
-<!--
-<structure-gpx></structure-gpx>
--->
           </div>
 
 
@@ -121,14 +115,9 @@
 
       </div>
 
-<!--
-       <hr>
-      <div class="row">
-            <div class="col-sm-12">
-              <footer>
-              </footer>
-           </div>
-      </div>
--->
+    <div class="wrapper">
+        <router-outlet></router-outlet>
+    </div>
+
    </div>
 

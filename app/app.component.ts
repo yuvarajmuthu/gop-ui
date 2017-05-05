@@ -12,7 +12,7 @@ import {PostGPX} from './post';
 import {NewPostGPX} from './newPost';
 import {PartyListComponentGPX} from './partyList.component';
 import { LegislatorsService } from './service/legislators.service';
-import { Legislator } from './object/legislator';
+//import { Legislator } from './object/legislator';
 import {LegislatorComponentGPX} from './legislator.component';
 import {SearchLegislatorComponentGPX} from './search.component';
 import 'rxjs/add/operator/map';
@@ -31,30 +31,22 @@ import 'rxjs/add/operator/catch';
   directives: [ROUTER_DIRECTIVES, TypeaheadGPXComponent, TAB_DIRECTIVES, MapGPXComponent, OrgProfileGPXComponent, 
   StructureGPXComponent, ConstitutionProfileGPX, PostGPX, NewPostGPX, PartyListComponentGPX, LegislatorComponentGPX, SearchLegislatorComponentGPX],
   templateUrl: 'app/view/baseContainer.html',
-   providers: [ LegislatorsService],
-  styles: [`
-   .legisBoundary{
-      border: 1px solid lightblue;
-      border-radius: 5px;
-      margin: 10px;
-    }
-
-    .legisBoundary:hover{
-      border: 2px solid lightblue;
-    }
-
-
-    `]
+  providers: [ LegislatorsService],
 
 })
 
 @Routes([
-    {path: "/search", component: SearchLegislatorComponentGPX }
+    {path: "/", component: SearchLegislatorComponentGPX },
+    {path: "/legislator/:id", component: LegislatorComponentGPX },
+    {path: "/district", component: ConstitutionProfileGPX },
+    {path: "/newsPost", component: NewPostGPX }
+
 ])
 
 
 export class AppComponent  implements OnInit{
-    legislators: Array<Legislator> = [];
+    //legislators: Array<Legislator> = [];
+    //public selectedlegislator: Legislator;
     constructor(private  router: Router) {}
   /*
   legislators: Array<Legislator> = [];
@@ -77,12 +69,21 @@ export class AppComponent  implements OnInit{
 
     //console.log(this.legislators.length + ' legislators');
   }
-*/
+
 onSearch(legislators: Array<Legislator>){
   console.log(legislators);
   this.legislators = legislators;
 }
-/*
+
+  gotoLegislator(legislator: Legislator):void{
+    this.selectedlegislator = legislator;
+
+    console.log('selected item - ' +  this.selectedlegislator);    
+    console.log('bioguide_id of selected item - ' +  this.selectedlegislator.bioguide_id);
+
+    this.router.navigate(['/legislator', this.selectedlegislator.bioguide_id]);
+  }
+
 toLegis(r:any){
   let person = <Legislator>(r);
   //this.legislators.push(person);

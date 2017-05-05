@@ -1,31 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Legislator } from './object/legislator';
+import { LegislatorsService } from './service/legislators.service';
 import {BannerGPXComponent} from './banner.component';
+import { Router, RouteSegment } from "@angular/router";
 
 @Component({
   selector: 'legislator',
-  template: `
-    <div *ngIf="legislator" (click)="gotoLegislator(legislator)">
-      <div class="shortProfileInfo">
-        <div>
-          <div class="col-xs-4">
-            <a href="#" class="glyphicon glyphicon-user" aria-hidden="true"></a>
-          </div>
-          <div>
-              <ul style="list-style-type:none">
-                <li>{{legislator.first_name}} {{legislator.last_name}}</li>   
-                <li>Title: {{legislator.title}}</li>
-                <li>Chamber: {{legislator.chamber}}</li>
-                <li>District: {{legislator.district}}</li>
-                <li>Party: {{legislator.party}}</li>
-                <li>State: {{legislator.state}}</li>
-                <li>Term: {{legislator.term_start}} until {{legislator.term_end}}</li>
-              </ul>
-          </div>    
-        </div>
-      </div>
-  </div>
-  `,
+  templateUrl: 'app/view/legislatorProfile.html',
   styles: [`
    .partyBoundary{
       border: 1px solid lightblue;
@@ -52,14 +33,42 @@ import {BannerGPXComponent} from './banner.component';
 })
 export class LegislatorComponentGPX implements OnInit{
   @Input() legislator: Legislator;
-  imageName:String;
+  imageName:string;
+  legisID:string;
+  resultop:any;
+
+  
+  constructor(private legislatorsService: LegislatorsService) {
+  }
 
   ngOnInit(): void {
     //this.imageName = '../../images/'+this.party.profileImage;
-    //console.log(this.imageName);
+    console.log("ngOnInit()");
+    if (!this.legislator) {
+      //let id = +this._routeParams.get('id');
+      //this._heroService.getHero(id).then(legislator => this.legislator = legislator);
+
+          this.legislatorsService.getLegislature(this.legisID, 'bioguide_id')
+    .map(result => this.resultop = result.results)
+    .subscribe((result) => {
+              if(result.length > 0){
+                this.legislator = result[0];
+              }
+              console.log("Loading: " + this.legislator);
+           
+              //this.success.emit({legislators : this.legislators});
+            });
+
+
+    }
+
   }
 
-  gotoLegislator(legislator: Legislator):void{
-    alert(legislator.first_name);
+  //get invoked automatically before ngOnInit()
+  routerOnActivate(curr: RouteSegment): void {
+    this.legisID = curr.getParam("id");
+    console.log("Param value - id " + this.legisID);
   }
+
+
 }
