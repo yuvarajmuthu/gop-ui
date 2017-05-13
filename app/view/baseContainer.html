@@ -48,8 +48,9 @@
 <div class="container">
        <div class="row">
            <div class="col-xs-12 col-sm-10">
-            <tabset type="pills">
-              <tab heading='Legislators'>
+
+            <tabset type="pills" #staticTabs>
+              <tab #legislatorsTab heading='Legislators' (select)="clickTab('Search')">
               <!--
                 <search-legislator>
                     
@@ -75,7 +76,7 @@
                 -->
               </tab>  
 
-              <tab heading='News' [active]=true>
+              <tab heading='News' (select)="clickTab('News')">
               <!--
                 <newPost-gpx></newPost-gpx>
                 <post-gpx></post-gpx>
@@ -101,7 +102,7 @@
                 -->
               </tab>
 
-              <tab heading='Constituency/District Profile'>
+              <tab heading='Constituency/District Profile' (select)="clickTab('District')">
               <!--
                 <constitutionProfile-gpx></constitutionProfile-gpx>
                 -->      
@@ -115,6 +116,7 @@
 
       </div>
 
+    <!-- view area -->
     <div class="wrapper">
         <router-outlet></router-outlet>
     </div>

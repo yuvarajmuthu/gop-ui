@@ -1,8 +1,9 @@
-import { Component, Directive, Attribute, ElementRef, OnInit } from '@angular/core';
+import { Component, Directive, Attribute, ElementRef, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Routes, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "@angular/router";
 
 import {TypeaheadGPXComponent} from './typeahead.component';
 import { TAB_DIRECTIVES } from 'ng2-bootstrap/components/tabs';
+import { TabsetComponent } from 'ng2-bootstrap/components/tabs';
 import {MapGPXComponent} from './map.component';
 import {OrgProfileGPXComponent} from './orgprofile.component';
 import {StructureGPXComponent} from './structure.component';
@@ -44,10 +45,30 @@ import 'rxjs/add/operator/catch';
 ])
 
 
-export class AppComponent  implements OnInit{
+export class AppComponent  implements OnInit, AfterViewInit {
+  @ViewChild('staticTabs') staticTabs: TabsetComponent;
     //legislators: Array<Legislator> = [];
     //public selectedlegislator: Legislator;
     constructor(private  router: Router) {}
+
+    clickTab(event: String){
+      console.log("tab button clicked - " + event);
+      //console.log("event.target.value " + event.target);
+      if(event === 'District'){
+        console.log("Routing " + event);
+        //this.staticTabs.tabs[6].active = true;
+        this.router.navigate(['/district']);
+      }else if(event === 'News'){
+        console.log("Routing " + event);
+        //this.staticTabs.tabs[6].active = true;
+        this.router.navigate(['/newsPost']);
+      }else if(event === 'Search'){
+        console.log("Routing " + event);
+        //this.staticTabs.tabs[6].active = true;
+        this.router.navigate(['/']);
+      }
+
+    }
   /*
   legislators: Array<Legislator> = [];
   resultop:any;
@@ -92,6 +113,11 @@ toLegis(r:any){
 }
 */
   ngOnInit(): void {
+
     //this.getLegislatorsByZipCode('15220');
+  }
+
+  ngAfterViewInit() {
+    this.staticTabs.tabs[0].active = true;
   }
 }
