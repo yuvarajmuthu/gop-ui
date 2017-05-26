@@ -1,5 +1,16 @@
+    <div class='row'>
+        <div class='col-xs-12'>
+          <h5>View Mode:</h5>
+          <select [(ngModel)]="selected_permission">
+            <option>Editor</option>
+            <option>Viewer</option>
+          </select>
+        </div>
+    </div>
 
 <div class="col-xs-12 constitutionProfile">
+
+              
 	<div class="constitutionTop">
 		<div class="col-md-10">
 	<!--
@@ -13,9 +24,9 @@
 		
 			</div>
 
-
+			<h5>District Name:</h5>
 		    <div id="constitutionHeader" class="constitutionHeader col-md-10">
-				Royapuram	
+             	<ndv-edit [permission]="checkPermissions()" [min]="2" [max]="50"  [title]="'name'" [placeholder]="name" (onSave)="saveMethod($event)"></ndv-edit>
 		    </div>
 		</div>
 
@@ -28,14 +39,9 @@
 <!-- BODY -->
 	<div>
 		<div class="col-md-8">
-			Description:
+			<h5>Description:</h5>
 			<div id="constitutionDescription" class="constitutionDescription">
-		    	<p>
-					Royapuram is a legislative assembly constituency, that includes the locality, Royapuram. Royapuram assembly constituency is part of Chennai North Parliamentary constituency.
-										Royapuram is a legislative assembly constituency, that includes the locality, Royapuram. Royapuram assembly constituency is part of Chennai North Parliamentary constituency.
-															Royapuram is a legislative assembly constituency, that includes the locality, Royapuram. Royapuram assembly constituency is part of Chennai North Parliamentary constituency.
-																				Royapuram is a legislative assembly constituency, that includes the locality, Royapuram. Royapuram assembly constituency is part of Chennai North Parliamentary constituency.
-				</p>	
+             	<ndv-edit [permission]="checkPermissions()" [min]="2" [max]="50"  [title]="'description'" [placeholder]="description" (onSave)="saveMethod($event)"></ndv-edit>					
 		    </div>
 
     		<div>

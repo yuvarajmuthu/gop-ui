@@ -15,7 +15,6 @@ var routerVer = '@2.0.0-rc.1';
     'ng2-bootstrap':   'node_modules/ng2-bootstrap',
     'angular2-google-maps' : 'node_modules/angular2-google-maps',
     'd3': 'node_modules/d3',
-    'angular2-click-to-edit': 'node_modules/angular2-click-to-edit',
 
     //'register': 'node_modules/register',
     //'userManagement':   'node_modules/userManagement',
@@ -34,7 +33,6 @@ var routerVer = '@2.0.0-rc.1';
     'd3' : {main:'d3.js', defaultExtension: 'js'},
     '@angular/router' : {main:'index.js', defaultExtension: 'js'},
     //'register' : {main:'app.43a45297bc7249e35ee9.js', defaultExtension: 'js'},
-    //'angular2-click-to-edit': { main: 'index.js', defaultExtension: 'js'  },
     //'node_modules/identitymgmt': { main: 'app.43a45297bc7249e35ee9.js',  defaultExtension: 'js' },
   };
 

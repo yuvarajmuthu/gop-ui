@@ -9,7 +9,7 @@ import {OrgProfileGPXComponent} from './orgprofile.component';
 import {StructureGPXComponent} from './structure.component';
 //import {TestComponent} from './test.component';
 import {ConstitutionProfileGPX} from './constitutionProfile';
-import {PostGPX} from './post';
+import {PostGPX} from './post.component';
 import {NewPostGPX} from './newPost';
 import {PartyListComponentGPX} from './partyList.component';
 import { LegislatorsService } from './service/legislators.service';
@@ -18,6 +18,8 @@ import {LegislatorComponentGPX} from './legislator.component';
 import {SearchLegislatorComponentGPX} from './search.component';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+//import { NDV_DIRECTIVES } from 'angular2-click-to-edit/components';
+
 
 //import {CongressMapComponent} from './congressmap.component';
 //import {AppModule} from 'register';
@@ -40,7 +42,11 @@ import 'rxjs/add/operator/catch';
     {path: "/", component: SearchLegislatorComponentGPX },
     {path: "/legislator/:id", component: LegislatorComponentGPX },
     {path: "/district", component: ConstitutionProfileGPX },
-    {path: "/newsPost", component: NewPostGPX }
+    {path: "/news", component: PostGPX },
+    {path: "/map", component: MapGPXComponent },
+    {path: "/parties", component: PartyListComponentGPX },
+    {path: "/post", component: NewPostGPX }
+
 
 ])
 
@@ -55,17 +61,31 @@ export class AppComponent  implements OnInit, AfterViewInit {
       console.log("tab button clicked - " + event);
       //console.log("event.target.value " + event.target);
       if(event === 'District'){
+        localStorage.setItem('currentUser', JSON.stringify('Me'))
+        console.log("Test Localstorage - " + localStorage.getItem('currentUser'));
         console.log("Routing " + event);
         //this.staticTabs.tabs[6].active = true;
         this.router.navigate(['/district']);
       }else if(event === 'News'){
         console.log("Routing " + event);
         //this.staticTabs.tabs[6].active = true;
-        this.router.navigate(['/newsPost']);
+        this.router.navigate(['/news']);
+      }else if(event === 'Post'){
+        console.log("Routing " + event);
+        //this.staticTabs.tabs[6].active = true;
+        this.router.navigate(['/post']);
       }else if(event === 'Search'){
         console.log("Routing " + event);
         //this.staticTabs.tabs[6].active = true;
         this.router.navigate(['/']);
+      }else if(event === 'Parties'){
+        console.log("Routing " + event);
+        //this.staticTabs.tabs[6].active = true;
+        this.router.navigate(['/parties']);
+      }else if(event === 'Map'){
+        console.log("Routing " + event);
+        //this.staticTabs.tabs[6].active = true;
+        this.router.navigate(['/map']);
       }
 
     }

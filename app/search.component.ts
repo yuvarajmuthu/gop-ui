@@ -9,22 +9,7 @@ import { Router } from "@angular/router";
 @Component({
   selector: 'search-legislator',
   directives:[LegislatorComponentGPX],
-  //outputs: ['success'],
-  template: `
-
-      <label>Find your legislators: </label>
-   
-      <input class="form-control" [(ngModel)]="ipZipcode" placeholder="Zipcode" />
-
-      <label class="btn btn-success" uncheckable (click)="search(ipZipcode)">Search</label>
-
-      <ul style="list-style-type:none">
-        <li *ngFor="let legislator of legislators" class="legisBoundary">
-          <legislator [legislator]=legislator (click)="gotoLegislator(legislator)"></legislator>
-        </li>
-      </ul>
-
-  `,
+  templateUrl: 'app/view/searchLegis.html',
   styles: [`
    .legisBoundary{
       border: 1px solid lightblue;

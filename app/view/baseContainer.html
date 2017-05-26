@@ -70,11 +70,7 @@
                 -->              
               </tab>
 
-              <tab heading='Legislator Profile'>
-              <!--
-                <legislator [legislator]=legislator></legislator>
-                -->
-              </tab>  
+
 
               <tab heading='News' (select)="clickTab('News')">
               <!--
@@ -87,16 +83,16 @@
                 -->      
               </tab>
 
-              <tab heading='Parties'>
+              <tab heading='Parties' (select)="clickTab('Parties')">
               <!--
                 <party-list></party-list>
                 -->
               </tab>
 
-              <tab heading='Party Profile'>
+              <tab heading='Post' (select)="clickTab('Post')">
               </tab>
 
-              <tab heading='Map'>
+              <tab heading='Map' (select)="clickTab('Map')">
               <!--
                 <map-gpx></map-gpx>
                 -->

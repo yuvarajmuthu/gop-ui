@@ -6,12 +6,13 @@ import {PartyService} from './service/party.service';
 import {People} from './object/people';
 import { CollapseDirective } from 'ng2-bootstrap/components/collapse';
 import {RatingComponent} from 'ng2-bootstrap/components/rating';
+import {NdvEditComponent} from './editableText.component';
 //import { NdvEditComponent } from 'angular2-click-to-edit/components';
 
 @Component({
   selector: 'constitutionProfile-gpx',
   templateUrl: 'app/view/constitutionProfile.html',
-  directives: [BannerGPXComponent, TAB_DIRECTIVES, People, CollapseDirective, RatingComponent],
+  directives: [BannerGPXComponent, TAB_DIRECTIVES, People, CollapseDirective, RatingComponent, NdvEditComponent],
   providers:[PeopleService, PartyService],
   styles: [`
     .constitutionTop{
@@ -92,13 +93,28 @@ export class ConstitutionProfileGPX {
 	public electedPersons=[];
 	public contestedPersons=[];
 	public parties=[];
-
+  name:string = 'Royapuram';
+  description:string = 'Royapuram is a legislative assembly constituency, that includes the locality, Royapuram. Royapuram assembly constituency is part of Chennai North Parliamentary constituency.';
+  
+  selected_permission = 'Editor';
+  checkPermissions() {
+      if(this.selected_permission == 'Editor') {
+        return true;
+      } 
+      else {
+        return false;
+      }
+    }
 	constructor(private peopleService: PeopleService, private partyService: PartyService) {  
 		//this.getElectedMembers("state");
 		this.electedPersons = peopleService.getElectedMembers('');
 		this.contestedPersons = peopleService.getContestedMembers('');
 		this.parties = partyService.getPartiesByParam('');
 	}
+
+    saveMethod(obj) {
+      console.log('trying to save'+ JSON.stringify(obj));
+    }
 
 	getElectedMembers(type:String){
 		//this.electedPersons = this.peopleService.getElectedMembers(type);
