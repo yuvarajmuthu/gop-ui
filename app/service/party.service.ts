@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import {People} from '../object/people';
 import {PARTIES} from './../data/mock/party-mock';
 import { Party } from './../object/party';
 

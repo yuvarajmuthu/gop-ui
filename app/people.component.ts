@@ -1,14 +1,14 @@
 import {Component, EventEmitter, ElementRef} from '@angular/core'
 
 @Component({
-  selector: 'person',
+  selector: 'person-gpx',
   inputs: ['personip'],
   outputs: ['hello'],
   templateUrl: 'app/view/Person.html'
 
 })
 
-export class People {
+export class PeopleComponentGPX {
 	public personip:JSON;
 
   private el: HTMLElement;
@@ -16,9 +16,9 @@ export class People {
   hello = new EventEmitter();
   constructor(el: ElementRef) { this.el = el.nativeElement; }
  
-  sayHello(e) {
-    //this.hello.next(person.name);
-  }
+  //click(e) {
+  //  this.hello.next(e);
+  //}
  
   hoverme(){
     //alert('hovered on ' + this.person.name);
