@@ -19,6 +19,7 @@ import {SearchLegislatorComponentGPX} from './search.component';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 //import { NDV_DIRECTIVES } from 'angular2-click-to-edit/components';
+//import {DataShareService} from './service/dataShare.service';
 
 
 //import {CongressMapComponent} from './congressmap.component';

@@ -1,13 +1,7 @@
-<div class='row'>
-    <div class='col-xs-12'>
-      <h5>View Mode:</h5>
-      <select [(ngModel)]="selected_permission">
-        <option>Editor</option>
-        <option>Viewer</option>
-      </select>
-    </div>
-</div>
 
+    <button type="button" (click)="loadTemplate('districtIntroTemplate')">Intro Template</button>
+    <button type="button" (click)="loadTemplate('districtBusinessTemplate')">Business Template</button>    
+ 
 <div class="col-xs-12 constitutionProfile">
 
               
@@ -24,20 +18,11 @@
 		
 			</div>
 
-			<h5>District Name:</h5>
-		    <div id="constitutionHeader" class="constitutionHeader col-md-10">
-             	<ndv-edit [permission]="checkPermissions()" [min]="2" [max]="50"  [title]="'name'" [placeholder]="name" (onSave)="saveMethod($event)"></ndv-edit>
+			<div>
+			    <dynamic-content [type]="templateType"></dynamic-content>
 		    </div>
-			<h5>Description:</h5>
-			<div id="constitutionDescription" class="constitutionDescription">
-             	<ndv-edit [permission]="checkPermissions()" [min]="2" [max]="50"  [title]="'description'" [placeholder]="description" (onSave)="saveMethod($event)"></ndv-edit>					
-		    </div>
-
 		</div>
 
-		<div class="col-md-2">
-				 <button type="button" class="btn btn-primary">Follow</button>
-		</div>	
 	</div>
 
 <hr>

@@ -10,13 +10,13 @@ import {NdvEditComponent} from './editableText.component';
 import { LegislatorsService } from './service/legislators.service';
 import {LegislatorComponentGPX} from './legislator.component';
 import { Legislator } from './object/legislator';
-
+import {DynamicContentComponent} from './constitution.template.component';
 //import { NdvEditComponent } from 'angular2-click-to-edit/components';
 
 @Component({
   selector: 'constitutionProfile-gpx',
   templateUrl: 'app/view/constitutionProfile.html',
-  directives: [BannerGPXComponent, TAB_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent],
+  directives: [DynamicContentComponent, BannerGPXComponent, TAB_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent],
   providers:[LegislatorsService, PeopleService, PartyService],
   styles: [`
     .constitutionTop{
@@ -86,6 +86,7 @@ import { Legislator } from './object/legislator';
       margin-right: .8em;
       border-radius: 4px 0 0 4px;
     }
+
   `]
 })
 
@@ -98,9 +99,11 @@ export class ConstitutionProfileGPX {
   public electedPersons:Array<Legislator>;
 	public contestedPersons=[];
 	public parties=[];
+  templateType:string = '';
+  /*
   name:string = 'Royapuram';
   description:string = 'Royapuram is a legislative assembly constituency, that includes the locality, Royapuram. Royapuram assembly constituency is part of Chennai North Parliamentary constituency.';
-  
+     
   selected_permission = 'Editor';
   checkPermissions() {
       if(this.selected_permission == 'Editor') {
@@ -110,6 +113,11 @@ export class ConstitutionProfileGPX {
         return false;
       }
     }
+
+        saveMethod(obj) {
+      console.log('trying to save'+ JSON.stringify(obj));
+    }
+*/ 
 	constructor(private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService) {  
 		//this.getElectedMembers("state");
 		this.electedPersonsOld = peopleService.getElectedMembers('');
@@ -122,9 +130,11 @@ export class ConstitutionProfileGPX {
     });
 	}
 
-    saveMethod(obj) {
-      console.log('trying to save'+ JSON.stringify(obj));
-    }
+loadTemplate(type:string){
+  this.templateType = type;
+}
+
+
 
 	getElectedMembers(type:String){
 		//this.electedPersons = this.peopleService.getElectedMembers(type);

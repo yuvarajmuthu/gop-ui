@@ -9,5 +9,7 @@ import {GOOGLE_MAPS_PROVIDERS} from 'angular2-google-maps/core';
 //bootstrap(TestComponent, [GOOGLE_MAPS_PROVIDERS]);
 //import {userAccessComponent} from 'userManagement/app/app.component';
 //import {AppModule} from 'userManagement/app/app.module';
+import {DataShareService} from './service/dataShare.service';
 
-bootstrap(AppComponent, [HTTP_PROVIDERS, GOOGLE_MAPS_PROVIDERS, ROUTER_PROVIDERS, {provide: APP_BASE_HREF, useValue : '/' }]);
+
+bootstrap(AppComponent, [DataShareService, HTTP_PROVIDERS, GOOGLE_MAPS_PROVIDERS, ROUTER_PROVIDERS, {provide: APP_BASE_HREF, useValue : '/' }]);
