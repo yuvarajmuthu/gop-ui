@@ -1,7 +1,35 @@
+<div class='row'>
+	<div class="col-md-4">
+	  <h5>View Mode:</h5>
+	  <select [ngModel]="getPermission()" (ngModelChange)="setPermission($event)">
+	    <option>Editor</option>
+	    <option>Viewer</option>
+	  </select>
+	</div>
 
-    <button type="button" (click)="loadTemplate('districtIntroTemplate')">Intro Template</button>
-    <button type="button" (click)="loadTemplate('districtBusinessTemplate')">Business Template</button>    
- 
+
+	<div class="btn-group" dropdown *ngIf="allowed()" class="col-md-4">
+	  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+	    Add Sections <span class="caret"></span>
+	  </button>
+
+	  <ul dropdownMenu class="dropdown-menu" role="menu">
+	    <li role="menuitem" *ngFor="let profileTemplate of profilesTemplates">
+	    	<a class="dropdown-item" (click)="loadTemplate(profileTemplate.profile_template_id)">{{profileTemplate.name}}</a>
+	    	
+	    </li>
+	  </ul>
+
+	</div>
+
+	<div *ngIf="allowed()" class="col-md-4">
+	     <button type="button" class="btn btn-primary" (click)="saveProfile()">Save Profile</button>
+	</div>    
+
+	<div *ngIf="!allowed()" class="col-md-8">
+	     <button type="button" class="btn btn-primary">Follow</button>
+	</div>    
+</div>            
 <div class="col-xs-12 constitutionProfile">
 
               
@@ -18,9 +46,7 @@
 		
 			</div>
 
-			<div>
-			    <dynamic-content [type]="templateType"></dynamic-content>
-		    </div>
+
 		</div>
 
 	</div>
@@ -29,12 +55,13 @@
 <!-- BODY -->
 	<div>
 		<div class="col-md-8">
-
+			<div>
+			    <dynamic-content [type]="templateType"></dynamic-content>
+		    </div>
+<!--
     		<div>
 	            <tabset type="pills">
 		          <tab heading='LocalBodies-Wards'>
-        		  </tab>
-        		  <tab heading='Voters'>
         		  </tab>
           		  <tab heading='Places'>
         		  </tab>
@@ -42,18 +69,14 @@
         		  </tab>
           		  <tab heading='Activities'>
         		  </tab>        		  
-          		  <tab heading='Issues'>
-        		  </tab>
-          		  <tab heading='Sensex'>
-        		  </tab>
 
           		</tabset>
 			</div>
-
+-->
 		</div>
 		<div class="col-md-4">
 		    <button type="button" class="btn btn-primary"
-	            (click)="isCollapsed = !isCollapsed">Elected Persons
+	            (click)="isCollapsed = !isCollapsed">Current Representative(s)
 		    </button>
 
 		    <div (collapsed)="collapsed($event)"
@@ -61,10 +84,10 @@
 		         [collapse]="isCollapsed"
 		         class="card card-block card-header">
 		      <div>
-			    <ul class="heroes">
+			    <ul style="list-style-type:none;padding-left:0;">
 					<li *ngFor="let electedPerson of electedPersons"
 					        [class.selected]="selectedPerson === electedPerson"
-					        (click)="onSelect(selectedPerson)">
+					        (click)="onSelect(selectedPerson)" class="legisBoundary">
 						<!--
 						<person-gpx 
 				         

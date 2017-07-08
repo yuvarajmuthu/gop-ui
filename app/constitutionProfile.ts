@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewContainerRef, ViewChild, ElementRef, Renderer, ChangeDetectorRef, ComponentRef, OnInit} from '@angular/core';
 import {BannerGPXComponent} from './banner.component';
 import { TAB_DIRECTIVES } from 'ng2-bootstrap/components/tabs';
 import {PeopleService} from './service/people.service';
@@ -12,13 +12,30 @@ import {LegislatorComponentGPX} from './legislator.component';
 import { Legislator } from './object/legislator';
 import {DynamicContentComponent} from './constitution.template.component';
 //import { NdvEditComponent } from 'angular2-click-to-edit/components';
+import { DROPDOWN_DIRECTIVES } from 'ng2-bootstrap/components/dropdown';
+import {DataShareService} from './service/dataShare.service';
+import {TemplatePopulationComponent} from './constitution.template.component';
+import { MissionService }     from './service/compCommunication.service';
+import {GroupService} from './service/group.service';
 
 @Component({
   selector: 'constitutionProfile-gpx',
   templateUrl: 'app/view/constitutionProfile.html',
-  directives: [DynamicContentComponent, BannerGPXComponent, TAB_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent],
-  providers:[LegislatorsService, PeopleService, PartyService],
+  directives: [DynamicContentComponent, TemplatePopulationComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent],
+  providers:[LegislatorsService, PeopleService, PartyService, GroupService, MissionService],
   styles: [`
+
+     .legisBoundary{
+      border: 1px solid lightblue;
+      border-radius: 5px;
+      margin: 10px;
+    }
+
+    .legisBoundary:hover{
+      border: 2px solid lightblue;
+    }
+
+
     .constitutionTop{
       padding: .1px 1.5em;
       background: #f5f2f0;
@@ -100,6 +117,68 @@ export class ConstitutionProfileGPX {
 	public contestedPersons=[];
 	public parties=[];
   templateType:string = '';
+  private componentRef: ComponentRef<{}>;
+  private groupData = {};
+  public profilesTemplates = [{}];
+      //private populationComponent: TemplatePopulationComponent;
+
+      @ViewChild('district-population')
+      set populationComponent(content:TemplatePopulationComponent) {
+        console.log('setting viewchild ' + content);
+        //this.populationComponent = content;
+ }
+
+/*
+      set populationTemplate(v: TemplatePopulationComponent) {
+        console.log("set populationTemplate() " + v);
+        setTimeout(() => { this.populationComponent = v }, 100);
+      }
+
+  ngOnInit(){
+    console.log("ngOnInit()");
+  }
+  
+    ngOnChanges(){
+        console.log('constitutionProfile ngOnChanges() ');
+    }
+*/
+
+  saveProfile(){
+      console.log("Saving Profile");
+      this.missionService.announceMission("{'districtID':'d001'}");
+      //console.log("printing female count " + this.populationComponent.femaleCount);
+      //this.populationComponent.getData();  
+    }
+
+ngAfterViewChecked(){
+  //console.log("constitutionProfile ngAfterViewChecked()");
+  if(this.elementRef.nativeElement.querySelector('district-population')){
+    //console.log("District population template found ");
+/*
+        this.renderer.listenGlobal('district-population', 'onAdd', (event)=>{
+        console.log("onAdd event handled");
+    });
+    */
+
+   //console.log("adding handler " + (<TemplatePopulationComponent>(this.elementRef.nativeElement.querySelector('district-population'))).femaleCount);
+   //this.componentRef = (<TemplatePopulationComponent>(this.elementRef.nativeElement.querySelector('district-population'))).instance;
+    //this.elementRef.nativeElement.querySelector('district-population').addEventListener('ngAfterViewInit', this.onAddHandler.bind(this));
+  }
+}
+
+onAdd(event){
+  //console.log("onAdd event handled");
+  //this.populationComponent = event;
+}
+
+ngAfterViewInit (){ //not called
+  //console.log("constitutionProfile ngAfterViewInit ()");
+}
+
+ngAfterContentInit (){ //not called
+  //console.log("constitutionProfile ngAfterContentInit ()");
+}
+
   /*
   name:string = 'Royapuram';
   description:string = 'Royapuram is a legislative assembly constituency, that includes the locality, Royapuram. Royapuram assembly constituency is part of Chennai North Parliamentary constituency.';
@@ -118,17 +197,58 @@ export class ConstitutionProfileGPX {
       console.log('trying to save'+ JSON.stringify(obj));
     }
 */ 
-	constructor(private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService) {  
+
+	constructor(private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
 		//this.getElectedMembers("state");
 		this.electedPersonsOld = peopleService.getElectedMembers('');
 		this.contestedPersons = peopleService.getContestedMembers('');
 		this.parties = partyService.getPartiesByParam('');
+    groupService.getGroupData('').subscribe(
+        data => {
+          this.groupData = data;
+          console.log("Group data from service: ", this.groupData);
+
+          this.profilesTemplates = this.groupData['profile'];
+          console.log("profile templates: ", this.profilesTemplates);
+
+        }
+    );
+
+
 
     legislatorsService.getElectedMembers('').subscribe(res => {
       this.electedPersons = res;
       console.log("Elected persons " + this.electedPersons.length);
     });
+/*
+    missionService.missionConfirmed$.subscribe(
+      astronaut => {
+        console.log("Received message from child" + astronaut);
+      });
+    */
 	}
+
+
+      getPermission():string{
+                //console.log("calling getter");
+          let data = this.dataShareService.getPermission();
+      //console.log("getPermission() " + data);
+      return data;
+  }
+
+  setPermission(data:string){
+      //console.log("calling setter");
+      this.dataShareService.setPermission(data);    
+ 
+  }
+
+
+    allowed():boolean{
+        let permission:boolean = this.dataShareService.checkPermissions();
+        //console.log("allowed() - " + permission);
+
+        return permission;
+    }
 
 loadTemplate(type:string){
   this.templateType = type;
