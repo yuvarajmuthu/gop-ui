@@ -116,11 +116,59 @@ export class ConstitutionProfileGPX {
   public electedPersons:Array<Legislator>;
 	public contestedPersons=[];
 	public parties=[];
-  templateType:string = '';
+  templateType = [];
   private componentRef: ComponentRef<{}>;
   private groupData = {};
-  public profilesTemplates = [{}];
+  public profilesTemplates = [];
+  public profilesData = [];
       //private populationComponent: TemplatePopulationComponent;
+
+  constructor(private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
+    //this.getElectedMembers("state");
+    this.electedPersonsOld = peopleService.getElectedMembers('');
+    this.contestedPersons = peopleService.getContestedMembers('');
+    this.parties = partyService.getPartiesByParam('');
+    groupService.getGroupData('').subscribe(
+        data => {
+          this.groupData = data;
+          console.log("Group data from service: ", this.groupData);
+
+          //getting the available profile templates for this group type
+          this.profilesTemplates = this.groupData['profile'];
+          console.log("profile templates: ", this.profilesTemplates);
+
+          //getting the data for this group profile
+          this.profilesData = this.groupData['profileData'];
+          console.log("profile data: ", this.profilesData);
+
+          //identifying the profile selected for this group profile, so those components shall be loaded
+          let compTypes = [];
+          for (let profileData of this.profilesData){
+            console.log("loading template component: ", profileData['profile_template_id']);
+            //this.templateType.push(profileData['profile_template_id']);
+            compTypes.push(profileData['profile_template_id']);
+          }
+
+          if(compTypes.length > 0){
+            this.templateType = compTypes;
+          }
+
+        }
+    );
+
+
+
+    legislatorsService.getElectedMembers('').subscribe(res => {
+      this.electedPersons = res;
+      console.log("Elected persons " + this.electedPersons.length);
+    });
+/*
+    missionService.missionConfirmed$.subscribe(
+      astronaut => {
+        console.log("Received message from child" + astronaut);
+      });
+    */
+  }
 
       @ViewChild('district-population')
       set populationComponent(content:TemplatePopulationComponent) {
@@ -198,35 +246,7 @@ ngAfterContentInit (){ //not called
     }
 */ 
 
-	constructor(private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
-		//this.getElectedMembers("state");
-		this.electedPersonsOld = peopleService.getElectedMembers('');
-		this.contestedPersons = peopleService.getContestedMembers('');
-		this.parties = partyService.getPartiesByParam('');
-    groupService.getGroupData('').subscribe(
-        data => {
-          this.groupData = data;
-          console.log("Group data from service: ", this.groupData);
 
-          this.profilesTemplates = this.groupData['profile'];
-          console.log("profile templates: ", this.profilesTemplates);
-
-        }
-    );
-
-
-
-    legislatorsService.getElectedMembers('').subscribe(res => {
-      this.electedPersons = res;
-      console.log("Elected persons " + this.electedPersons.length);
-    });
-/*
-    missionService.missionConfirmed$.subscribe(
-      astronaut => {
-        console.log("Received message from child" + astronaut);
-      });
-    */
-	}
 
 
       getPermission():string{
@@ -243,16 +263,18 @@ ngAfterContentInit (){ //not called
   }
 
 
-    allowed():boolean{
-        let permission:boolean = this.dataShareService.checkPermissions();
-        //console.log("allowed() - " + permission);
+  allowed():boolean{
+      let permission:boolean = this.dataShareService.checkPermissions();
+      //console.log("allowed() - " + permission);
 
-        return permission;
-    }
+      return permission;
+  }
 
-loadTemplate(type:string){
-  this.templateType = type;
-}
+  loadTemplate(type:string){
+    let compTypes = [];
+    compTypes.push(type);
+    this.templateType = compTypes;
+  }
 
 
 

@@ -1,6 +1,6 @@
 import { bootstrap }    from '@angular/platform-browser-dynamic';
 import { AppComponent } from './app.component';
-import {HTTP_PROVIDERS} from '@angular/http';
+import {HTTP_PROVIDERS, JSONP_PROVIDERS} from '@angular/http';
 import { Routes, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "@angular/router";
 import {APP_BASE_HREF} from '@angular/common';
 //import { TestComponent } from './test.component';
@@ -12,4 +12,4 @@ import {GOOGLE_MAPS_PROVIDERS} from 'angular2-google-maps/core';
 import {DataShareService} from './service/dataShare.service';
 
 
-bootstrap(AppComponent, [DataShareService, HTTP_PROVIDERS, GOOGLE_MAPS_PROVIDERS, ROUTER_PROVIDERS, {provide: APP_BASE_HREF, useValue : '/' }]);
+bootstrap(AppComponent, [DataShareService, HTTP_PROVIDERS, JSONP_PROVIDERS, GOOGLE_MAPS_PROVIDERS, ROUTER_PROVIDERS, {provide: APP_BASE_HREF, useValue : '/' }]);

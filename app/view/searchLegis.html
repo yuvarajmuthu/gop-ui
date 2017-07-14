@@ -1,8 +1,12 @@
       <label>Find your legislators: </label>
    
-      <input class="form-control" [(ngModel)]="ipZipcode" placeholder="Zipcode" />
+      <input type="text" class="searchLegisBox" [(ngModel)]="ipZipcode" placeholder="Zipcode" />
 
       <label class="btn btn-success" uncheckable (click)="search(ipZipcode)">Search</label>
+
+      <div class="searchTip">
+      	Showing legislator(s) for the location: {{currentLocationZip}}
+      </div>
 
       <ul style="list-style-type:none">
         <li *ngFor="let legislator of legislators" class="legisBoundary">

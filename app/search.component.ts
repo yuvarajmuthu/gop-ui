@@ -21,6 +21,23 @@ import { Router } from "@angular/router";
       border: 2px solid lightblue;
     }
 
+    .searchLegisBox{
+      width: 130px;
+      -webkit-transition: width 0.4s ease-in-out;
+      transition: width 0.4s ease-in-out;
+    }
+
+    .searchLegisBox:focus{
+      width: 50%;
+     }
+
+    .searchTip{
+      float: right;
+      position:relative;
+      padding: 1em;
+      margin: 1em;
+
+    }
 
     `]
 })
@@ -28,17 +45,20 @@ export class SearchLegislatorComponentGPX {
   legislators: Array<Legislator> = [];
   resultop:any;
   ipZipcode:String = '';
+  currentLocationZip = '19406';
   public selectedlegislator: Legislator;
 
   @Output()
   success = new EventEmitter();
   
   constructor(private  router: Router, private legislatorsService: LegislatorsService) {
-    //this.success = new EventEmitter();
+    //this.legislators = [];
+    //this.getLegislators(this.currentLocationZip, 'zipcode');  
   }
 
   search(query: string) {
     console.log("Search value: " + query);
+    this.currentLocationZip = query;
     this.legislators = [];
     this.getLegislators(query, 'zipcode');
   }

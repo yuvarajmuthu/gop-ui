@@ -9,6 +9,7 @@ import {OrgProfileGPXComponent} from './orgprofile.component';
 import {StructureGPXComponent} from './structure.component';
 //import {TestComponent} from './test.component';
 import {ConstitutionProfileGPX} from './constitutionProfile';
+import {UserProfileGPX} from './userProfile';
 import {PostGPX} from './post.component';
 import {NewPostGPX} from './newPost';
 import {PartyListComponentGPX} from './partyList.component';
@@ -33,7 +34,7 @@ import 'rxjs/add/operator/catch';
 @Component({
   selector: 'my-app',
   directives: [ROUTER_DIRECTIVES, TypeaheadGPXComponent, TAB_DIRECTIVES, MapGPXComponent, OrgProfileGPXComponent, 
-  StructureGPXComponent, ConstitutionProfileGPX, PostGPX, NewPostGPX, PartyListComponentGPX, LegislatorComponentGPX, SearchLegislatorComponentGPX],
+  StructureGPXComponent, ConstitutionProfileGPX, UserProfileGPX, PostGPX, NewPostGPX, PartyListComponentGPX, LegislatorComponentGPX, SearchLegislatorComponentGPX],
   templateUrl: 'app/view/baseContainer.html',
   providers: [ LegislatorsService],
 
@@ -43,6 +44,7 @@ import 'rxjs/add/operator/catch';
     {path: "/", component: SearchLegislatorComponentGPX },
     {path: "/legislator/:id", component: LegislatorComponentGPX },
     {path: "/district", component: ConstitutionProfileGPX },
+    {path: "/user", component: UserProfileGPX },
     {path: "/news", component: PostGPX },
     {path: "/map", component: MapGPXComponent },
     {path: "/parties", component: PartyListComponentGPX },
@@ -87,6 +89,9 @@ export class AppComponent  implements OnInit, AfterViewInit {
         console.log("Routing " + event);
         //this.staticTabs.tabs[6].active = true;
         this.router.navigate(['/map']);
+      }else if(event === 'User'){
+        console.log("Routing " + event);
+        this.router.navigate(['/user']);
       }
 
     }

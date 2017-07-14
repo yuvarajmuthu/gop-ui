@@ -1,0 +1,59 @@
+<div class='row'>
+	<div class="col-md-4">
+	  <h5>View Mode:</h5>
+	  <select [ngModel]="getPermission()" (ngModelChange)="setPermission($event)">
+	    <option>Editor</option>
+	    <option>Viewer</option>
+	  </select>
+	</div>
+
+
+	<div class="btn-group" dropdown *ngIf="allowed()" class="col-md-4">
+	  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+	    Add Sections <span class="caret"></span>
+	  </button>
+
+	  <ul dropdownMenu class="dropdown-menu" role="menu">
+	    <li role="menuitem" *ngFor="let profileTemplate of profilesTemplates">
+	    	<a class="dropdown-item" (click)="loadTemplate(profileTemplate.profile_template_id)">{{profileTemplate.name}}</a>
+	    	
+	    </li>
+	  </ul>
+
+	</div>
+
+	<div *ngIf="allowed()" class="col-md-4">
+	     <button type="button" class="btn btn-primary" (click)="saveProfile()">Save Profile</button>
+	</div>    
+
+	<div *ngIf="!allowed()" class="col-md-8">
+	     <button type="button" class="btn btn-primary">Follow</button>
+	</div>    
+</div>            
+<div class="col-xs-12 constitutionProfile">
+
+              
+	<div class="constitutionTop">
+		<div class="col-md-10">
+
+		    <div class="banner col-md-2">
+		 
+				<banner-gpx [imageUrl]="'../../images/yeoman.png'"></banner-gpx>
+		
+			</div>
+
+
+		</div>
+
+	</div>
+
+<hr>
+<!-- BODY -->
+	<div>
+		<div class="col-md-8">
+			<div>
+			    <dynamic-content [type]="templateType"></dynamic-content>
+		    </div>
+		</div>
+	</div>
+</div>

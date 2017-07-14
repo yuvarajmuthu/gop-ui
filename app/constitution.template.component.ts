@@ -6,6 +6,7 @@ import {
 import {NdvEditComponent} from './editableText.component';
 import {DataShareService} from './service/dataShare.service';
 import { MissionService }     from './service/compCommunication.service';
+import {GroupService} from './service/group.service';
 
 @Component({
     selector: 'dynamic-content',
@@ -23,7 +24,7 @@ export class DynamicContentComponent extends Type implements OnChanges {
     container: ViewContainerRef;
 
     @Input()
-    type: string = "";
+    type= [];
 
     @Input()
     context: any;
@@ -96,47 +97,38 @@ export class DynamicContentComponent extends Type implements OnChanges {
         this.loadComponentTemplate();
     }
 
-isPop(object: any): object is TemplatePopulationComponent {
-  //object.show = true;
-    return true;
-}
+  isPop(object: any): object is TemplatePopulationComponent {
+      return true;
+  }
 
   loadComponentTemplate() {
-      //this.type = 'districtBusinessTemplate';
-      //console.log('in load template ' + this.type);
+    /*
+    console.log('in load template ' + this.type);
     if (this.type) {
-      //console.log('Dynamic template type ' + this.type);
-      //Cleanup the old component
-      //if (this.componentRef) {
-       // this.componentRef.destroy();
-     // }
+
       let component = this.mappings[this.type];
-      /*
-      console.log(this.isPop(component));
-      if(this.isPop(component)){
-        (<TemplatePopulationComponent>component)["show"]=true;
-        console.log((<TemplatePopulationComponent>component).femaleCount); 
-      }
-      */
-      //component.show = true;
-      //console.log('Dynamic template component ' + component);
+
       this.loader.loadNextToLocation(component, this.viewContainerRef).then(componentRef=> {
         if(this.isPop(component)){
-    componentRef.instance.show = true;}
-  });
-      /*
-      this.loader.loadNextToLocation(component, this.viewContainerRef).then((ref:ComponentRef<Type>) => {
-          if (this.data.input) {
-              for (let key in this.data.input) {
-                  ref.instance[key] = this.data.input[key];
-              }
-          }
-          this.componentRef = ref;
-          return ref;
-      });
-      */
+          componentRef.instance.show = true;}
+        });
+
       
     }
+    */
+    console.log('in load template ' + this.type);
+    if (this.type) {
+      for(let compType of this.type){
+        let component = this.mappings[compType];
+
+        this.loader.loadNextToLocation(component, this.viewContainerRef).then(componentRef=> {
+          if(this.isPop(component)){
+            componentRef.instance.show = true;}
+          });
+      }
+      
+    }
+
   }
 
 
@@ -194,21 +186,76 @@ abstract class AbstractTemplateComponent {
   `]    
 })
 export class TemplateIntroductionComponent extends AbstractTemplateComponent {
+  groupId = "g0010";
   id = "districtIntroTemplate";
-  name:string = "Pennsylvania's 14th congressional district";
-  description:string = "Pennsylvania's 14th congressional district includes the entire city of Pittsburgh and parts of surrounding suburbs. A variety of working class and majority black suburbs located to the east of the city are included, such as McKeesport and Wilkinsburg. Also a major part of the district are number of middle class suburbs that have historic Democratic roots, such as Pleasant Hills and Penn Hills. The seat has been held by Democrat Mike Doyle since 1995. In the 2006 election, he faced Green Party candidate Titus North and returned to the house with 90% of the vote.";
+  name:string = "";//"Pennsylvania's 14th congressional district";
+  description:string = "";//"Pennsylvania's 14th congressional district includes the entire city of Pittsburgh and parts of surrounding suburbs. A variety of working class and majority black suburbs located to the east of the city are included, such as McKeesport and Wilkinsburg. Also a major part of the district are number of middle class suburbs that have historic Democratic roots, such as Pleasant Hills and Penn Hills. The seat has been held by Democrat Mike Doyle since 1995. In the 2006 election, he faced Green Party candidate Titus North and returned to the house with 90% of the vote.";
 
   data = {};
+  private groupData = {};
+  public profilesData = [];
+  public profilesTemplates = [];
+  private templateProperties = [];
+  private templateData = [];
 
-      constructor(private dataShareService:DataShareService, private missionService: MissionService) {
-          super();
+  constructor(private groupService:GroupService, private dataShareService:DataShareService, private missionService: MissionService) {
+      super();
 
-          missionService.missionAnnounced$.subscribe(
-          mission => {
-            console.log("Received save Profile message from parent for district " + mission);
+      missionService.missionAnnounced$.subscribe(
+      mission => {
+        console.log("Received save Profile message from parent for district " + mission);
 
-            this.saveProfile();
-        });
+        this.saveProfile();
+      });
+
+      this.loadTemplateData();  
+
+
+
+    }
+
+    loadTemplateData(){
+        this.groupService.getGroupData(this.groupId).subscribe(
+          data => {
+            this.groupData = data;
+            console.log("Group data from service: ", this.groupData);
+
+            //getting the available profile templates for this group type
+            this.profilesTemplates = this.groupData['profile'];
+            console.log("profile templates: ", this.profilesTemplates);
+            for (let profileTemplates of this.profilesTemplates){
+              console.log("reading template component properties: ", profileTemplates['profile_template_id']);
+              //this.templateType.push(profileData['profile_template_id']);
+              if(this.id == profileTemplates['profile_template_id']){
+                this.templateProperties = profileTemplates['properties'];
+                break;  
+              }
+            }
+
+
+            //getting the data for this group profile
+            this.profilesData = this.groupData['profileData'];
+            console.log("profile data: ", this.profilesData);
+
+            for (let profileData of this.profilesData){
+              console.log("loading template component: ", profileData['profile_template_id']);
+              //this.templateType.push(profileData['profile_template_id']);
+              if(this.id == profileData['profile_template_id']){
+                this.templateData = profileData['data'];
+                break;  
+              }
+            }
+
+            for (let dataObj of this.templateData){
+              let keys = [];
+              keys = Object.keys(dataObj);
+              console.log("Template data keys " + keys[0] + ":" + dataObj[keys[0]]);
+              this[keys[0]] = dataObj[keys[0]];
+            }
+
+          }
+      );
+
     }
 
     allowed():boolean{
@@ -229,8 +276,12 @@ export class TemplateIntroductionComponent extends AbstractTemplateComponent {
     }
 
     saveProfile(){
-      console.log("Data " + this.getData());
-      this.data[this.id] = this.getData();
+      this.data["profile_template_id"] = this.id;
+      this.data["group_id"] = this.groupId;
+      this.data["data"] = this.getData();
+
+      console.log("Data " + JSON.stringify(this.data));
+
     }
 
 }
