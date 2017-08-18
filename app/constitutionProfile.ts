@@ -17,11 +17,12 @@ import {DataShareService} from './service/dataShare.service';
 import {TemplatePopulationComponent} from './constitution.template.component';
 import { MissionService }     from './service/compCommunication.service';
 import {GroupService} from './service/group.service';
+import {PartyListComponentGPX} from './partyList.component';
 
 @Component({
   selector: 'constitutionProfile-gpx',
   templateUrl: 'app/view/constitutionProfile.html',
-  directives: [DynamicContentComponent, TemplatePopulationComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent],
+  directives: [DynamicContentComponent, TemplatePopulationComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent, PartyListComponentGPX],
   providers:[LegislatorsService, PeopleService, PartyService, GroupService, MissionService],
   styles: [`
 
@@ -108,9 +109,9 @@ import {GroupService} from './service/group.service';
 })
 
 export class ConstitutionProfileGPX {
-	public isCollapsed:boolean = false;
-	public isCMCollapsed:boolean = false;
-	public isPartiesCollapsed:boolean = false;
+	public isCollapsed:boolean = true;
+	public isCMCollapsed:boolean = true;
+	public isPartiesCollapsed:boolean = true;
 
 	public electedPersonsOld=[];
   public electedPersons:Array<Legislator>;
@@ -125,8 +126,8 @@ export class ConstitutionProfileGPX {
 
   constructor(private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
     //this.getElectedMembers("state");
-    this.electedPersonsOld = peopleService.getElectedMembers('');
-    this.contestedPersons = peopleService.getContestedMembers('');
+    //this.electedPersonsOld = peopleService.getElectedMembers('');
+    //this.contestedPersons = peopleService.getContestedMembers('');
     this.parties = partyService.getPartiesByParam('');
     groupService.getGroupData('').subscribe(
         data => {
@@ -160,8 +161,14 @@ export class ConstitutionProfileGPX {
 
     legislatorsService.getElectedMembers('').subscribe(res => {
       this.electedPersons = res;
-      console.log("Elected persons " + this.electedPersons.length);
+      console.log("Elected persons " + this.electedPersons);
     });
+
+    legislatorsService.getContestedMembers('').subscribe(res => {
+      this.contestedPersons = res;
+      console.log("Contested persons " + this.contestedPersons);
+    });
+
 /*
     missionService.missionConfirmed$.subscribe(
       astronaut => {

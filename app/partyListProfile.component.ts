@@ -1,13 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router, RouteSegment } from "@angular/router";
 import { Party } from './object/party';
 import {BannerGPXComponent} from './banner.component';
+import {PartyService} from './service/party.service';
 
 @Component({
   selector: 'party-list-profile',
   template: `
-    <div *ngIf="party" class="partyBoundary" (click)="clickme()">
+    <div *ngIf="party" class="partyBoundary" (click)="gotoParty(party)">
       <div class="col-xs-2 smProfileImg">
-        <banner-gpx [imageUrl]="imageName" [height]="50" [width]="50"></banner-gpx>
+        <banner-gpx [imageUrl]="profileImage" [height]="50" [width]="50"></banner-gpx>
       </div>
       <div class="col-xs10 shortProfileInfo">
         <ul style="list-style-type:none">
@@ -42,18 +44,59 @@ import {BannerGPXComponent} from './banner.component';
 
 
     `],
-  directives: [BannerGPXComponent]
+  directives: [BannerGPXComponent],
+  providers:[PartyService]
 })
 export class PartyListProfileComponentGPX implements OnInit{
   @Input() party: Party;
-  imageName:String;
-
-  ngOnInit(): void {
-    this.imageName = '../../images/'+this.party.profileImage;
-    console.log(this.imageName);
+  profileImage:String;
+  partyId:string;
+  results = [];
+  constructor(private  router: Router, private partyService:PartyService) {
   }
 
-  clickme():void{
-    alert('clicked');
+
+  ngOnInit(): void {
+    if(this.partyId){
+      console.log("Loading thru routing");
+     this.partyService.getParty(this.partyId)
+    .map(result => result.results)
+    .subscribe((result) => {
+              console.log("found parties of length: " + result.length);
+
+              for (var i = 0; i < result.length; ++i) {
+                let party = result[i];
+                 console.log("party " + JSON.stringify(result[i]));
+                 console.log("party: party.partyId " + party.partyId + ", this.partyId " + this.partyId);
+                 if(party.partyId == this.partyId){
+                  this.party = party;
+                  this.profileImage = '../../images/' + this.party.profileImage;
+                  break;
+                }
+              }
+
+           
+              //this.success.emit({legislators : this.legislators});
+            });
+
+    }else{  
+      console.log("Loading thur Non routing");
+      this.profileImage = '../../images/'+this.party.profileImage;
+  
+    }
+  }
+
+  //get invoked automatically before ngOnInit()
+  routerOnActivate(curr: RouteSegment): void {
+    this.partyId = curr.getParam("id");
+    console.log("Param value - id " + this.partyId);
+  }
+
+  gotoParty(party: Party):void{
+
+    console.log('selected Party - ' +  party);    
+
+    this.router.navigate(['/party', party.id]);
+
   }
 }

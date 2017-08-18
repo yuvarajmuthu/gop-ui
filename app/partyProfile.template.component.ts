@@ -6,7 +6,7 @@ import {
 import {NdvEditComponent} from './editableText.component';
 import {DataShareService} from './service/dataShare.service';
 import { MissionService }     from './service/compCommunication.service';
-import {UserService} from './service/user.service';
+import {PartyService} from './service/party.service';
 
 @Component({
     selector: 'dynamic-content',
@@ -54,7 +54,7 @@ export class DynamicContentComponent extends Type implements OnChanges {
 
 
     private mappings = {
-        'upDefault': TemplateUserDefaultComponent
+        'partyProfileDefault': TemplatePartyDefaultComponent
     };
 
     private componentRef: ComponentRef<{}>;
@@ -127,30 +127,35 @@ abstract class AbstractTemplateComponent {
 }
 
 @Component({
-    selector: 'user-default',
+    selector: 'party-default',
     directives: [NdvEditComponent],
     //providers:[DataShareService],
     template: `
-         <div class="districtTemplate">
+         <div class="partyDefaultTemplate">
  
-            <div id="constitutionHeader" class="constitutionHeader">
-                  <h5>First Name:</h5>
-                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'firstName'" [placeholder]="firstName" (onSave)="setValue($event)"></ndv-edit>
+            <div id="name" class="constitutionHeader">
+                  <h5>Party Name:</h5>
+                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'name'" [placeholder]="name" (onSave)="setValue($event)"></ndv-edit>
             </div>
 
-            <div id="constitutionDescription" class="constitutionDescription">
-                 <h5>Last Name:</h5>           
-                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'lastName'" [placeholder]="lastName" (onSave)="setValue($event)"></ndv-edit>                    
+            <div id="type" class="constitutionDescription">
+                 <h5>Type:</h5>           
+                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'type'" [placeholder]="type" (onSave)="setValue($event)"></ndv-edit>                    
             </div>
             
-            <div id="constitutionDescription" class="constitutionDescription">
-                 <h5>User Name:</h5>           
-                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'userName'" [placeholder]="userName" (onSave)="setValue($event)"></ndv-edit>                    
+            <div id="establishedDate" class="constitutionDescription">
+                 <h5>Established Date:</h5>           
+                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'establishedDate'" [placeholder]="establishedDate" (onSave)="setValue($event)"></ndv-edit>                    
             </div>
 
-            <div id="constitutionDescription" class="constitutionDescription">
-                 <h5>Email Id:</h5>           
-                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'emailId'" [placeholder]="emailId" (onSave)="setValue($event)"></ndv-edit>                    
+            <div id="registeredAddress" class="constitutionDescription">
+                 <h5>Address:</h5>           
+                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'registeredAddress'" [placeholder]="registeredAddress" (onSave)="setValue($event)"></ndv-edit>                    
+            </div>
+
+            <div id="ideology" class="constitutionDescription">
+                 <h5>Ideology:</h5>           
+                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'ideology'" [placeholder]="ideology" (onSave)="setValue($event)"></ndv-edit>                    
             </div>
           </div>  
     `,
@@ -164,23 +169,24 @@ abstract class AbstractTemplateComponent {
     }
   `]    
 })
-export class TemplateUserDefaultComponent extends AbstractTemplateComponent {
-  userId = "u001";
-  id = "upDefault";
-  firstName:string = "";//"Pennsylvania's 14th congressional district";
-  lastName:string = "";//"Pennsylvania's 14th congressional district includes the entire city of Pittsburgh and parts of surrounding suburbs. A variety of working class and majority black suburbs located to the east of the city are included, such as McKeesport and Wilkinsburg. Also a major part of the district are number of middle class suburbs that have historic Democratic roots, such as Pleasant Hills and Penn Hills. The seat has been held by Democrat Mike Doyle since 1995. In the 2006 election, he faced Green Party candidate Titus North and returned to the house with 90% of the vote.";
-  userName:string = "";
-  emailId = "";
-  imageUrl:string = "";
+export class TemplatePartyDefaultComponent extends AbstractTemplateComponent {
+  partyId = "p001";
+  id = "partyProfileDefault";
+  name:string = "";//"Pennsylvania's 14th congressional district";
+  type:string = "";//"Pennsylvania's 14th congressional district includes the entire city of Pittsburgh and parts of surrounding suburbs. A variety of working class and majority black suburbs located to the east of the city are included, such as McKeesport and Wilkinsburg. Also a major part of the district are number of middle class suburbs that have historic Democratic roots, such as Pleasant Hills and Penn Hills. The seat has been held by Democrat Mike Doyle since 1995. In the 2006 election, he faced Green Party candidate Titus North and returned to the house with 90% of the vote.";
+  establishedDate:string = "";
+  registeredAddress = "";
+  ideology:string="";
+  profileImage:string = "";
 
   data = {};
-  private userData = {};
+  private partyData = {};
   public profilesData = [];
   public profilesTemplates = [];
   private templateProperties = [];
   private templateData = [];
 
-  constructor(private userService:UserService, private dataShareService:DataShareService, private missionService: MissionService) {
+  constructor(private partyService:PartyService, private dataShareService:DataShareService, private missionService: MissionService) {
       super();
 
       missionService.missionAnnounced$.subscribe(
@@ -197,18 +203,17 @@ export class TemplateUserDefaultComponent extends AbstractTemplateComponent {
     }
 
     loadTemplateData(){
-        this.userService.getUserData(this.userId).subscribe(
+        this.partyService.getPartyData(this.partyId).subscribe(
           data => {
-          this.userData = data;
-          console.log("User data from service: ", this.userData);
-
+          this.partyData = data;
+          console.log("Party data from service: ", this.partyData);
 
             //getting the available profile templates for this user type
-            this.profilesTemplates = this.userData['profile'];
+            this.profilesTemplates = this.partyData['profile'];
             console.log("profile templates: ", this.profilesTemplates);
             for (let profileTemplates of this.profilesTemplates){
               console.log("reading template component properties: ", profileTemplates['profile_template_id']);
-              //this.templateType.push(profileData['profile_template_id']);
+
               if(this.id == profileTemplates['profile_template_id']){
                 this.templateProperties = profileTemplates['properties'];
                 break;  
@@ -216,8 +221,8 @@ export class TemplateUserDefaultComponent extends AbstractTemplateComponent {
             }
 
 
-            //getting the data for this user profile
-            this.profilesData = this.userData['profileData'];
+            //getting the data for this party profile
+            this.profilesData = this.partyData['profileData'];
             console.log("profile data: ", this.profilesData);
 
             for (let profileData of this.profilesData){
@@ -250,8 +255,11 @@ export class TemplateUserDefaultComponent extends AbstractTemplateComponent {
 
     getData():string{
       let data = {};
-      data["firstName"] = this.firstName;
-      data["lastName"] = this.lastName;
+      data["name"] = this.name;
+      data["type"] = this.type;
+      data["establishedDate"] = this.establishedDate;
+      data["registeredAddress"] = this.registeredAddress;
+      data["ideology"] = this.ideology;
 
 
       let dataString:string = JSON.stringify(data);
@@ -261,7 +269,7 @@ export class TemplateUserDefaultComponent extends AbstractTemplateComponent {
 
     saveProfile(){
       this.data["profile_template_id"] = this.id;
-      this.data["user_id"] = this.userId;
+      this.data["party_id"] = this.partyId;
       this.data["data"] = this.getData();
 
       console.log("Data " + JSON.stringify(this.data));

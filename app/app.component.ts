@@ -4,6 +4,7 @@ import { Routes, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "@angular/ro
 import {TypeaheadGPXComponent} from './typeahead.component';
 import { TAB_DIRECTIVES } from 'ng2-bootstrap/components/tabs';
 import { TabsetComponent } from 'ng2-bootstrap/components/tabs';
+import { DROPDOWN_DIRECTIVES } from 'ng2-bootstrap/components/dropdown';
 import {MapGPXComponent} from './map.component';
 import {OrgProfileGPXComponent} from './orgprofile.component';
 import {StructureGPXComponent} from './structure.component';
@@ -13,9 +14,11 @@ import {UserProfileGPX} from './userProfile';
 import {PostGPX} from './post.component';
 import {NewPostGPX} from './newPost';
 import {PartyListComponentGPX} from './partyList.component';
+import {PartyListProfileComponentGPX} from './partyListProfile.component';
+import {LegislatorComponentGPX} from './legislator.component';
 import { LegislatorsService } from './service/legislators.service';
 //import { Legislator } from './object/legislator';
-import {LegislatorComponentGPX} from './legislator.component';
+import {PartyProfileGPX} from './partyProfile.component';
 import {SearchLegislatorComponentGPX} from './search.component';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -33,10 +36,13 @@ import 'rxjs/add/operator/catch';
 
 @Component({
   selector: 'my-app',
-  directives: [ROUTER_DIRECTIVES, TypeaheadGPXComponent, TAB_DIRECTIVES, MapGPXComponent, OrgProfileGPXComponent, 
-  StructureGPXComponent, ConstitutionProfileGPX, UserProfileGPX, PostGPX, NewPostGPX, PartyListComponentGPX, LegislatorComponentGPX, SearchLegislatorComponentGPX],
+  directives: [ROUTER_DIRECTIVES, TypeaheadGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, MapGPXComponent, OrgProfileGPXComponent, 
+  StructureGPXComponent, ConstitutionProfileGPX, UserProfileGPX, PostGPX, NewPostGPX, LegislatorComponentGPX, PartyListComponentGPX, PartyListProfileComponentGPX, PartyProfileGPX, SearchLegislatorComponentGPX],
   templateUrl: 'app/view/baseContainer.html',
   providers: [ LegislatorsService],
+  styles:[`
+
+  `],
 
 })
 
@@ -45,10 +51,12 @@ import 'rxjs/add/operator/catch';
     {path: "/legislator/:id", component: LegislatorComponentGPX },
     {path: "/district", component: ConstitutionProfileGPX },
     {path: "/user", component: UserProfileGPX },
-    {path: "/news", component: PostGPX },
     {path: "/map", component: MapGPXComponent },
     {path: "/parties", component: PartyListComponentGPX },
-    {path: "/post", component: NewPostGPX }
+    {path: "/party/:id", component: PartyListProfileComponentGPX },    
+    {path: "/partyProfile", component: PartyProfileGPX },    
+    {path: "/post", component: NewPostGPX},
+    {path: "/news", component: PostGPX }    
 
 
 ])
@@ -92,9 +100,25 @@ export class AppComponent  implements OnInit, AfterViewInit {
       }else if(event === 'User'){
         console.log("Routing " + event);
         this.router.navigate(['/user']);
+      }else if(event === 'Party'){
+        console.log("Routing " + event);
+        this.router.navigate(['/partyProfile']);
       }
-
     }
+
+createPage(event: String){
+  console.log("creating page - " + event);
+  //console.log("event.target.value " + event.target);
+  if(event === 'District'){
+    this.router.navigate(['/district']);
+  }else if(event === 'Legislator'){
+    this.router.navigate(['/legislator/B001296']);
+  }else if(event === 'User'){
+    this.router.navigate(['user']);
+  }else if(event === 'Party'){
+    this.router.navigate(['partyProfile']);
+  }
+}    
   /*
   legislators: Array<Legislator> = [];
   resultop:any;

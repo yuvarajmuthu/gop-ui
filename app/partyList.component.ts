@@ -7,7 +7,7 @@ import {PartyListProfileComponentGPX} from './partyListProfile.component';
 @Component({
   selector: 'party-list',
   template: `
-    <h4>Parties:</h4>
+
     <ul style="list-style-type:none">
       <li *ngFor="let party of parties">
         <party-list-profile [party]="party"></party-list-profile>

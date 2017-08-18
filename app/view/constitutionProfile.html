@@ -87,7 +87,7 @@
 			    <ul style="list-style-type:none;padding-left:0;">
 					<li *ngFor="let electedPerson of electedPersons"
 					        [class.selected]="selectedPerson === electedPerson"
-					        (click)="onSelect(selectedPerson)" class="legisBoundary">
+					        class="legisBoundary">
 						<!--
 						<person-gpx 
 				         
@@ -112,6 +112,7 @@
 		         (expanded)="expanded($event)"
 		         [collapse]="isCMCollapsed"
 		         class="card card-block card-header">
+		         <!--
 		      <div class="well well-lg">
 			    <tabset>
 			    	<tab>
@@ -124,6 +125,25 @@
 			    	</tab>
 			    </tabset> 
 			  </div>
+			  -->
+			  <div>
+			    <ul style="list-style-type:none;padding-left:0;">
+					<li *ngFor="let contestedPerson of contestedPersons"
+					        [class.selected]="selectedPerson === contestedPerson"
+					        class="legisBoundary">
+						<!--
+						<person-gpx 
+				         
+				        [personip]="electedPerson"
+				        (click)="saidHello($event)">
+				    	</person-gpx>
+-->
+				    	<legislator [legislator]=contestedPerson></legislator>
+
+				  </li>
+				</ul>
+			    
+			  </div>
 		    </div>	 
 		    <hr>
 
@@ -131,6 +151,13 @@
 	            (click)="isPartiesCollapsed = !isPartiesCollapsed">Parties
 		    </button>
 
+		    <div (collapsed)="collapsed($event)"
+		         (expanded)="expanded($event)"
+		         [collapse]="isPartiesCollapsed"
+		         class="card card-block card-header">
+
+		    	<party-list></party-list>
+		    </div>
 		</div>
 	</div>
 </div>

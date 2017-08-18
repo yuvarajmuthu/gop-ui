@@ -33,7 +33,8 @@ export class Legislator {
          public twitter_id: string,
          public votesmart_id: string,
          public website: string,
-         public youtube_id: string
+         public youtube_id: string,
+         public bioguideImageUrl
 
         /*
          "bioguide_id":"J000294",

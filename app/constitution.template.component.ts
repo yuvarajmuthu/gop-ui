@@ -96,35 +96,23 @@ export class DynamicContentComponent extends Type implements OnChanges {
         console.log('constitution.template.component ngOnChanges() ');
         this.loadComponentTemplate();
     }
-
+/*
   isPop(object: any): object is TemplatePopulationComponent {
       return true;
   }
-
+*/
   loadComponentTemplate() {
-    /*
-    console.log('in load template ' + this.type);
-    if (this.type) {
-
-      let component = this.mappings[this.type];
-
-      this.loader.loadNextToLocation(component, this.viewContainerRef).then(componentRef=> {
-        if(this.isPop(component)){
-          componentRef.instance.show = true;}
-        });
-
-      
-    }
-    */
     console.log('in load template ' + this.type);
     if (this.type) {
       for(let compType of this.type){
         let component = this.mappings[compType];
-
+        this.loader.loadNextToLocation(component, this.viewContainerRef);
+        /*
         this.loader.loadNextToLocation(component, this.viewContainerRef).then(componentRef=> {
           if(this.isPop(component)){
             componentRef.instance.show = true;}
           });
+        */
       }
       
     }

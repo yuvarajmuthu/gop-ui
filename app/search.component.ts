@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, OnInit} from '@angular/core';
 import { LegislatorsService } from './service/legislators.service';
 import { Legislator } from './object/legislator';
 import {LegislatorComponentGPX} from './legislator.component';
@@ -27,10 +27,6 @@ import { Router } from "@angular/router";
       transition: width 0.4s ease-in-out;
     }
 
-    .searchLegisBox:focus{
-      width: 50%;
-     }
-
     .searchTip{
       float: right;
       position:relative;
@@ -41,19 +37,39 @@ import { Router } from "@angular/router";
 
     `]
 })
-export class SearchLegislatorComponentGPX {
+export class SearchLegislatorComponentGPX implements OnInit {
   legislators: Array<Legislator> = [];
   resultop:any;
   ipZipcode:String = '';
   currentLocationZip = '19406';
   public selectedlegislator: Legislator;
+  latitude:any;
+  longitude:any;
 
   @Output()
   success = new EventEmitter();
   
   constructor(private  router: Router, private legislatorsService: LegislatorsService) {
     //this.legislators = [];
-    //this.getLegislators(this.currentLocationZip, 'zipcode');  
+    //this.getLegislators(this.currentLocationZip, 'zipcode');
+    //console.log("constructor()");
+    this.getCongressLegislatorsByLatLong();
+    //console.log("current position latitude " + this.latitude + ',longitude ' + this.longitude);  
+    //this.getLegislators(this.latitude+','+this.longitude, 'latlong');
+  }
+
+  ngOnInit(){
+    //console.log("ngOnInit - finding current position");
+    //this.setCurrentPosition();
+  }
+
+  private getCongressLegislatorsByLatLong() {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
+        console.log("current position latitude " + this.latitude + ',longitude ' + this.longitude);
+        this.getLegislators(this.latitude+','+this.longitude, 'latlong');
+      });
   }
 
   search(query: string) {
@@ -69,6 +85,15 @@ export class SearchLegislatorComponentGPX {
     .map(result => this.resultop = result.results)
     .subscribe((result) => {
               for(var i = 0;i<result.length;i++) {
+
+           //retrieving the image from bioguide
+              if(result[i].bioguide_id){
+                let intial = result[i].bioguide_id.charAt(0);
+                let imageUrl = 'http://bioguide.congress.gov/bioguide/photo/' + intial + '/' + result[i].bioguide_id + '.jpg';
+                console.log("bioguide image url " + imageUrl);
+                result[i].bioguideImageUrl = imageUrl;
+              }
+
                this.legislators.push(result[i]);
               }
               console.log("Emitting: " + this.legislators);
@@ -78,7 +103,7 @@ export class SearchLegislatorComponentGPX {
 
     //console.log(this.legislators.length + ' legislators');
   }
-
+/*
   gotoLegislator(legislator: Legislator):void{
     this.selectedlegislator = legislator;
 
@@ -87,4 +112,5 @@ export class SearchLegislatorComponentGPX {
 
     this.router.navigate(['/legislator', this.selectedlegislator.bioguide_id]);
   }
+  */
 }

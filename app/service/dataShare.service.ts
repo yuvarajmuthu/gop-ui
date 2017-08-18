@@ -2,9 +2,11 @@ import { Injectable, OnChanges } from '@angular/core';
 
 @Injectable()
 export class DataShareService {
-  public selected_permission:string='Editor';
+  public selected_permission:string='Viewer';
 
   public displayMode:boolean = false;
+  private currentUser:string;
+
 
   getPermission():string{
   	//console.log("getPermission() " + this.selected_permission);

@@ -10,18 +10,18 @@ import {NdvEditComponent} from './editableText.component';
 import { LegislatorsService } from './service/legislators.service';
 import {LegislatorComponentGPX} from './legislator.component';
 import { Legislator } from './object/legislator';
-import {DynamicContentComponent} from './userProfile.template.component';
+import {DynamicContentComponent} from './partyProfile.template.component';
 //import { NdvEditComponent } from 'angular2-click-to-edit/components';
 import { DROPDOWN_DIRECTIVES } from 'ng2-bootstrap/components/dropdown';
 import {DataShareService} from './service/dataShare.service';
 import { MissionService }     from './service/compCommunication.service';
-import {UserService} from './service/user.service';
+//import {PartyService} from './service/party.service';
 
 @Component({
-  selector: 'userProfile-gpx',
-  templateUrl: 'app/view/userProfile.html',
+  selector: 'partyProfile-gpx',
+  templateUrl: 'app/view/partyProfile.html',
   directives: [DynamicContentComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent],
-  providers:[LegislatorsService, PeopleService, PartyService, UserService, MissionService],
+  providers:[LegislatorsService, PeopleService, PartyService, MissionService],
   styles: [`
 
      .legisBoundary{
@@ -106,7 +106,7 @@ import {UserService} from './service/user.service';
   `]
 })
 
-export class UserProfileGPX {
+export class PartyProfileGPX {
 	public isCollapsed:boolean = false;
 	public isCMCollapsed:boolean = false;
 	public isPartiesCollapsed:boolean = false;
@@ -117,31 +117,23 @@ export class UserProfileGPX {
 	public parties=[];
   templateType = [];
   private componentRef: ComponentRef<{}>;
-  private userData = {};
+  private partyData = {};
   public profilesTemplates = [];
   public profilesData = [];
-  public isLegislator = false;
-      //private populationComponent: TemplatePopulationComponent;
 
-  constructor(private userService:UserService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
+  constructor(private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
 
-    userService.getUserData('').subscribe(
+    partyService.getPartyData('').subscribe(
         data => {
-          this.userData = data;
-          console.log("User data from service: ", this.userData);
-          
-          console.log("User type: ", this.userData['userType']);
-          if(this.userData['userType'] == 'legislator'){
-            this.isLegislator = true;
-          }
-          console.log("User isLegislator: ", this.isLegislator);
+          this.partyData = data;
+          console.log("User data from service: ", this.partyData);
 
           //getting the available profile templates for this user type - publicUser
-          this.profilesTemplates = this.userData['profile'];
+          this.profilesTemplates = this.partyData['profile'];
           console.log("profile templates: ", this.profilesTemplates);
 
           //getting the data for this user profile
-          this.profilesData = this.userData['profileData'];
+          this.profilesData = this.partyData['profileData'];
           console.log("profile data: ", this.profilesData);
 
           //identifying the profile selected for this user profile, so those components shall be loaded

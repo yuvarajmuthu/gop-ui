@@ -1,7 +1,7 @@
 import { Party } from './../../object/party';
 export const PARTIES: Party[] = [
 	{
-		"id": 1001,
+		"id": "p001",
 		"name":"Dravida Munnetra Kazhagam (DMK)",
 		"type" : "State Party",
 		"establishedDate":"15-01-1980",
@@ -11,7 +11,7 @@ export const PARTIES: Party[] = [
 	},
 
 	{
-		"id": 1002,
+		"id": "p002",
 		"name":"All India Anna Dravida Munnetra Kazhagam (AIADMK)",
 		"type" : "State Party",
 		"establishedDate":"15-01-1985",

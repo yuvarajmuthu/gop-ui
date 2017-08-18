@@ -1,5 +1,5 @@
 export class Party {
-	id:number;
+	id:string;
 	name: string;
 	type: string;
 	establishedDate: string;

@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Http, Response, Headers, RequestOptions, Jsonp, URLSearchParams  } from '@angular/http';
+import {Observable} from 'rxjs/Rx';
+
 import {PARTIES} from './../data/mock/party-mock';
 import { Party } from './../object/party';
 
@@ -6,11 +9,25 @@ import { Party } from './../object/party';
 @Injectable()
 export class PartyService {
 
+	constructor (private http: Http) {}
+
 	getParties(): Party[]{
 		return PARTIES;
 	}
 
-    getPartiesByParam(type:String) { 
+  getParty(partyId:string):Observable<any> { 
+  	console.log("in PartyService getParty() partyId - " + partyId);
+    return this.http.get('/app/data/json/party.json')
+                             .map((response) => response.json());
+  }
+
+  getPartyData(type:String):Observable<any> { 
+     return this.http.get('/app/data/json/fromService/party.json')
+                             .map((response:Response) => response.json());
+  }
+
+
+    getPartiesByParam(type:string) { 
   	var parties = [
 	  { id: 11, name: 'Mr. Nice', designation: 'President' },
 	  { id: 12, name: 'Narco', designation: 'General Secretary' },

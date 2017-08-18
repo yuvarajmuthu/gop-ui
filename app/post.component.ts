@@ -3,11 +3,12 @@ import {Component, OnInit} from '@angular/core';
 import {BannerGPXComponent} from './banner.component';
 import {PostService} from './service/post.service';
 import {Post} from './object/post';
+import {NewPostGPX} from './newPost';
 
 @Component({
   selector: 'post-gpx',
   templateUrl: 'app/view/post.html',
-  directives: [BannerGPXComponent],
+  directives: [BannerGPXComponent, NewPostGPX],
   providers:[PostService],
   styles: [`
     .post{
