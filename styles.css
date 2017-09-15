@@ -12,6 +12,8 @@ img-circle {
     border-radius: 50%;
 }
 
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
+@import url(https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css);
 
  /*
   * See https://github.com/angular/angular.io/blob/master/public/docs/_examples/styles.css

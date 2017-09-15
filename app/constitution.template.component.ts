@@ -102,10 +102,11 @@ export class DynamicContentComponent extends Type implements OnChanges {
   }
 */
   loadComponentTemplate() {
-    console.log('in load template ' + this.type);
+    console.log('loadComponentTemplate() ' + this.type);
     if (this.type) {
       for(let compType of this.type){
         let component = this.mappings[compType];
+        console.log('loadComponentTemplate() ' + component);
         this.loader.loadNextToLocation(component, this.viewContainerRef);
         /*
         this.loader.loadNextToLocation(component, this.viewContainerRef).then(componentRef=> {
@@ -347,7 +348,7 @@ export class TemplatePopulationComponent extends AbstractTemplateComponent imple
   maleCount:string = "40000";
   femaleCount:string = "55000";
   othersCount:string = "5000";
-  @Input() show:boolean = false;
+  @Input() show:boolean = true;
   @Output() onAdd = new EventEmitter<TemplatePopulationComponent>();
 
   constructor(private dataShareService:DataShareService, private missionService: MissionService) {
@@ -356,13 +357,13 @@ export class TemplatePopulationComponent extends AbstractTemplateComponent imple
       missionService.missionAnnounced$.subscribe(
       mission => {
         console.log("Received save Profile message from parent for district " + mission);
-        console.log("Data " + this.getData());
+        console.log("Data " + this.getData()); 
     });
   }
 
 
 ngAfterViewInit(){
-  console.log("emitting onAdd()");
+  console.log("ngAfterViewInit() TemplatePopulationComponent");
   //this.onAdd.emit(this);
 
   //this.missionService.confirmMission(this.getData());

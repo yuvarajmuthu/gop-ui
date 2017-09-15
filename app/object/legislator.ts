@@ -1,4 +1,6 @@
 export class Legislator {
+             public first_name: string;
+             public committees: Array<JSON>;
     constructor(
          public bioguide_id: string,
          public birthday:Date,
@@ -9,7 +11,7 @@ export class Legislator {
          public facebook_id: string,
          public fax: string,
          public fec_ids:string[],
-         public first_name: string,
+         first_name,
          public gender: string,
          public govtrack_id: string,
          public icpsr_id:number,
@@ -34,7 +36,8 @@ export class Legislator {
          public votesmart_id: string,
          public website: string,
          public youtube_id: string,
-         public bioguideImageUrl
+         public bioguideImageUrl,
+         committees
 
         /*
          "bioguide_id":"J000294",
@@ -75,4 +78,12 @@ export class Legislator {
          "youtube_id":null
         */
         ){}
+
+    public getFirstName():string{
+       return this.first_name;
+    }
+
+    getLastName():string{
+       return this.last_name;
+    }
 }

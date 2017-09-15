@@ -22,6 +22,9 @@ import {PartyProfileGPX} from './partyProfile.component';
 import {SearchLegislatorComponentGPX} from './search.component';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+
+//import {MdCardModule} from '@angular/material';
+
 //import { NDV_DIRECTIVES } from 'angular2-click-to-edit/components';
 //import {DataShareService} from './service/dataShare.service';
 
@@ -41,7 +44,6 @@ import 'rxjs/add/operator/catch';
   templateUrl: 'app/view/baseContainer.html',
   providers: [ LegislatorsService],
   styles:[`
-
   `],
 
 })
@@ -49,8 +51,8 @@ import 'rxjs/add/operator/catch';
 @Routes([
     {path: "/", component: SearchLegislatorComponentGPX },
     {path: "/legislator/:id", component: LegislatorComponentGPX },
-    {path: "/district", component: ConstitutionProfileGPX },
-    {path: "/user", component: UserProfileGPX },
+    {path: "/district/:id", component: ConstitutionProfileGPX },
+    {path: "/user/:id", component: UserProfileGPX },    
     {path: "/map", component: MapGPXComponent },
     {path: "/parties", component: PartyListComponentGPX },
     {path: "/party/:id", component: PartyListProfileComponentGPX },    
@@ -76,7 +78,7 @@ export class AppComponent  implements OnInit, AfterViewInit {
         console.log("Test Localstorage - " + localStorage.getItem('currentUser'));
         console.log("Routing " + event);
         //this.staticTabs.tabs[6].active = true;
-        this.router.navigate(['/district']);
+        this.router.navigate(['/district/14']);
       }else if(event === 'News'){
         console.log("Routing " + event);
         //this.staticTabs.tabs[6].active = true;
@@ -99,7 +101,7 @@ export class AppComponent  implements OnInit, AfterViewInit {
         this.router.navigate(['/map']);
       }else if(event === 'User'){
         console.log("Routing " + event);
-        this.router.navigate(['/user']);
+        this.router.navigate(['/user/T000461']);
       }else if(event === 'Party'){
         console.log("Routing " + event);
         this.router.navigate(['/partyProfile']);

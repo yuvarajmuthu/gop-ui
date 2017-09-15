@@ -1,14 +1,21 @@
     <div *ngIf="legislator">
 
+      <figure class="snip1344" (click)="gotoLegislator(legislator)">
+        <img src="{{legislator.bioguideImageUrl}}" alt="profile-sample1" class="background"/>
+        <img src="{{legislator.bioguideImageUrl}}" alt="profile-sample1" class="profile"/>
+        <figcaption>
+          <h3>{{legislator.first_name}} {{legislator.last_name}}
+   <!--        <div>District: {{legislator.district}}</div> -->
+          <div>Chamber: {{legislator.chamber}}</div></h3>
+        </figcaption>
+      </figure>
+
+<!--
       <div class="shortProfileInfo" (click)="gotoLegislator(legislator)">
-        <div>
-          <div class="col-xs-4">
-            <banner-gpx [imageUrl]="legislator.bioguideImageUrl" [height]="50" [width]="50"></banner-gpx>
-           <!--
-            <a href="#" class="glyphicon glyphicon-user" aria-hidden="true"></a>
-            -->
+          <div class="legisProfileImg">
+            <banner-gpx [imageUrl]="legislator.bioguideImageUrl" [height]="200" [width]="200" class="smProfileImg"></banner-gpx>
           </div>
-          <div>
+          <div class="legisProfileData">
 
               <ul style="list-style-type:none" *ngFor="let key of keys">
 
@@ -17,6 +24,6 @@
               </ul>
               bioguide image url  {{legislator.bioguideImageUrl}}
           </div>    
-        </div>
       </div>
+      -->
   </div>

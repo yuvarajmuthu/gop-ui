@@ -1,21 +1,27 @@
-import {Component, ViewContainerRef, ViewChild, ElementRef, Renderer, ChangeDetectorRef, ComponentRef, OnInit} from '@angular/core';
-import {BannerGPXComponent} from './banner.component';
+import {Component, ViewContainerRef, ViewChild, ElementRef, Renderer, ChangeDetectorRef, ComponentRef, Input, OnInit} from '@angular/core';
+import { Router, RouteSegment } from "@angular/router";
+
 import { TAB_DIRECTIVES } from 'ng2-bootstrap/components/tabs';
-import {PeopleService} from './service/people.service';
-import {PartyService} from './service/party.service';
-import {PeopleComponentGPX} from './people.component';
 import { CollapseDirective } from 'ng2-bootstrap/components/collapse';
 import {RatingComponent} from 'ng2-bootstrap/components/rating';
-import {NdvEditComponent} from './editableText.component';
-import { LegislatorsService } from './service/legislators.service';
-import {LegislatorComponentGPX} from './legislator.component';
+import { DROPDOWN_DIRECTIVES } from 'ng2-bootstrap/components/dropdown';
+
 import { Legislator } from './object/legislator';
+
+import {BannerGPXComponent} from './banner.component';
+import {PeopleComponentGPX} from './people.component';
+import {NdvEditComponent} from './editableText.component';
+import {LegislatorComponentGPX} from './legislator.component';
 import {DynamicContentComponent} from './userProfile.template.component';
 //import { NdvEditComponent } from 'angular2-click-to-edit/components';
-import { DROPDOWN_DIRECTIVES } from 'ng2-bootstrap/components/dropdown';
+
 import {DataShareService} from './service/dataShare.service';
 import { MissionService }     from './service/compCommunication.service';
 import {UserService} from './service/user.service';
+import {PeopleService} from './service/people.service';
+import {PartyService} from './service/party.service';
+import { LegislatorsService } from './service/legislators.service';
+
 
 @Component({
   selector: 'userProfile-gpx',
@@ -103,10 +109,15 @@ import {UserService} from './service/user.service';
       border-radius: 4px 0 0 4px;
     }
 
+
+
   `]
 })
 
-export class UserProfileGPX {
+export class UserProfileGPX implements OnInit{
+  @Input() profileUserId:string = "";
+  legisId:string = "";
+
 	public isCollapsed:boolean = false;
 	public isCMCollapsed:boolean = false;
 	public isPartiesCollapsed:boolean = false;
@@ -115,6 +126,7 @@ export class UserProfileGPX {
   public electedPersons:Array<Legislator>;
 	public contestedPersons=[];
 	public parties=[];
+  public connections=[];
   templateType = [];
   private componentRef: ComponentRef<{}>;
   private userData = {};
@@ -122,18 +134,51 @@ export class UserProfileGPX {
   public profilesData = [];
   public isLegislator = false;
       //private populationComponent: TemplatePopulationComponent;
+ 
+  //get invoked automatically before ngOnInit()
+  routerOnActivate(curr: RouteSegment): void {
+    if(curr.getParam("id")){
+      this.profileUserId = curr.getParam("id");
+      this.dataShareService.setSelectedLegislatorId(this.profileUserId);
+      console.log("from userProfile Param value - id " + this.profileUserId);
+    }
+
+    if(curr.getParam("legisId")){
+      this.legisId = curr.getParam("legisId");
+      this.profileUserId = this.legisId;
+      console.log("from userProfile Param value - legisId " + this.legisId);      
+    }  
+  }
 
   constructor(private userService:UserService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
 
-    userService.getUserData('').subscribe(
+
+
+  }
+
+  ngOnInit(){
+    //the user that is being viewed
+    this.dataShareService.setViewingUserId(this.profileUserId);
+
+    this.userService.getUserData(this.profileUserId).subscribe(
         data => {
           this.userData = data;
           console.log("User data from service: ", this.userData);
-          
-          console.log("User type: ", this.userData['userType']);
-          if(this.userData['userType'] == 'legislator'){
-            this.isLegislator = true;
+
+          this.connections = this.userData['connections'];
+          console.log("User connections: ", this.connections);
+          if(this.connections){
+            for(let connection of this.connections){
+             
+            }
           }
+
+          console.log("User type: ", this.userData['userType']);
+          if(this.userData['userType'] == 'legislator')
+            this.isLegislator = true;
+          else
+             this.isLegislator = false;
+
           console.log("User isLegislator: ", this.isLegislator);
 
           //getting the available profile templates for this user type - publicUser
@@ -160,9 +205,7 @@ export class UserProfileGPX {
     );
 
 
-
   }
-
 
   saveProfile(){
       console.log("Saving Profile");

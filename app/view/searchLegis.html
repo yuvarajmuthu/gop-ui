@@ -1,20 +1,29 @@
-      <div>Congress - House Representatives</div>
+      <label>Congress - House Representatives</label>
 
-      <label>Find your legislators: </label>
-   
-      <input type="text" class="searchLegisBox" [(ngModel)]="ipZipcode" placeholder="Zipcode" />
+      <div>Your State: 
+        <button type="button" class="btn btn-primary">{{state}}</button>
+      </div>
+      
+      <div>Your Congressional District: 
+        <button type="button" class="btn btn-primary" (click)="gotoDistrict(congressDistrict)">{{congressDistrict}}</button>
+      </div>
+      
+      <div>
+        <label>Find your legislators: </label>
+     
+        <input type="text" class="searchLegisBox" [(ngModel)]="ipZipcode" placeholder="Zipcode" />
 
-      <label class="btn btn-success" uncheckable (click)="search(ipZipcode)">Search</label>
-
+        <label class="btn btn-success" uncheckable (click)="search(ipZipcode)">Search</label>
+      </div>
+      
       <div class="searchTip">
-      <!--
-      	Showing legislator(s) for the location: {{currentLocationZip}}
-        -->
         Showing legislator(s) for the location: Latitude {{latitude}}, Longitude {{longitude}}
       </div>
 
-      <ul style="list-style-type:none">
-        <li *ngFor="let legislator of legislators" class="legisBoundary">
-          <legislator [legislator]=legislator></legislator>
-        </li>
-      </ul>
+      <div>
+        <ul style="list-style-type:none">
+          <li *ngFor="let legislator of legislators" class="legisBoundary1">
+            <legislator [legislator]=legislator></legislator>
+          </li>
+        </ul>
+      </div>      

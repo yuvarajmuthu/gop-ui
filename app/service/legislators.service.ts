@@ -23,6 +23,12 @@ export class LegislatorsService {
 //https://congress.api.sunlightfoundation.com/legislators?bioguide_id=T000461&apikey=fd1d412896f54a8583fd039670983e59
 //https://congress.api.sunlightfoundation.com/legislators/locate?latitude=42.96&longitude=-108.09&apikey=fd1d412896f54a8583fd039670983e59
 
+//Committees and subcommittees a given legislator is assigned to
+//https://congress.api.sunlightfoundation.com/committees?member_ids=T000461&apikey=fd1d412896f54a8583fd039670983e59
+  private legisCommittee_prefix = 'https://congress.api.sunlightfoundation.com/committees?member_ids=';
+  private legisCommittee_suffix = this.legislature_service_url_suffix;
+
+
 //get district by lat/long
 //https://congress.api.sunlightfoundation.com/districts/locate?latitude=40.402777&longitude=-80.058543&apikey=fd1d412896f54a8583fd039670983e59
   private districtByLatLong_prefix = 'https://congress.api.sunlightfoundation.com/districts/locate?';
@@ -58,12 +64,28 @@ getDistrictByLatLong(lat:string, long:string):Observable<any>{
     params.set('callback', "JSONP_CALLBACK");
 
     let url:string;
-    url = this.districtByLatLong_prefix + 'latitide=' + lat + '&longitude=' + this.districtByLatLong_suffix;
+    url = this.districtByLatLong_prefix + 'latitude=' + lat + '&longitude=' + long + this.districtByLatLong_suffix;
 
     console.log('getDistrictByLatLong API - ' + url);  
     return this.jsonp.get(url, { search: params })
                   .map((response:Response) => response.json());
 } 
+
+getCommittees(legisId:string):Observable<any>{
+    //required for using jsonp. JSONP is used to get data from cross domain
+    console.log("getCommittees() in service - legislators.service for legislator " + legisId);
+    let params = new URLSearchParams();
+    params.set('format', 'json');
+    params.set('callback', "JSONP_CALLBACK");
+
+    let url:string;
+    url = this.legisCommittee_prefix + legisId + this.legisCommittee_suffix;
+
+    console.log('getLegislature API - ' + url);  
+    return this.jsonp.get(url, { search: params })
+                  .map((response:Response) => response.json());
+} 
+
 
   getElectedMembers(type:String) {
   /* 
@@ -128,7 +150,8 @@ getDistrictByLatLong(lat:string, long:string):Observable<any>{
                        task['votesmart_id'],
                        task['website'],
                        task['youtube_id'],
-                       ''                       ));
+                       '',
+                       []                       ));
         });
 
         console.log("Elected persons - sample " + result[0]);
@@ -137,17 +160,8 @@ getDistrictByLatLong(lat:string, long:string):Observable<any>{
       return result;
     })
     ;
-    /*
-    .subscribe((data) => {
-        let result:any = data['results'];
-              for(var i = 0;i<result.length;i++) {
-               this.legislators.push(result[i]);
-              }
-              console.log("Emitting: " + this.legislators);
-           
-              //this.success.emit({legislators : this.legislators});
-            });
-            */
+
+
   }
 
   getContestedMembers(type:String){

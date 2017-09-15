@@ -25,4 +25,25 @@ export class UserService {
                              .map((response:Response) => response.json());
   }
 
+  followDistrict(userId:string, groupId:string){
+    console.log("user " + userId + " following the group " + groupId);
+  }
+
+  followPerson(userId:string, personIdToConnect:string){
+    console.log("user " + userId + " following the person " + personIdToConnect);
+  } 
+/*
+  getRelation(userId:string, groupId:string):Observable<any>{
+    console.log("getRelation()::UserService " + userId + " , " + groupId);
+    let response = {};
+    response['data'] = true;
+    return response.json();
+
+  }
+  */
+    getRelation(userId:string, groupId:string):boolean{
+    console.log("getRelation()::UserService " + userId + " , " + groupId);
+    return true;
+
+  }
 }

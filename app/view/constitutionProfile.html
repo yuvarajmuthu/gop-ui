@@ -27,7 +27,8 @@
 	</div>    
 
 	<div *ngIf="!allowed()" class="col-md-8">
-	     <button type="button" class="btn btn-primary">Follow</button>
+	     <button *ngIf="!connected" type="button" class="btn btn-primary" (click)="followDistrict()">Follow</button>
+	     <button *ngIf="connected" type="button" class="btn btn-success glyphicon glyphicon-ok">Following</button>	     
 	</div>    
 </div>            
 <div class="col-xs-12 constitutionProfile">

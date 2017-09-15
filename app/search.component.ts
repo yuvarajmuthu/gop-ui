@@ -28,7 +28,7 @@ import { Router } from "@angular/router";
     }
 
     .searchTip{
-      float: right;
+
       position:relative;
       padding: 1em;
       margin: 1em;
@@ -40,22 +40,20 @@ import { Router } from "@angular/router";
 export class SearchLegislatorComponentGPX implements OnInit {
   legislators: Array<Legislator> = [];
   resultop:any;
+  resultop1:any;
   ipZipcode:String = '';
   currentLocationZip = '19406';
   public selectedlegislator: Legislator;
   latitude:any;
   longitude:any;
+  congressDistrict:string;
+  state:string;
 
   @Output()
   success = new EventEmitter();
   
   constructor(private  router: Router, private legislatorsService: LegislatorsService) {
-    //this.legislators = [];
-    //this.getLegislators(this.currentLocationZip, 'zipcode');
-    //console.log("constructor()");
-    this.getCongressLegislatorsByLatLong();
-    //console.log("current position latitude " + this.latitude + ',longitude ' + this.longitude);  
-    //this.getLegislators(this.latitude+','+this.longitude, 'latlong');
+    //this.getCongressLegislatorsByLatLong();
   }
 
   ngOnInit(){
@@ -69,6 +67,7 @@ export class SearchLegislatorComponentGPX implements OnInit {
         this.longitude = position.coords.longitude;
         console.log("current position latitude " + this.latitude + ',longitude ' + this.longitude);
         this.getLegislators(this.latitude+','+this.longitude, 'latlong');
+        this.getDistrict();
       });
   }
 
@@ -79,7 +78,20 @@ export class SearchLegislatorComponentGPX implements OnInit {
     this.getLegislators(query, 'zipcode');
   }
 
-  
+  getDistrict(){
+     console.log("getDistrict " + this.latitude + ',longitude ' + this.longitude);
+    this.legislatorsService.getDistrictByLatLong(this.latitude, this.longitude)
+    .map(result => this.resultop1 = result.results)
+    .subscribe((result) => {
+                console.log("getDistrict - " + result);
+        if(result.length >0){
+          console.log("getDistrict - " + result[0]);
+          this.state = result[0]['state'];
+          this.congressDistrict = result[0]['district'];
+        }
+     });    
+  }
+
   getLegislators(searchParam:string, type:string) {
     this.legislatorsService.getLegislature(searchParam, type)
     .map(result => this.resultop = result.results)
@@ -102,6 +114,12 @@ export class SearchLegislatorComponentGPX implements OnInit {
             });
 
     //console.log(this.legislators.length + ' legislators');
+  }
+
+  gotoDistrict(district:string){
+    console.log("Navigating to district " + district);
+    let url = '/district/' + district;
+    this.router.navigate([url]);
   }
 /*
   gotoLegislator(legislator: Legislator):void{
