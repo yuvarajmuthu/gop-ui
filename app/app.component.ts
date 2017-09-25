@@ -18,12 +18,13 @@ import {PartyListProfileComponentGPX} from './partyListProfile.component';
 import {LegislatorComponentGPX} from './legislator.component';
 import { LegislatorsService } from './service/legislators.service';
 //import { Legislator } from './object/legislator';
-import {PartyProfileGPX} from './partyProfile.component';
+import {PartyProfileGPX} from './partyProfile.component';  
 import {SearchLegislatorComponentGPX} from './search.component';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-//import {MdCardModule} from '@angular/material';
+import {MdCard} from '@angular2-material/card';
+
 
 //import { NDV_DIRECTIVES } from 'angular2-click-to-edit/components';
 //import {DataShareService} from './service/dataShare.service';

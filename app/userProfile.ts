@@ -130,6 +130,7 @@ export class UserProfileGPX implements OnInit{
   templateType = [];
   private componentRef: ComponentRef<{}>;
   private userData = {};
+  private viewingUser={};  
   public profilesTemplates = [];
   public profilesData = [];
   public isLegislator = false;
@@ -139,7 +140,7 @@ export class UserProfileGPX implements OnInit{
   routerOnActivate(curr: RouteSegment): void {
     if(curr.getParam("id")){
       this.profileUserId = curr.getParam("id");
-      this.dataShareService.setSelectedLegislatorId(this.profileUserId);
+      //this.dataShareService.setSelectedLegislatorId(this.profileUserId);
       console.log("from userProfile Param value - id " + this.profileUserId);
     }
 
@@ -159,6 +160,7 @@ export class UserProfileGPX implements OnInit{
   ngOnInit(){
     //the user that is being viewed
     this.dataShareService.setViewingUserId(this.profileUserId);
+    this.viewingUser['userId'] = this.profileUserId;
 
     this.userService.getUserData(this.profileUserId).subscribe(
         data => {
@@ -166,6 +168,7 @@ export class UserProfileGPX implements OnInit{
           console.log("User data from service: ", this.userData);
 
           this.connections = this.userData['connections'];
+          this.viewingUser['connections'] = this.userData['connections'];
           console.log("User connections: ", this.connections);
           if(this.connections){
             for(let connection of this.connections){
@@ -174,19 +177,21 @@ export class UserProfileGPX implements OnInit{
           }
 
           console.log("User type: ", this.userData['userType']);
-          if(this.userData['userType'] == 'legislator')
-            this.isLegislator = true;
-          else
-             this.isLegislator = false;
-
+          if(this.userData['userType'] == 'legislator'){
+            this.isLegislator = true; // may not be required
+            this.viewingUser['isLegislator'] = true;
+          } else{
+             this.isLegislator = false; // may not be required
+            this.viewingUser['isLegislator'] = false;             
+          }
           console.log("User isLegislator: ", this.isLegislator);
 
           //getting the available profile templates for this user type - publicUser
-          this.profilesTemplates = this.userData['profile'];
+          this.profilesTemplates = this.viewingUser['profileTemplates'] = this.userData['profile'];
           console.log("profile templates: ", this.profilesTemplates);
 
           //getting the data for this user profile
-          this.profilesData = this.userData['profileData'];
+          this.profilesData = this.viewingUser['profilesData'] = this.userData['profileData'];
           console.log("profile data: ", this.profilesData);
 
           //identifying the profile selected for this user profile, so those components shall be loaded
@@ -201,6 +206,8 @@ export class UserProfileGPX implements OnInit{
             this.templateType = compTypes;
           }
 
+          this.dataShareService.setViewingUser(this.viewingUser);
+          console.log("this.dataShareService.getViewingUser() " + JSON.stringify(this.dataShareService.getViewingUser()));  
         }
     );
 

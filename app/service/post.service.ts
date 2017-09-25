@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
+import { Http, Response, Headers, RequestOptions, Jsonp, URLSearchParams  } from '@angular/http';
+
 import {Observable} from 'rxjs/Rx';
 import {Post} from '../object/post';
 
 
 @Injectable()
 export class PostService {
+
+  constructor (private http: Http, private jsonp:Jsonp) {}	
+
+  //deprecated
   getPost():Post[] { 
   	var postJson = {};
   	var posts:JSON[];
@@ -36,5 +42,32 @@ export class PostService {
   	console.log('returning posts ' + postsPromise.length);
   	return postsPromise;  
   }
+
+
+  getActivities(type:String) {
+  	 var postJson = {};
+  	var posts:JSON[];
+	var postsPromise : Post[] = [];
+
+    return this.http.get('/app/data/json/fromService/post.json')
+    .map(res => {return res.json()})
+    .map((data) => {
+
+		posts = data['results'];
+		console.log('from Post Service - parsed Post length ' + posts.length);
+
+		for (var i = 0; i < posts.length; i++) {
+		    var post : Post = {} as Post;
+		    post = Post.decodePost(posts[i]);
+		    console.log('reading properties - ' + post['id']);
+
+		    postsPromise.push(post);
+		}
+
+      	return postsPromise;      
+          });
+
+  }
+
 
 }

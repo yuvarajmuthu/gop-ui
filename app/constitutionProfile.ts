@@ -18,12 +18,13 @@ import {TemplatePopulationComponent} from './constitution.template.component';
 import { MissionService }     from './service/compCommunication.service';
 import {GroupService} from './service/group.service';
 import {PartyListComponentGPX} from './partyList.component';
+import {UserService} from './service/user.service';
 
 @Component({
   selector: 'constitutionProfile-gpx',
   templateUrl: 'app/view/constitutionProfile.html',
   directives: [DynamicContentComponent, TemplatePopulationComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent, PartyListComponentGPX],
-  providers:[LegislatorsService, PeopleService, PartyService, GroupService, MissionService],
+  providers:[LegislatorsService, PeopleService, PartyService, GroupService, MissionService, UserService],
   styles: [`
 
      .legisBoundary{
@@ -122,13 +123,15 @@ export class ConstitutionProfileGPX {
   private groupData = {};
   public profilesTemplates = [];
   public profilesData = [];
+  public connected:boolean = false;
       //private populationComponent: TemplatePopulationComponent;
 
-  constructor(private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
+  constructor(private userService:UserService, private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
     //this.getElectedMembers("state");
     //this.electedPersonsOld = peopleService.getElectedMembers('');
     //this.contestedPersons = peopleService.getContestedMembers('');
     this.parties = partyService.getPartiesByParam('');
+
     groupService.getGroupData('').subscribe(
         data => {
           this.groupData = data;
@@ -157,6 +160,16 @@ export class ConstitutionProfileGPX {
         }
     );
 
+/*
+    userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId()).subscribe(
+        data => {
+          this.connected = data;
+          console.log("Connected? : ", data);
+
+        }
+    );
+*/
+this.connected = userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId());
 
 
     legislatorsService.getElectedMembers('').subscribe(res => {
@@ -197,13 +210,19 @@ export class ConstitutionProfileGPX {
         console.log('constitutionProfile ngOnChanges() ');
     }
 */
-
-  saveProfile(){
+  
+saveProfile(){
       console.log("Saving Profile");
       this.missionService.announceMission("{'districtID':'d001'}");
       //console.log("printing female count " + this.populationComponent.femaleCount);
       //this.populationComponent.getData();  
-    }
+}
+
+followDistrict(){
+  console.log("followDistrict this.dataShareService.getCurrentUserId() " + this.dataShareService.getCurrentUserId());
+  this.userService.followDistrict(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId());
+}
+
 
 ngAfterViewChecked(){
   //console.log("constitutionProfile ngAfterViewChecked()");

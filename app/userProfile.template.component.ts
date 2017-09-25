@@ -60,7 +60,7 @@ export class DynamicContentComponent extends Type implements OnChanges {
 
     //all the user profile templates should be mapped here
     private mappings = {
-        'upDefault': TemplateUserDefaultComponent,
+        'upCongressLegislatorDefault': TemplateLegisUserDefaultComponent,
         'upCongressLegislatorExternal': TemplateLegisCongressProfileComponent,
         'upCongressLegislatorCommitteeExternal': TemplateLegisCongressCommitteeComponent 
     };
@@ -127,10 +127,15 @@ abstract class AbstractTemplateComponent {
   public committeeKeys = [];
   public committees = [];
   public committeesLength:number = 0;
+  public viewingUser={};
 
   constructor(private legislatorsService:LegislatorsService, private userService:UserService, private dataShareService:DataShareService, private missionService: MissionService) {
-    this.profileUserId = this.dataShareService.getViewingUserId();
-    this.loadLegislator();
+    this.viewingUser = this.dataShareService.getViewingUser();
+    this.profileUserId = this.viewingUser['userId'];
+    
+    if(this.viewingUser['isLegislator']){
+      this.loadLegislator();
+    } 
   }
   
   getLegislator():Legislator{
@@ -156,8 +161,8 @@ abstract class AbstractTemplateComponent {
 
     loadLegislator(): void {
     console.log("loadLegislator() userProfile.template AbstractTemplateComponent");      
-    if(this.dataShareService.getSelectedLegislatorId()){  
-      this.legisId = this.dataShareService.getSelectedLegislatorId();
+    if(this.viewingUser['userId']){  
+      this.legisId = this.viewingUser['userId'];
         console.log("this.legisId " + this.legisId);
       //let id = +this._routeParams.get('id');
       //this._heroService.getHero(id).then(legislator => this.legislator = legislator);
@@ -210,10 +215,9 @@ abstract class AbstractTemplateComponent {
    
 }
 
+/***NEW COMPONENT***/
 @Component({
-    selector: 'user-default',
-    directives: [NdvEditComponent],
-    //providers:[DataShareService],
+    selector: 'user-default-legis',
     template: `
       <div class='row'>
         <header>
@@ -240,13 +244,6 @@ abstract class AbstractTemplateComponent {
           <h1>
             {{firstName}} {{lastName}}
           </h1>
-<!--
-          <ul style="list-style-type:none" *ngFor="let key of keys">
-
-            <li>{{key}}: {{legislator[key]}}</li>
-
-          </ul>
-          -->
         </header>
       </div>
 <!--
@@ -303,7 +300,7 @@ h1>small {
 header {
   box-shadow: 1px 1px 4px rgba(0,0,0,0.5);
   margin:   25px auto 50px;
-  height:   300px;
+  height:   75px;
   position: relative;
   width:    975px;
 }
@@ -433,14 +430,15 @@ header>h1 {
 }    
   `]    
 })
-export class TemplateUserDefaultComponent extends AbstractTemplateComponent implements OnInit{
+export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent implements OnInit{
   //userId = "u001";
-  id = "upDefault";
-  firstName:string = "";//"Pennsylvania's 14th congressional district";
-  lastName:string = "";//"Pennsylvania's 14th congressional district includes the entire city of Pittsburgh and parts of surrounding suburbs. A variety of working class and majority black suburbs located to the east of the city are included, such as McKeesport and Wilkinsburg. Also a major part of the district are number of middle class suburbs that have historic Democratic roots, such as Pleasant Hills and Penn Hills. The seat has been held by Democrat Mike Doyle since 1995. In the 2006 election, he faced Green Party candidate Titus North and returned to the house with 90% of the vote.";
-  userName:string = "";
-  emailId = "";
-  imageUrl:string = "https://unsplash.it/975/300";
+  id = "upCongressLegislatorDefault";
+  //firstName:string = "";
+  //lastName:string = "";
+  //userName:string = "";
+  //emailId = "";
+  //imageUrl:string = "https://unsplash.it/975/300";
+  //profileImageUrl:string;
   //legislator: Legislator;
 
   data = {};
@@ -451,12 +449,15 @@ export class TemplateUserDefaultComponent extends AbstractTemplateComponent impl
   private templateData = [];
 
   ngOnInit(): void {
-    console.log("ngOnInit() userProfile.template TemplateUserDefaultComponent");   
+    console.log("ngOnInit() userProfile.template TemplateLegisUserDefaultComponent");   
     //this.legislator = this.getLegislator();
     //console.log("legislator " + this.legislator);  
 
       //this.firstName = this.legislator.first_name;
       //this.lastName = this.legislator.last_name;
+    if(!(this.viewingUser['isLegislator'])){
+      this.loadTemplateDataV1();
+    } 
   }
     
   constructor(private legislatorsService1:LegislatorsService, private userService1:UserService, private dataShareService1:DataShareService, private missionService1: MissionService) {
@@ -473,11 +474,45 @@ export class TemplateUserDefaultComponent extends AbstractTemplateComponent impl
       //this.firstName = 'first';//this.legislator.getFirstName();
       //this.lastName = 'last';//this.legislator.getLastName();
 
-    //console.log("constructor() userProfile.template TemplateUserDefaultComponent * " + legislator);   
+    //console.log("constructor() userProfile.template TemplateLegisUserDefaultComponent * " + legislator);   
 
 
     }
 
+    loadTemplateDataV1(){
+            for (let profileTemplate of this.viewingUser['profileTemplates']){
+              console.log("reading template component properties: ", profileTemplate['profile_template_id']);
+              //this.templateType.push(profileData['profile_template_id']);
+              if(this.id == profileTemplate['profile_template_id']){
+                this.templateProperties = profileTemplate['properties'];
+                break;  
+              }
+            }
+
+
+            //getting the data for this user profile
+            for (let profileData of this.viewingUser['profilesData']){
+              console.log("loading template component: ", profileData['profile_template_id']);
+              //this.templateType.push(profileData['profile_template_id']);
+              if(this.id == profileData['profile_template_id']){
+                this.templateData = profileData['data'];
+                break;  
+              }
+            }
+
+            for (let dataObj of this.templateData){
+              let keys = [];
+              keys = Object.keys(dataObj);
+              console.log("Template data keys " + keys[0] + ":" + dataObj[keys[0]]);
+              //this[keys[0]] = dataObj[keys[0]];
+              for (let key of keys){
+                this[key] = dataObj[key];
+              }
+            }
+
+    }
+
+/*DEPRECATED - NOT BEING USED*/
     loadTemplateData(){
         this.userService1.getUserData(this.profileUserId).subscribe(
           data => {
