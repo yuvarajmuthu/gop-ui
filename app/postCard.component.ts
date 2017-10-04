@@ -17,7 +17,7 @@ import {BannerGPXComponent} from './banner.component';
     .post{
       margin: 5px;
       padding: 5px; 
-      border-bottom: 1px solid lightgreen;
+     /* border-bottom: 1px solid lightgreen; */
       border-radius: 5px;
       overflow: auto;
     }
@@ -46,12 +46,20 @@ import {BannerGPXComponent} from './banner.component';
 
 export class PostCardGPX {
   @Input() post: Post;
+  commentPost:boolean = false;
 
   constructor(private postService: PostService, private dataShareService:DataShareService) {
   }
 
+  postEvent():void{
+    this.commentPost = false;  
+  }
 
-  comment():void{}
+  comment():void{
+    this.commentPost = true;
+    //child hideInput set to false
+    console.log("this.commentPost " + this.commentPost);
+  }
 
   likePost():void{
     console.log('Liked the post ' + this.post.id);
@@ -59,4 +67,5 @@ export class PostCardGPX {
     this.post.likedByCurrentUser = true;
     console.log('this.post.likedByCurrentUser ' + this.post.likedByCurrentUser);
   }  
+
 }

@@ -1,4 +1,5 @@
 <div class='row'>
+	<!--
 	<div class="col-md-4">
 	  <h5>View Mode:</h5>
 	  <select [ngModel]="getPermission()" (ngModelChange)="setPermission($event)">
@@ -7,7 +8,7 @@
 	  </select>
 	</div>
 
-
+-->
 	<div class="btn-group" dropdown *ngIf="allowed()" class="col-md-4">
 	  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
 	    Add Sections <span class="caret"></span>
@@ -26,10 +27,7 @@
 	     <button type="button" class="btn btn-primary" (click)="saveProfile()">Save Profile</button>
 	</div>    
 
-	<div *ngIf="!allowed()" class="col-md-8">
-	     <button *ngIf="!connected" type="button" class="btn btn-primary" (click)="followDistrict()">Follow</button>
-	     <button *ngIf="connected" type="button" class="btn btn-success glyphicon glyphicon-ok">Following</button>	     
-	</div>    
+
 </div>            
 <div class="col-xs-12 constitutionProfile">
 
@@ -41,18 +39,13 @@
 	        (onHover)="hoveringOver($event)" (onLeave)="resetStar($event)"
 	        [titles]="['one','two','three']"></rating>
 	    -->
-		    <div class="banner col-md-2">
-		 
-				<banner-gpx [imageUrl]="'../../images/yeoman.png'"></banner-gpx>
-		
-			</div>
 
 
 		</div>
 
 	</div>
 
-<hr>
+
 <!-- BODY -->
 	<div>
 		<div class="col-md-8">

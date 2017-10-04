@@ -4,14 +4,16 @@
 		<banner-gpx class="smTagImg" [imageUrl]="'../../images/yeoman.png'" [height]="50" [width]="50"></banner-gpx>
 		<div>{{post.userName}}</div>
 	</div>
-	<div class="col-xs-10 postDetail">
+	<div class="col-xs-6 postDetail">
 		<div class="postText">
 			{{post.txtPost}}
 		</div>
 		<div class="postAction">
-			<button type="button" class="btn btn-primary">Comment</button>
+			<button type="button" class="btn btn-primary" (click)="comment()">Comment</button>
 			<button *ngIf="!post.likedByCurrentUser" type="button" class="btn btn-primary glyphicon glyphicon-thumbs-up" (click)="likePost()">Like</button>
 			<button *ngIf="post.likedByCurrentUser" type="button" class="btn btn-primary glyphicon glyphicon-heart"></button>
 		</div>
+		<newPost-gpx [parentPost]="post" *ngIf="commentPost" (postEvent)="postEvent()"></newPost-gpx>
+
 	</div>
 </div>

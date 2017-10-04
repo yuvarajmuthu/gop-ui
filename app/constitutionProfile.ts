@@ -123,7 +123,8 @@ export class ConstitutionProfileGPX {
   private groupData = {};
   public profilesTemplates = [];
   public profilesData = [];
-  public connected:boolean = false;
+  private viewingDistrict={};  
+  //public connected:boolean = false;
       //private populationComponent: TemplatePopulationComponent;
 
   constructor(private userService:UserService, private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
@@ -138,11 +139,11 @@ export class ConstitutionProfileGPX {
           console.log("Group data from service: ", this.groupData);
 
           //getting the available profile templates for this group type
-          this.profilesTemplates = this.groupData['profile'];
+          this.viewingDistrict['profileTemplates'] = this.profilesTemplates = this.groupData['profile'];
           console.log("profile templates: ", this.profilesTemplates);
 
           //getting the data for this group profile
-          this.profilesData = this.groupData['profileData'];
+          this.viewingDistrict['profilesData'] = this.profilesData = this.groupData['profileData'];
           console.log("profile data: ", this.profilesData);
 
           //identifying the profile selected for this group profile, so those components shall be loaded
@@ -157,6 +158,10 @@ export class ConstitutionProfileGPX {
             this.templateType = compTypes;
           }
 
+          //setting here so it can be accessed globally
+          this.viewingDistrict['id'] = this.groupData['id'];
+          this.dataShareService.setViewingDistrict(this.viewingDistrict);
+
         }
     );
 
@@ -169,7 +174,7 @@ export class ConstitutionProfileGPX {
         }
     );
 */
-this.connected = userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId());
+//this.connected = userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId());
 
 
     legislatorsService.getElectedMembers('').subscribe(res => {

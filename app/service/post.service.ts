@@ -69,5 +69,8 @@ export class PostService {
 
   }
 
-
+  //post the comment to the server
+  postComment(post:Post){
+  	console.log("postComment post.service " + JSON.stringify(post));
+  }
 }

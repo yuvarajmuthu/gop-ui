@@ -31,8 +31,12 @@ export class LegislatorsService {
 
 //get district by lat/long
 //https://congress.api.sunlightfoundation.com/districts/locate?latitude=40.402777&longitude=-80.058543&apikey=fd1d412896f54a8583fd039670983e59
-  private districtByLatLong_prefix = 'https://congress.api.sunlightfoundation.com/districts/locate?';
-  private districtByLatLong_suffix = this.legislature_service_url_suffix;
+  private district_prefix = 'https://congress.api.sunlightfoundation.com/districts/locate?';
+  private district_suffix = this.legislature_service_url_suffix;
+
+//get district by zipcode
+//https://congress.api.sunlightfoundation.com/districts/locate?zip=11216&apikey=fd1d412896f54a8583fd039670983e59
+
 getLegislature(searchParam:string, type:string):Observable<any>{
     //required for using jsonp. JSONP is used to get data from cross domain
     console.log("getLegislature() in service - searchParam " + searchParam);
@@ -57,6 +61,29 @@ getLegislature(searchParam:string, type:string):Observable<any>{
                   .map((response:Response) => response.json());
 } 
 
+  getDistrict(value:string, category:string):Observable<any>{
+    let url:string;
+    //required for using jsonp. JSONP is used to get data from cross domain
+    let params = new URLSearchParams();
+    params.set('format', 'json');
+    params.set('callback', "JSONP_CALLBACK");
+
+    if(category == 'zipcode'){
+      url = this.district_prefix + 'zip=' + value + this.district_suffix;
+
+    } else if(category == 'latlong'){
+      let locationArr = value.split(',');
+       url = this.district_prefix + 'latitude=' + locationArr[0] + '&longitude=' + locationArr[1] + this.district_suffix;
+
+    }  
+
+    console.log('getDistrict - ' + url);  
+    return this.jsonp.get(url, { search: params })
+                  .map((response:Response) => response.json());
+
+  }
+
+//DEPRECATED
 getDistrictByLatLong(lat:string, long:string):Observable<any>{
     //required for using jsonp. JSONP is used to get data from cross domain
     let params = new URLSearchParams();
@@ -64,9 +91,24 @@ getDistrictByLatLong(lat:string, long:string):Observable<any>{
     params.set('callback', "JSONP_CALLBACK");
 
     let url:string;
-    url = this.districtByLatLong_prefix + 'latitude=' + lat + '&longitude=' + long + this.districtByLatLong_suffix;
+    url = this.district_prefix + 'latitude=' + lat + '&longitude=' + long + this.district_suffix;
 
     console.log('getDistrictByLatLong API - ' + url);  
+    return this.jsonp.get(url, { search: params })
+                  .map((response:Response) => response.json());
+}
+
+//DEPRECATED
+getDistrictByZipcode(zipcode:string):Observable<any>{
+    //required for using jsonp. JSONP is used to get data from cross domain
+    let params = new URLSearchParams();
+    params.set('format', 'json');
+    params.set('callback', "JSONP_CALLBACK");
+
+    let url:string;
+    url = this.district_prefix + 'zip=' + zipcode + this.district_suffix;
+
+    console.log('getDistrictByZipcode API - ' + url);  
     return this.jsonp.get(url, { search: params })
                   .map((response:Response) => response.json());
 } 

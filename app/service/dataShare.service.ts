@@ -8,9 +8,10 @@ export class DataShareService {
 
   //currentUserId will be set with logged in userid
   public currentUserId:string = 'u001';
-  public viewingUserId:string;
+  public viewingUserId:string; //SHOULD BE DEPRECATED
   public viewingUser = {};
-
+  public viewingDistrict = {};
+  
   public currentDistrictId:string = 'g0010';
   public selectedLegislatorId:string = 'g0010';
 
@@ -37,6 +38,14 @@ export class DataShareService {
 
   setViewingUser(user:any){
    this.viewingUser = user;
+  }
+
+  getViewingDistrict():any{
+   return this.viewingDistrict;
+  }
+
+  setViewingDistrict(district:any){
+   this.viewingDistrict = district;
   }
 
   getSelectedLegislatorId():string{

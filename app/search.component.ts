@@ -46,8 +46,10 @@ export class SearchLegislatorComponentGPX implements OnInit {
   public selectedlegislator: Legislator;
   latitude:any;
   longitude:any;
-  congressDistrict:string;
+  //congressDistrict:string;
+  congressDistricts:JSON[] = [];
   state:string;
+  searchTip:string;
 
   @Output()
   success = new EventEmitter();
@@ -67,27 +69,57 @@ export class SearchLegislatorComponentGPX implements OnInit {
         this.longitude = position.coords.longitude;
         console.log("current position latitude " + this.latitude + ',longitude ' + this.longitude);
         this.getLegislators(this.latitude+','+this.longitude, 'latlong');
-        this.getDistrict();
+        this.getDistrict(this.latitude+','+this.longitude, 'latlong');
+        this.searchTip = "Showing legislator(s) for the location: Latitude " + this.latitude + ", Longitude " + this.longitude;
       });
   }
 
-  search(query: string) {
-    console.log("Search value: " + query);
-    this.currentLocationZip = query;
+  getCongressLegislatorsByZip(zipcode: string) {
+    console.log("Search value: " + zipcode);
+    this.currentLocationZip = zipcode;
     this.legislators = [];
-    this.getLegislators(query, 'zipcode');
+    this.getLegislators(zipcode, 'zipcode');
+    this.getDistrict(zipcode, 'zipcode');
+    this.searchTip = "Showing legislator(s) for the location: Zipcode " + zipcode;
+
   }
 
-  getDistrict(){
-     console.log("getDistrict " + this.latitude + ',longitude ' + this.longitude);
-    this.legislatorsService.getDistrictByLatLong(this.latitude, this.longitude)
+
+    
+  getDistrict(searchParam:string, type:string){
+     console.log("getDistrict() searchParam" + searchParam + ',type ' + type);
+    this.legislatorsService.getDistrict(searchParam, type)
     .map(result => this.resultop1 = result.results)
     .subscribe((result) => {
-                console.log("getDistrict - " + result);
-        if(result.length >0){
-          console.log("getDistrict - " + result[0]);
-          this.state = result[0]['state'];
-          this.congressDistrict = result[0]['district'];
+        this.congressDistricts = [];
+        for(var i = 0; i<result.length; i++) {
+          console.log("getDistrict - " + result[i]);
+          this.state = result[i]['state'];
+
+          let district:any = {};
+          district['name'] = result[i]['district'];  
+          district['state'] = result[i]['state'];
+          this.congressDistricts.push(district);
+        }
+     });    
+  }
+
+//DEPRECATED
+  getDistrictByZip(zipcode:string){
+    console.log("getDistrictByZip " + zipcode);
+    this.legislatorsService.getDistrictByZipcode(zipcode)
+    .map(result => this.resultop1 = result.results)
+    .subscribe((result) => {
+        this.congressDistricts = [];
+        for(var i = 0; i<result.length; i++) {
+          console.log("getDistrict - " + result[i]);
+          this.state = result[i]['state'];
+          //this.congressDistrict = result[i]['district'];
+
+          let district:any = {};
+          district['name'] = result[i]['district'];  
+          district['state'] = result[i]['state'];
+          this.congressDistricts.push(district);
         }
      });    
   }

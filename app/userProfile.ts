@@ -205,7 +205,8 @@ export class UserProfileGPX implements OnInit{
           if(compTypes.length > 0){
             this.templateType = compTypes;
           }
-
+          
+          //setting here so it can be accessed globally
           this.dataShareService.setViewingUser(this.viewingUser);
           console.log("this.dataShareService.getViewingUser() " + JSON.stringify(this.dataShareService.getViewingUser()));  
         }
@@ -223,7 +224,7 @@ export class UserProfileGPX implements OnInit{
 
 
 
-      getPermission():string{
+  getPermission():string{
                 //console.log("calling getter");
           let data = this.dataShareService.getPermission();
       //console.log("getPermission() " + data);

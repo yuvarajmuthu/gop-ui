@@ -102,7 +102,7 @@ export class AppComponent  implements OnInit, AfterViewInit {
         this.router.navigate(['/map']);
       }else if(event === 'User'){
         console.log("Routing " + event);
-        this.router.navigate(['/user/T000461']);
+        this.router.navigate(['/user/u001']);
       }else if(event === 'Party'){
         console.log("Routing " + event);
         this.router.navigate(['/partyProfile']);
@@ -113,13 +113,13 @@ createPage(event: String){
   console.log("creating page - " + event);
   //console.log("event.target.value " + event.target);
   if(event === 'District'){
-    this.router.navigate(['/district']);
+    this.router.navigate(['/district/14']);
   }else if(event === 'Legislator'){
-    this.router.navigate(['/legislator/B001296']);
+    this.router.navigate(['/user/B001296']);
   }else if(event === 'User'){
-    this.router.navigate(['user']);
+    this.router.navigate(['/user/u001']);
   }else if(event === 'Party'){
-    this.router.navigate(['partyProfile']);
+    this.router.navigate(['/partyProfile']);
   }
 }    
   /*

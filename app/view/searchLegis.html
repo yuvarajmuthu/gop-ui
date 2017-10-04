@@ -4,8 +4,8 @@
         <button type="button" class="btn btn-primary">{{state}}</button>
       </div>
       
-      <div>Your Congressional District: 
-        <button type="button" class="btn btn-primary" (click)="gotoDistrict(congressDistrict)">{{congressDistrict}}</button>
+      <div>Your Congressional District(s): 
+        <button *ngFor="let congressDistrict of congressDistricts" type="button" class="btn btn-primary" (click)="gotoDistrict(congressDistrict.name)">{{congressDistrict.name}}</button>
       </div>
       
       <div>
@@ -13,12 +13,10 @@
      
         <input type="text" class="searchLegisBox" [(ngModel)]="ipZipcode" placeholder="Zipcode" />
 
-        <label class="btn btn-success" uncheckable (click)="search(ipZipcode)">Search</label>
+        <label class="btn btn-success" uncheckable (click)="getCongressLegislatorsByZip(ipZipcode)">Search</label>
       </div>
       
-      <div class="searchTip">
-        Showing legislator(s) for the location: Latitude {{latitude}}, Longitude {{longitude}}
-      </div>
+      <div class="searchTip">{{searchTip}}</div>
 
       <div>
         <ul style="list-style-type:none">

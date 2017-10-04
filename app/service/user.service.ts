@@ -14,14 +14,23 @@ export class UserService {
   result:any; 
   resultop:any;
 
-  getUserData(type:String):Observable<any> { 
+  getUserData(userId:String):Observable<any> { 
     /*
     let groupData = this.http.get('/app/data/json/fromService/group.json')
                              .map((response:Response) => response.json());
     console.log("group data " + groupData);
     return groupData;
 */
-    return this.http.get('/app/data/json/fromService/user.json')
+    let url:string;
+    
+    //bioguideId is of length 7
+    if(userId.length == 7){
+      url = '/app/data/json/fromService/user-legis.json';
+    }else{
+      url = '/app/data/json/fromService/user.json';
+    }
+    console.log("getUserData() " + url);
+    return this.http.get(url)
                              .map((response:Response) => response.json());
   }
 
@@ -43,7 +52,7 @@ export class UserService {
   */
     getRelation(userId:string, groupId:string):boolean{
     console.log("getRelation()::UserService " + userId + " , " + groupId);
-    return true;
+    return false;
 
   }
 }

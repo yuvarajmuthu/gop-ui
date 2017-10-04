@@ -1,11 +1,9 @@
 <div class="newPostBox">
-	<div class="col-xs-12">
-		What's happening in your District ?
-	</div>
+
 	<div class="col-xs-10 newPost">
 		<textarea rows="2" cols="50" [(ngModel)]="txtPost"></textarea>
 	</div>
 	<div class="col-xs-2 newPostButton">
-		<button type="button" class="btn btn-primary" (click)="submitPost()">Post</button>
+		<button type="button" class="btn btn-primary" (click)="submitPost(txtPost)">Post</button>
 	</div>
 </div>
