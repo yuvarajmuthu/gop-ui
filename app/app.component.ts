@@ -5,6 +5,10 @@ import {TypeaheadGPXComponent} from './typeahead.component';
 import { TAB_DIRECTIVES } from 'ng2-bootstrap/components/tabs';
 import { TabsetComponent } from 'ng2-bootstrap/components/tabs';
 import { DROPDOWN_DIRECTIVES } from 'ng2-bootstrap/components/dropdown';
+
+//import { AlertComponent } from 'ng2-bootstrap/components/alert';
+import { AlertComponent } from './_directives/index';
+
 import {MapGPXComponent} from './map.component';
 import {OrgProfileGPXComponent} from './orgprofile.component';
 import {StructureGPXComponent} from './structure.component';
@@ -17,6 +21,8 @@ import {PartyListComponentGPX} from './partyList.component';
 import {PartyListProfileComponentGPX} from './partyListProfile.component';
 import {LegislatorComponentGPX} from './legislator.component';
 import { LegislatorsService } from './service/legislators.service';
+import { MissionService }     from './service/compCommunication.service';
+
 //import { Legislator } from './object/legislator';
 import {PartyProfileGPX} from './partyProfile.component';  
 import {SearchLegislatorComponentGPX} from './search.component';
@@ -40,7 +46,7 @@ import {MdCard} from '@angular2-material/card';
 
 @Component({
   selector: 'my-app',
-  directives: [ROUTER_DIRECTIVES, TypeaheadGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, MapGPXComponent, OrgProfileGPXComponent, 
+  directives: [ROUTER_DIRECTIVES, TypeaheadGPXComponent, AlertComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, MapGPXComponent, OrgProfileGPXComponent, 
   StructureGPXComponent, ConstitutionProfileGPX, UserProfileGPX, PostGPX, NewPostGPX, LegislatorComponentGPX, PartyListComponentGPX, PartyListProfileComponentGPX, PartyProfileGPX, SearchLegislatorComponentGPX],
   templateUrl: 'app/view/baseContainer.html',
   providers: [ LegislatorsService],
@@ -66,10 +72,20 @@ import {MdCard} from '@angular2-material/card';
 
 
 export class AppComponent  implements OnInit, AfterViewInit {
+  alertType:string = "danger"; //info, warning, danger
+  alertMessage:string = "Hello";
+
   @ViewChild('staticTabs') staticTabs: TabsetComponent;
     //legislators: Array<Legislator> = [];
     //public selectedlegislator: Legislator;
-    constructor(private  router: Router) {}
+    constructor(private  router: Router, private missionService: MissionService) {
+      missionService.getAlert().subscribe(
+      mission => {
+        console.log("Alert message received " + mission);
+      });
+      console.log('alert subscribed');
+
+    }
 
     clickTab(event: String){
       console.log("tab button clicked - " + event);

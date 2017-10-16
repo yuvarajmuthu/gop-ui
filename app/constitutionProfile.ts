@@ -24,7 +24,7 @@ import {UserService} from './service/user.service';
   selector: 'constitutionProfile-gpx',
   templateUrl: 'app/view/constitutionProfile.html',
   directives: [DynamicContentComponent, TemplatePopulationComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent, PartyListComponentGPX],
-  providers:[LegislatorsService, PeopleService, PartyService, GroupService, MissionService, UserService],
+  providers:[LegislatorsService, PeopleService, PartyService, GroupService, UserService],
   styles: [`
 
      .legisBoundary{

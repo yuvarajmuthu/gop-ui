@@ -23,8 +23,11 @@ export class UserService {
 */
     let url:string;
     
-    //bioguideId is of length 7
-    if(userId.length == 7){
+    //bioguideId is of length 7 - sunfoundataion
+    //if(userId.length == 7){
+
+    //leg_id is of length 9 - openstate      
+    if(userId.length == 9){  
       url = '/app/data/json/fromService/user-legis.json';
     }else{
       url = '/app/data/json/fromService/user.json';

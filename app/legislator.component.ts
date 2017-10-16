@@ -144,21 +144,23 @@ export class LegislatorComponentGPX implements OnInit{
            this.keys = Object.keys(this.legislator);
            console.log("keys " + this.keys);    
 
-           console.log("this.legislator.bioguide_id " + this.legislator.bioguide_id);
+           //console.log("this.legislator.bioguide_id " + this.legislator.bioguide_id);
            //retrieving the image from bioguide
+           /*
            if(this.legislator.bioguide_id){
               let intial = this.legislator.bioguide_id.charAt(0);
               let imageUrl = 'http://bioguide.congress.gov/bioguide/photo/' + intial + '/' + this.legislator.bioguide_id + '.jpg';
               console.log("bioguide image url " + imageUrl);
               this.legislator.bioguideImageUrl = imageUrl;
            }
+           */
             });
 
 
     }else if(this.legislator){
       this.keys = Object.keys(this.legislator);
       console.log("keys " + this.keys);
-      console.log("this.legislator.bioguideImageUrl " + this.legislator.bioguideImageUrl);
+      //console.log("this.legislator.bioguideImageUrl " + this.legislator.bioguideImageUrl);
     }
 
 
@@ -171,13 +173,8 @@ export class LegislatorComponentGPX implements OnInit{
   }
 
   gotoLegislator(legislator: Legislator):void{
-    //this.selectedlegislator = legislator;
-
     console.log('selected legislator - ' +  legislator);    
-    console.log('bioguide_id of selected item - ' +  legislator.bioguide_id);
-
-    //this.router.navigate(['/legislator', legislator.bioguide_id]);
-    this.router.navigate(['/user', legislator.bioguide_id]);
+    this.router.navigate(['/user', legislator.leg_id]);
   }
 
 }

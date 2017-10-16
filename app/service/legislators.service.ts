@@ -16,7 +16,12 @@ export class LegislatorsService {
   result:any; 
   legislators: Array<Legislator> = [];
   resultop:any;
-	private legislature_by_zipcode_service_url_prefix = 'https://congress.api.sunlightfoundation.com/legislators/locate?zip=';
+  //apikey_openstate = c7ba0e13-03f6-4477-b9f1-8e8832169ee5
+  //https://openstates.org/api/v1/legislators/DCL000012?apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5
+  //https://openstates.org/api/v1/legislators/geo/?lat=35.79&long=-78.78&apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5
+  //https://openstates.org/api/v1/legislators/?state=dc&chamber=upper&apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5
+	
+  private legislature_by_zipcode_service_url_prefix = 'https://congress.api.sunlightfoundation.com/legislators/locate?zip=';
   private legislature_service_url_prefix = 'https://congress.api.sunlightfoundation.com/legislators';//?bioguide_id=B001296&apikey=fd1d412896f54a8583fd039670983e59
   private legislature_service_url_suffix = '&apikey=fd1d412896f54a8583fd039670983e59';
 //https://congress.api.sunlightfoundation.com/legislators/locate?zip=19406&apikey=fd1d412896f54a8583fd039670983e59
@@ -39,7 +44,7 @@ export class LegislatorsService {
 
 getLegislature(searchParam:string, type:string):Observable<any>{
     //required for using jsonp. JSONP is used to get data from cross domain
-    console.log("getLegislature() in service - searchParam " + searchParam);
+    console.log("getLegislature() in legislators service - searchParam " + searchParam);
     let params = new URLSearchParams();
     params.set('format', 'json');
     params.set('callback', "JSONP_CALLBACK");
@@ -49,17 +54,42 @@ getLegislature(searchParam:string, type:string):Observable<any>{
       url = this.legislature_service_url_prefix + '/locate?zip=' + searchParam + this.legislature_service_url_suffix;
     }
     else if(type == 'bioguide_id'){
-      url = this.legislature_service_url_prefix + '?bioguide_id=' + searchParam + this.legislature_service_url_suffix;
+      //url = this.legislature_service_url_prefix + '?bioguide_id=' + searchParam + this.legislature_service_url_suffix;
+      url = 'https://openstates.org/api/v1/legislators/' + searchParam + '?apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5';
     }
     else if(type == 'latlong'){
       let locationArr = searchParam.split(',');
-      url = this.legislature_service_url_prefix + '/locate?latitude=' + locationArr[0] + '&longitude=' + locationArr[1] + this.legislature_service_url_suffix;
+      //url = this.legislature_service_url_prefix + '/locate?latitude=' + locationArr[0] + '&longitude=' + locationArr[1] + this.legislature_service_url_suffix;
+      url = 'https://openstates.org/api/v1/legislators/geo/?lat='+ locationArr[0] + '&long=' + locationArr[1] + '&apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5';
+    } else if(type == 'congress'){
+      url = "https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY&address=" + encodeURIComponent(searchParam);
+      //this.getDistrictInfoFromGoogle(url);
     }
 
     console.log('getLegislature API - ' + url);  
     return this.jsonp.get(url, { search: params })
                   .map((response:Response) => response.json());
 } 
+
+getLocation(term: string):Observable<any> {
+   return this.http.get('http://maps.google.com/maps/api/geocode/json?address=' + term + 'CA&sensor=false')
+                  .map((response:Response) => response.json());
+}
+
+getDistrictInfoFromGoogle(url:string):Observable<any>{
+    let params = new URLSearchParams();
+    params.set('format', 'json');
+    params.set('callback', "JSONP_CALLBACK");
+    console.log('in getDistrictInfoFromGoogle');   
+
+    return this.jsonp.get(url, { search: params })
+                  .map((response) => {
+                    console.log('getDistrictInfoFromGoogle ' + JSON.stringify(response));  
+                    console.log('getDistrictInfoFromGoogle ' + JSON.stringify(response['divisions']));
+                    return response['divisions'];    
+                  });
+}
+
 
   getDistrict(value:string, category:string):Observable<any>{
     let url:string;
@@ -121,7 +151,8 @@ getCommittees(legisId:string):Observable<any>{
     params.set('callback', "JSONP_CALLBACK");
 
     let url:string;
-    url = this.legisCommittee_prefix + legisId + this.legisCommittee_suffix;
+    //url = this.legisCommittee_prefix + legisId + this.legisCommittee_suffix;
+    url = 'https://openstates.org/api/v1/committees/' + legisId + '?apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5';
 
     console.log('getLegislature API - ' + url);  
     return this.jsonp.get(url, { search: params })
@@ -138,7 +169,7 @@ getCommittees(legisId:string):Observable<any>{
       let result:Array<Legislator> = [];
       if (legisArr) {
         console.log("Elected persons from json " + legisArr.length);
-
+/*
         legisArr.forEach((task) => {
           result.push(
                      new Legislator(
@@ -181,6 +212,7 @@ getCommittees(legisId:string):Observable<any>{
         });
 
         console.log("Elected persons - sample " + result[0]);
+        */
 
       }
       return result;

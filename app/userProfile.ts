@@ -27,7 +27,7 @@ import { LegislatorsService } from './service/legislators.service';
   selector: 'userProfile-gpx',
   templateUrl: 'app/view/userProfile.html',
   directives: [DynamicContentComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent],
-  providers:[LegislatorsService, PeopleService, PartyService, UserService, MissionService],
+  providers:[LegislatorsService, PeopleService, PartyService, UserService],
   styles: [`
 
      .legisBoundary{

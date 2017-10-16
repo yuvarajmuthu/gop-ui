@@ -14,6 +14,13 @@ import { LegislatorsService } from './service/legislators.service';
 
 import { Legislator } from './object/legislator';
 
+/*COMPONENTS
+<dynamic-content/>
+<user-default-legis/>
+<legis-congress/>
+<legis-committee/>
+*/
+
 @Component({
     selector: 'dynamic-content',
     template: `
@@ -168,19 +175,21 @@ abstract class AbstractTemplateComponent {
       //this._heroService.getHero(id).then(legislator => this.legislator = legislator);
 
           this.legislatorsService.getLegislature(this.legisId, 'bioguide_id')
-    .map(result => this.resultop = result.results)
+    //.map(result => this.resultop = result.results)
     .subscribe((result) => {
-              if(result.length > 0){
-                this.legislator = result[0];
+              //if(result.length > 0){
+                //this.legislator = result[0];
+                this.legislator = result;
                 this.firstName = this.legislator.first_name;
                 this.lastName = this.legislator.last_name;
-              }
+              //}
               console.log("Loading: " + this.legislator);
            this.keys = Object.keys(this.legislator);
            console.log("keys " + this.keys);    
 
-           console.log("this.legislator.bioguide_id " + this.legislator.bioguide_id);
+           //console.log("this.legislator.bioguide_id " + this.legislator.bioguide_id);
            //retrieving the image from bioguide
+           /*
            if(this.legislator.bioguide_id){
               let intial = this.legislator.bioguide_id.charAt(0);
               let imageUrl = 'http://bioguide.congress.gov/bioguide/photo/' + intial + '/' + this.legislator.bioguide_id + '.jpg';
@@ -189,9 +198,12 @@ abstract class AbstractTemplateComponent {
               this.bioguideImageUrl = imageUrl;
 
            }
+           */
+           this.bioguideImageUrl = this.legislator.photo_url;
             });
 
           //getting the COMMITTEES
+          /*
           this.legislatorsService.getCommittees(this.legisId)
     .map(result => this.resultop = result.results)
     .subscribe((result) => {
@@ -209,6 +221,7 @@ abstract class AbstractTemplateComponent {
 
               }
             });
+    */
 
     }
   }
