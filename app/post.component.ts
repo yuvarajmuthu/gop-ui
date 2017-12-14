@@ -23,11 +23,12 @@ export class PostGPX  implements OnInit{
   posts:Post[] = [];
   
   constructor(private postService: PostService, private dataShareService:DataShareService) {
+    console.log("constructor() post.component");
   }
 
   ngOnInit(): void {
     //this.imageName = '../../images/'+this.party.profileImage;
-    console.log("ngOnInit()");
+    console.log("ngOnInit() post.component");
 
            this.postService.getActivities('').subscribe((result) => {
              this.posts = result;

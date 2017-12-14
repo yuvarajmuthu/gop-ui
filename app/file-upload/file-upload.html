@@ -1,31 +1,4 @@
-<div class="newPostBox">
-
-	<div>
-        <div class="col-xs-10 newPost">
-    		<textarea rows="2" cols="50" [(ngModel)]="txtPost"></textarea>
-    	</div>
-
-    	<div class="col-xs-2 newPostButton">
-    		<button type="button" class="btn btn-primary" (click)="submitPost(txtPost)">Post</button>
-    	</div>
-    </div>
-
-    <div class="col-xs-12">
-        <button type="button" class="btn btn-primary"
-            (click)="isFileStagingAreaCollapsed = !isFileStagingAreaCollapsed">Pictures
-        </button>
-    </div>
-</div>
-
-
-<div (collapsed)="collapsed($event)"
-     (expanded)="expanded($event)"
-     [collapse]="isFileStagingAreaCollapsed"
-     class="card card-block card-header">
-
-     <file-upload></file-upload>
-<!--
-        <div class="col-xs-12 fileUploadStage">
+ <div class="col-xs-12 fileUploadStage">
             <div class="col-xs-2"> 
                 <label for="upload-photo" class="glyphicon glyphicon-upload"></label>
                 <input type="file" name="photo" id="upload-photo" ng2FileSelect [uploader]="uploader" />
@@ -58,6 +31,7 @@
                         <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
                     </td>
                     <td nowrap>
+                        <!--
                         <button type="button" class="btn btn-success btn-xs"
                                 (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
                             <span class="glyphicon glyphicon-upload"></span> Upload
@@ -66,6 +40,7 @@
                                 (click)="item.cancel()" [disabled]="!item.isUploading">
                             <span class="glyphicon glyphicon-ban-circle"></span> Cancel
                         </button>
+                    -->
                         <button type="button" class="btn btn-danger btn-xs"
                                 (click)="item.remove()">
                             <span class="glyphicon glyphicon-trash"></span> Remove
@@ -86,10 +61,12 @@
                         (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
                     <span class="glyphicon glyphicon-upload"></span> Upload all
                 </button>
+                <!--
                 <button type="button" class="btn btn-warning btn-s"
                         (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
                     <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
                 </button>
+            -->
                 <button type="button" class="btn btn-danger btn-s"
                         (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
                     <span class="glyphicon glyphicon-trash"></span> Remove all
@@ -97,6 +74,3 @@
             </div>
  
         </div>
-    -->
- 
-</div>

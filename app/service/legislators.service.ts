@@ -64,7 +64,12 @@ getLegislature(searchParam:string, type:string):Observable<any>{
     } else if(type == 'congress'){
       url = "https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY&address=" + encodeURIComponent(searchParam);
       //this.getDistrictInfoFromGoogle(url);
+    } else if(type == 'byCongressDistrict'){
+      url = "https://www.googleapis.com/civicinfo/v2/representatives/ocdId?ocdId="+ searchParam +"&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY";
+      //this.getDistrictInfoFromGoogle(url);
+      //https://www.googleapis.com/civicinfo/v2/representatives/ocdId?ocdId=ocd-division/country:us/state:pa/cd:6&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY
     }
+
 
     console.log('getLegislature API - ' + url);  
     return this.jsonp.get(url, { search: params })

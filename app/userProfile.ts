@@ -1,5 +1,5 @@
 import {Component, ViewContainerRef, ViewChild, ElementRef, Renderer, ChangeDetectorRef, ComponentRef, Input, OnInit} from '@angular/core';
-import { Router, RouteSegment } from "@angular/router";
+import { Router, RouteSegment, OnActivate } from "@angular/router";
 
 import { TAB_DIRECTIVES } from 'ng2-bootstrap/components/tabs';
 import { CollapseDirective } from 'ng2-bootstrap/components/collapse';
@@ -27,7 +27,7 @@ import { LegislatorsService } from './service/legislators.service';
   selector: 'userProfile-gpx',
   templateUrl: 'app/view/userProfile.html',
   directives: [DynamicContentComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent],
-  providers:[LegislatorsService, PeopleService, PartyService, UserService],
+  providers:[LegislatorsService, PeopleService, PartyService],
   styles: [`
 
      .legisBoundary{
@@ -114,7 +114,7 @@ import { LegislatorsService } from './service/legislators.service';
   `]
 })
 
-export class UserProfileGPX implements OnInit{
+export class UserProfileGPX implements OnActivate, OnInit{
   @Input() profileUserId:string = "";
   legisId:string = "";
 
@@ -134,21 +134,28 @@ export class UserProfileGPX implements OnInit{
   public profilesTemplates = [];
   public profilesData = [];
   public isLegislator = false;
+  operation:string = "";
+
+  activities:number = 0;  
       //private populationComponent: TemplatePopulationComponent;
  
   //get invoked automatically before ngOnInit()
   routerOnActivate(curr: RouteSegment): void {
     if(curr.getParam("id")){
-      this.profileUserId = curr.getParam("id");
-      //this.dataShareService.setSelectedLegislatorId(this.profileUserId);
-      console.log("from userProfile Param value - id " + this.profileUserId);
+      if(curr.getParam("id") == "CREATE"){
+        this.operation = curr.getParam("id");
+      }else{
+        this.profileUserId = curr.getParam("id");
+        //this.dataShareService.setSelectedLegislatorId(this.profileUserId);
+        console.log("from userProfile Param value - id " + this.profileUserId);
+      }
     }
 
-    if(curr.getParam("legisId")){
+/*    if(curr.getParam("legisId")){
       this.legisId = curr.getParam("legisId");
       this.profileUserId = this.legisId;
       console.log("from userProfile Param value - legisId " + this.legisId);      
-    }  
+    }  */
   }
 
   constructor(private userService:UserService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
@@ -158,62 +165,105 @@ export class UserProfileGPX implements OnInit{
   }
 
   ngOnInit(){
-    //the user that is being viewed
-    this.dataShareService.setViewingUserId(this.profileUserId);
-    this.viewingUser['userId'] = this.profileUserId;
+//    console.log("User type: ", this.userData['userType']);
+    if(this.operation == "CREATE"){
+//      this.loadProfileTemplate();      
+      this.dataShareService.setPermission("Editor");  
 
-    this.userService.getUserData(this.profileUserId).subscribe(
-        data => {
-          this.userData = data;
-          console.log("User data from service: ", this.userData);
+      this.loadProfileTemplates(this.operation);
 
-          this.connections = this.userData['connections'];
-          this.viewingUser['connections'] = this.userData['connections'];
-          console.log("User connections: ", this.connections);
-          if(this.connections){
-            for(let connection of this.connections){
-             
+
+    }else{  
+      if(this.profileUserId == 'legis'){
+        this.isLegislator = true; // may not be required
+        this.viewingUser['isLegislator'] = true;
+        this.viewingUser['externalData'] = this.dataShareService.getViewingUser();
+
+      } else{
+         this.isLegislator = false; // may not be required
+        this.viewingUser['isLegislator'] = false;             
+      }
+      console.log("User isLegislator: ", this.viewingUser['isLegislator']);
+
+
+
+      //the user that is being viewed
+      this.dataShareService.setViewingUserId(this.profileUserId);
+      this.viewingUser['userId'] = this.profileUserId;
+
+      this.userService.getUserData(this.profileUserId).subscribe(
+          data => {
+            this.userData = data;
+            console.log("User data from service: ", this.userData);
+
+            this.connections = this.userData['connections'];
+            this.viewingUser['connections'] = this.userData['connections'];
+            console.log("User connections: ", this.connections);
+            if(this.connections){
+              for(let connection of this.connections){
+               
+              }
             }
-          }
 
-          console.log("User type: ", this.userData['userType']);
-          if(this.userData['userType'] == 'legislator'){
-            this.isLegislator = true; // may not be required
-            this.viewingUser['isLegislator'] = true;
-          } else{
-             this.isLegislator = false; // may not be required
-            this.viewingUser['isLegislator'] = false;             
-          }
-          console.log("User isLegislator: ", this.isLegislator);
+     
+            //getting the available profile templates for this user type - publicUser
+            this.profilesTemplates = this.viewingUser['profileTemplates'] = this.userData['profile'];
+            console.log("profile templates: ", this.profilesTemplates);
 
-          //getting the available profile templates for this user type - publicUser
+            //getting the data for this user profile
+            this.profilesData = this.viewingUser['profilesData'] = this.userData['profileData'];
+            console.log("profile data: ", this.profilesData);
+
+            //identifying the profile selected for this user profile, so those components shall be loaded
+            let compTypes = [];
+            for (let profileData of this.profilesData){
+              console.log("loading template component: ", profileData['profile_template_id']);
+              //this.templateType.push(profileData['profile_template_id']);
+              compTypes.push(profileData['profile_template_id']);
+            }
+
+            if(compTypes.length > 0){
+              this.templateType = compTypes;
+            }
+            
+            //setting here so it can be accessed globally
+            this.dataShareService.setViewingUser(this.viewingUser);
+            console.log("this.dataShareService.getViewingUser() " + JSON.stringify(this.dataShareService.getViewingUser()));  
+          }
+      );
+    }
+
+  }
+
+  loadProfileTemplates(operation:string){
+      this.userService.getUserData(operation).subscribe(
+        data => {
+        this.userData = data;
+        console.log("loadTemplate()::userprofile.template - User data from service: ", this.userData);
+
+
+          //getting the available profile templates for this user type
           this.profilesTemplates = this.viewingUser['profileTemplates'] = this.userData['profile'];
-          console.log("profile templates: ", this.profilesTemplates);
+          console.log("loadTemplate()::userprofile.template - profile templates: ", this.profilesTemplates);
 
-          //getting the data for this user profile
-          this.profilesData = this.viewingUser['profilesData'] = this.userData['profileData'];
-          console.log("profile data: ", this.profilesData);
-
-          //identifying the profile selected for this user profile, so those components shall be loaded
+          //indicate the dynamic loaded to load th default template
           let compTypes = [];
-          for (let profileData of this.profilesData){
-            console.log("loading template component: ", profileData['profile_template_id']);
-            //this.templateType.push(profileData['profile_template_id']);
-            compTypes.push(profileData['profile_template_id']);
-          }
+            compTypes.push("upCongressLegislatorDefault");
 
           if(compTypes.length > 0){
             this.templateType = compTypes;
           }
-          
+
+          this.viewingUser['operation'] = this.operation;
           //setting here so it can be accessed globally
           this.dataShareService.setViewingUser(this.viewingUser);
-          console.log("this.dataShareService.getViewingUser() " + JSON.stringify(this.dataShareService.getViewingUser()));  
+
+
+
         }
     );
-
-
   }
+
 
   saveProfile(){
       console.log("Saving Profile");
@@ -245,6 +295,7 @@ export class UserProfileGPX implements OnInit{
       return permission;
   }
 
+//load the template based on user selection
   loadTemplate(type:string){
     let compTypes = [];
     compTypes.push(type);

@@ -26,8 +26,8 @@ export class UserService {
     //bioguideId is of length 7 - sunfoundataion
     //if(userId.length == 7){
 
-    //leg_id is of length 9 - openstate      
-    if(userId.length == 9){  
+    //legis represent legislator      
+    if(userId == 'legis'){  
       url = '/app/data/json/fromService/user-legis.json';
     }else{
       url = '/app/data/json/fromService/user.json';

@@ -85,7 +85,7 @@ export class DynamicContentComponent extends Type implements OnChanges {
     }
 
     ngOnChanges(){
-        console.log('constitution.template.component ngOnChanges() ');
+        console.log('userProfile.template.component ngOnChanges() ');
         this.loadComponentTemplate();
     }
 
@@ -167,38 +167,33 @@ abstract class AbstractTemplateComponent {
     }
 
     loadLegislator(): void {
-    console.log("loadLegislator() userProfile.template AbstractTemplateComponent");      
+      console.log("loadLegislator() userProfile.template AbstractTemplateComponent");   
+  
+
+                    this.legislator = this.viewingUser['externalData'];
+                    this.firstName = this.legislator.first_name;
+                    this.lastName = this.legislator.last_name;
+                  console.log("Loading: " + JSON.stringify(this.legislator));
+               this.keys = Object.keys(this.legislator);
+               console.log("keys " + this.keys);    
+
+               this.bioguideImageUrl = this.legislator.photo_url;
+
+         
+    /*   
     if(this.viewingUser['userId']){  
       this.legisId = this.viewingUser['userId'];
         console.log("this.legisId " + this.legisId);
-      //let id = +this._routeParams.get('id');
-      //this._heroService.getHero(id).then(legislator => this.legislator = legislator);
 
           this.legislatorsService.getLegislature(this.legisId, 'bioguide_id')
-    //.map(result => this.resultop = result.results)
     .subscribe((result) => {
-              //if(result.length > 0){
-                //this.legislator = result[0];
                 this.legislator = result;
                 this.firstName = this.legislator.first_name;
                 this.lastName = this.legislator.last_name;
-              //}
               console.log("Loading: " + this.legislator);
            this.keys = Object.keys(this.legislator);
            console.log("keys " + this.keys);    
 
-           //console.log("this.legislator.bioguide_id " + this.legislator.bioguide_id);
-           //retrieving the image from bioguide
-           /*
-           if(this.legislator.bioguide_id){
-              let intial = this.legislator.bioguide_id.charAt(0);
-              let imageUrl = 'http://bioguide.congress.gov/bioguide/photo/' + intial + '/' + this.legislator.bioguide_id + '.jpg';
-              console.log("bioguide image url " + imageUrl);
-              this.legislator.bioguideImageUrl = imageUrl;
-              this.bioguideImageUrl = imageUrl;
-
-           }
-           */
            this.bioguideImageUrl = this.legislator.photo_url;
             });
 
@@ -221,9 +216,10 @@ abstract class AbstractTemplateComponent {
 
               }
             });
-    */
+    COMMENT HERE FOR COMMITTEES
 
     }
+    */
   }
    
 }
@@ -231,8 +227,9 @@ abstract class AbstractTemplateComponent {
 /***NEW COMPONENT***/
 @Component({
     selector: 'user-default-legis',
+    directives: [NdvEditComponent],    
     template: `
-      <div class='row'>
+      <div>
         <header>
         <!--
           <figure class="profile-banner">
@@ -245,23 +242,26 @@ abstract class AbstractTemplateComponent {
           <div class="profile-stats">
             <ul>
               <li *ngIf="committeesLength > 0">{{committeesLength}}    <span>Committees</span></li>
-              <li>324   <span>Followers</span></li>
+              <li>{{followers}}<span>Followers</span></li>
             </ul>
 
-            <button type="button" class="btn btn-info follow" (click)="followPerson()">
+            <button *ngIf="!allowed()" type="button" class="btn btn-info follow" (click)="followPerson()">
               Connect
             </button>
 
           </div>
-          
+
           <h1>
-            {{firstName}} {{lastName}}
+<!--            {{firstName}} {{lastName}}-->
+                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'firstName'" [placeholder]="firstName" (onSave)="setValue($event)"></ndv-edit>
+                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'lastName'" [placeholder]="lastName" (onSave)="setValue($event)"></ndv-edit>                             
           </h1>
+
         </header>
       </div>
-<!--
+
          <div class="districtTemplate">
- 
+<!-- 
             <div id="constitutionHeader" class="constitutionHeader">
                   <h5>First Name:</h5>
                  <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'firstName'" [placeholder]="firstName" (onSave)="setValue($event)"></ndv-edit>
@@ -271,7 +271,7 @@ abstract class AbstractTemplateComponent {
                  <h5>Last Name:</h5>           
                  <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'lastName'" [placeholder]="lastName" (onSave)="setValue($event)"></ndv-edit>                    
             </div>
-            
+    -->        
             <div id="constitutionDescription" class="constitutionDescription">
                  <h5>User Name:</h5>           
                  <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'userName'" [placeholder]="userName" (onSave)="setValue($event)"></ndv-edit>                    
@@ -281,8 +281,13 @@ abstract class AbstractTemplateComponent {
                  <h5>Email Id:</h5>           
                  <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'emailId'" [placeholder]="emailId" (onSave)="setValue($event)"></ndv-edit>                    
             </div>
+
+            <div id="constitutionDescription" class="constitutionDescription">
+                 <h5>Address:</h5>           
+                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'address'" [placeholder]="address" (onSave)="setValue($event)"></ndv-edit>                    
+            </div>
           </div>  
-          -->
+
     `,
   styles: [`
     .districtTemplate{
@@ -302,7 +307,7 @@ h1 {
   display: block;
   font-size: 50px;
   margin: 25px auto 0;
-  width: 975px;
+
 }
 
 h1>small {
@@ -315,7 +320,7 @@ header {
   margin:   25px auto 50px;
   height:   75px;
   position: relative;
-  width:    975px;
+  
 }
 
 figure.profile-banner {
@@ -460,16 +465,23 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
   public profilesTemplates = [];
   private templateProperties = [];
   private templateData = [];
+  followers:number = 0;
+  isCreateMode:boolean = false;
 
   ngOnInit(): void {
     console.log("ngOnInit() userProfile.template TemplateLegisUserDefaultComponent");   
-    //this.legislator = this.getLegislator();
-    //console.log("legislator " + this.legislator);  
 
-      //this.firstName = this.legislator.first_name;
-      //this.lastName = this.legislator.last_name;
-    if(!(this.viewingUser['isLegislator'])){
-      this.loadTemplateDataV1();
+    if(this.viewingUser['operation'] == "CREATE"){
+      this.loadTemplate(this.viewingUser['operation']);      
+      this.followers = 0;
+      this.isCreateMode = true;
+    }else{
+      if(!(this.viewingUser['isLegislator'])){
+        this.loadTemplateDataV1();
+      }
+
+      //get FOLLOWERS count
+      //this.followers = 0;
     } 
   }
     
@@ -490,6 +502,55 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
     //console.log("constructor() userProfile.template TemplateLegisUserDefaultComponent * " + legislator);   
 
 
+    }
+
+    //load the TEMPLATE for CREATE process
+    loadTemplate(operation:string){
+      //getting the available profile templates for this user type
+      this.profilesTemplates = this.viewingUser['profileTemplates'];
+      console.log("loadTemplate()::userprofile.template - profile templates: ", this.profilesTemplates);
+      for (let profileTemplates of this.profilesTemplates){
+        console.log("loadTemplate()::userprofile.template - reading template component properties: ", profileTemplates['profile_template_id']);
+        //this.templateType.push(profileData['profile_template_id']);
+        if(this.id == profileTemplates['profile_template_id']){
+          this.templateProperties = profileTemplates['properties'];
+          break;  
+        }
+      }
+
+
+      for (let property of this.templateProperties){
+        console.log("loadTemplate()::userprofile.template - Template property " + property);
+        this[property] = "TEST";
+      }      
+      /*
+        this.userService1.getUserData(operation).subscribe(
+          data => {
+          this.userData = data;
+          console.log("loadTemplate()::userprofile.template - User data from service: ", this.userData);
+
+
+            //getting the available profile templates for this user type
+            this.profilesTemplates = this.userData['profile'];
+            console.log("loadTemplate()::userprofile.template - profile templates: ", this.profilesTemplates);
+            for (let profileTemplates of this.profilesTemplates){
+              console.log("loadTemplate()::userprofile.template - reading template component properties: ", profileTemplates['profile_template_id']);
+              //this.templateType.push(profileData['profile_template_id']);
+              if(this.id == profileTemplates['profile_template_id']){
+                this.templateProperties = profileTemplates['properties'];
+                break;  
+              }
+            }
+
+
+            for (let property of this.templateProperties){
+              console.log("loadTemplate()::userprofile.template - Template property " + property);
+              this[property] = "TEST";
+            }
+
+          }
+      );
+      */
     }
 
     loadTemplateDataV1(){
@@ -577,7 +638,7 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
 
     allowed():boolean{
         let permission:boolean = this.dataShareService1.checkPermissions();
-        //console.log("allowed() - " + permission);
+        //console.log("allowed() from userProfile.template TemplateLegisUserDefaultComponent - " + permission);
 
         return permission;
     }

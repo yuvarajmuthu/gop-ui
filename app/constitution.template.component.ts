@@ -4,6 +4,8 @@ import {
     ComponentRef, DynamicComponentLoader, Type
 } from '@angular/core';
 
+//import { TAB_DIRECTIVES } from 'ng2-bootstrap/components/tabs';
+//import { TabsetComponent } from 'ng2-bootstrap/components/tabs';
 import {NdvEditComponent} from './editableText.component';
 
 import {DataShareService} from './service/dataShare.service';
@@ -110,7 +112,6 @@ export class DynamicContentComponent extends Type implements OnChanges {
     if (this.type) {
       for(let compType of this.type){
         let component = this.mappings[compType];
-        console.log('loadComponentTemplate() ' + component);
         this.loader.loadNextToLocation(component, this.viewContainerRef);
         /*
         this.loader.loadNextToLocation(component, this.viewContainerRef).then(componentRef=> {
@@ -135,6 +136,8 @@ abstract class AbstractTemplateComponent {
   public templateProperties = [];
   public templateData = [];
 
+//  @ViewChild('staticTabs') staticTabs: TabsetComponent;
+
   constructor(public dataShareService:DataShareService) {
     this.viewingDistrict = this.dataShareService.getViewingDistrict();
   }
@@ -152,67 +155,29 @@ abstract class AbstractTemplateComponent {
     }
 
     loadTemplateData(id:string){
-        /*
-        this.groupService.getGroupData(this.groupId).subscribe(
-          data => {
-            this.groupData = data;
-            console.log("Group data from service: ", this.groupData);
 
-            //getting the available profile templates for this group type
-            this.profilesTemplates = this.groupData['profile'];
-            console.log("profile templates: ", this.profilesTemplates);
-            for (let profileTemplates of this.profilesTemplates){
-              console.log("reading template component properties: ", profileTemplates['profile_template_id']);
-              //this.templateType.push(profileData['profile_template_id']);
-              if(this.id == profileTemplates['profile_template_id']){
-                this.templateProperties = profileTemplates['properties'];
-                break;  
-              }
-            }
-
-
-            //getting the data for this group profile
-            this.profilesData = this.groupData['profileData'];
-            console.log("profile data: ", this.profilesData);
-
-            for (let profileData of this.profilesData){
-              console.log("loading template component: ", profileData['profile_template_id']);
-              //this.templateType.push(profileData['profile_template_id']);
-              if(this.id == profileData['profile_template_id']){
-                this.templateData = profileData['data'];
-                break;  
-              }
-            }
-
-            for (let dataObj of this.templateData){
-              let keys = [];
-              keys = Object.keys(dataObj);
-              console.log("Template data keys " + keys[0] + ":" + dataObj[keys[0]]);
-              this[keys[0]] = dataObj[keys[0]];
-            }
-
-          }
-      );
-        */
-        //
          //getting the available profile templates for this group type
-            //this.profilesTemplates = this.groupData['profile'];
-            console.log("profile templates: ", this.viewingDistrict['profileTemplates']);
+            console.log("loadTemplateData() for template: " +  id);
             for (let profileTemplate of this.viewingDistrict['profileTemplates']){
-              console.log("reading profileTemplates properties: ", profileTemplate['profile_template_id']);
+              console.log("reading profileTemplates properties: " + profileTemplate['profile_template_id']);
               //this.templateType.push(profileData['profile_template_id']);
               if(id == profileTemplate['profile_template_id']){
                 this.templateProperties = profileTemplate['properties'];
+/*
+                for (let property of this.templateProperties){
+                  console.log("Template property name " + property);
+                  this[property] = "";
+                }
+*/
                 break;  
               }
             }
 
 
             //getting the data for this group profile
-            //this.profilesData = this.groupData['profileData'];
-            //console.log("profile data: ", this.profilesData);
+           if(this.viewingDistrict['profilesData']){ 
             for (let profileData of this.viewingDistrict['profilesData']){
-              console.log("reading profileData properties: ", profileData['profile_template_id']);
+              console.log("reading profileData properties: " +  profileData['profile_template_id']);
               //this.templateType.push(profileData['profile_template_id']);
               if(id == profileData['profile_template_id']){
                 this.templateData = profileData['data'];
@@ -226,6 +191,7 @@ abstract class AbstractTemplateComponent {
               console.log("Template data keys " + keys[0] + ":" + dataObj[keys[0]]);
               this[keys[0]] = dataObj[keys[0]];
             }
+          }
     
 
     }
@@ -254,7 +220,7 @@ abstract class AbstractTemplateComponent {
             <p class="number-stat">3,619</p>
             <p class="desc-stat">Followers</p>
           </div>
-          <div class="stat col-xs-6" style="padding-left: 50px;">
+          <div class="activityDiv stat col-xs-6" style="padding-left: 50px;" (click)="showActivities()">
             <p class="number-stat">38</p>
             <p class="desc-stat">Activities</p>
           </div>
@@ -270,6 +236,7 @@ abstract class AbstractTemplateComponent {
       </div>
      </div> 
   </main>
+
 </div>
     `,
   styles: [`
@@ -282,6 +249,10 @@ abstract class AbstractTemplateComponent {
 
 html,body {
     background: #efefef;
+}
+
+.activityDiv{
+  border: 2px solid lightblue;   
 }
 
 .container {
@@ -522,12 +493,15 @@ export class TemplateIntroductionComponent extends AbstractTemplateComponent {
       });
 
       this.loadTemplateData(this.id);  
-this.connected = userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId());
+      this.connected = userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId());
 
 
 
     }
 
+    showActivities(){
+      console.log("show activities ");  
+    }
 
     allowed():boolean{
         let permission:boolean = this.dataShareService1.checkPermissions();

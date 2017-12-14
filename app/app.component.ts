@@ -1,18 +1,15 @@
 import { Component, Directive, Attribute, ElementRef, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Routes, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "@angular/router";
 
-import {TypeaheadGPXComponent} from './typeahead.component';
 import { TAB_DIRECTIVES } from 'ng2-bootstrap/components/tabs';
 import { TabsetComponent } from 'ng2-bootstrap/components/tabs';
 import { DROPDOWN_DIRECTIVES } from 'ng2-bootstrap/components/dropdown';
 
-//import { AlertComponent } from 'ng2-bootstrap/components/alert';
+import {TypeaheadGPXComponent} from './typeahead.component';
 import { AlertComponent } from './_directives/index';
-
 import {MapGPXComponent} from './map.component';
 import {OrgProfileGPXComponent} from './orgprofile.component';
 import {StructureGPXComponent} from './structure.component';
-//import {TestComponent} from './test.component';
 import {ConstitutionProfileGPX} from './constitutionProfile';
 import {UserProfileGPX} from './userProfile';
 import {PostGPX} from './post.component';
@@ -20,16 +17,18 @@ import {NewPostGPX} from './newPost';
 import {PartyListComponentGPX} from './partyList.component';
 import {PartyListProfileComponentGPX} from './partyListProfile.component';
 import {LegislatorComponentGPX} from './legislator.component';
-import { LegislatorsService } from './service/legislators.service';
-import { MissionService }     from './service/compCommunication.service';
-
-//import { Legislator } from './object/legislator';
 import {PartyProfileGPX} from './partyProfile.component';  
 import {SearchLegislatorComponentGPX} from './search.component';
+
+import { LegislatorsService } from './service/legislators.service';
+import { MissionService }     from './service/compCommunication.service';
+import {DataShareService} from './service/dataShare.service';
+import {UserService} from './service/user.service';
+
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import {MdCard} from '@angular2-material/card';
+//import {MdCard} from '@angular2-material/card';
 
 
 //import { NDV_DIRECTIVES } from 'angular2-click-to-edit/components';
@@ -72,19 +71,23 @@ import {MdCard} from '@angular2-material/card';
 
 
 export class AppComponent  implements OnInit, AfterViewInit {
-  alertType:string = "danger"; //info, warning, danger
-  alertMessage:string = "Hello";
 
   @ViewChild('staticTabs') staticTabs: TabsetComponent;
     //legislators: Array<Legislator> = [];
     //public selectedlegislator: Legislator;
-    constructor(private  router: Router, private missionService: MissionService) {
+    constructor(private  router: Router, private missionService: MissionService, private dataShareService:DataShareService, private userService:UserService) {
       missionService.getAlert().subscribe(
       mission => {
         console.log("Alert message received " + mission);
       });
-      console.log('alert subscribed');
-
+      
+      //SHOULD BE PART OF LOGIN PROCESS
+      this.userService.getUserData(this.dataShareService.getCurrentUserId()).subscribe(
+          data => {
+            this.dataShareService.setCurrentUser(data);
+            console.log("this.dataShareService.getCurrentUser() " + JSON.stringify(this.dataShareService.getCurrentUser()));  
+          }
+      );
     }
 
     clickTab(event: String){
@@ -129,11 +132,11 @@ createPage(event: String){
   console.log("creating page - " + event);
   //console.log("event.target.value " + event.target);
   if(event === 'District'){
-    this.router.navigate(['/district/14']);
+    this.router.navigate(['/district/CREATE']);
   }else if(event === 'Legislator'){
     this.router.navigate(['/user/B001296']);
   }else if(event === 'User'){
-    this.router.navigate(['/user/u001']);
+    this.router.navigate(['/user/CREATE']);
   }else if(event === 'Party'){
     this.router.navigate(['/partyProfile']);
   }

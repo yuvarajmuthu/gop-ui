@@ -1,8 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Legislator } from './object/legislator';
-import { LegislatorsService } from './service/legislators.service';
-import {BannerGPXComponent} from './banner.component';
 import { Router, RouteSegment } from "@angular/router";
+
+import { Legislator } from './object/legislator';
+
+import { LegislatorsService } from './service/legislators.service';
+import {DataShareService} from './service/dataShare.service';
+
+import {BannerGPXComponent} from './banner.component';
 
 @Component({
   selector: 'legislator',
@@ -122,7 +126,7 @@ export class LegislatorComponentGPX implements OnInit{
   keys = [];
 
   
-  constructor(private  router: Router, private legislatorsService: LegislatorsService) {
+  constructor(private  router: Router, private legislatorsService: LegislatorsService, private dataShareService: DataShareService) {
   }
 
   ngOnInit(): void {
@@ -173,8 +177,10 @@ export class LegislatorComponentGPX implements OnInit{
   }
 
   gotoLegislator(legislator: Legislator):void{
-    console.log('selected legislator - ' +  legislator);    
-    this.router.navigate(['/user', legislator.leg_id]);
+    console.log('selected legislator - ' +  legislator);
+    this.dataShareService.setViewingUser(legislator);    
+    //this.router.navigate(['/user', legislator.leg_id]);
+    this.router.navigate(['/user', 'legis']);
   }
 
 }

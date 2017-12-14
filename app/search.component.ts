@@ -104,8 +104,7 @@ export class SearchLegislatorComponentGPX implements OnInit {
     this.congressData = true;
     
     if(!this.address){
-      console.log('alerting');
-      this.missionService.announceAlertMission("{'alertType':'danger', 'alertMessage':'Please provide address to search for Congress data.'}");
+      //this.missionService.announceAlertMission("{'alertType':'danger', 'alertMessage':'Please provide address to search for Congress data.'}");
 
       this.alertService.error("Please provide address to search for Congress data.");
 
@@ -165,6 +164,8 @@ private getLatitudeLongitude(callback, address) {
     }
 }
 */
+
+  //DEPRECATED
   getCongressLegislatorsByZip(zipcode: string) {
     console.log("Search value: " + zipcode);
     this.currentLocationZip = zipcode;
@@ -176,7 +177,7 @@ private getLatitudeLongitude(callback, address) {
   }
 
 
-    
+  //using CONGRESS API  
   getDistrict(searchParam:string, type:string){
      console.log("getDistrict() searchParam" + searchParam + ',type ' + type);
     this.legislatorsService.getDistrict(searchParam, type)
@@ -222,62 +223,69 @@ private getLatitudeLongitude(callback, address) {
     .subscribe((result) => {
       console.log("result for type " + type + JSON.stringify(result));
       if(type == 'congress'){
-        let offices = [];
-        offices = result['offices'];
-        
-        let officials = [];
-        officials = result['officials'];
+        if(!result['error']){
 
-       for(var i = 0;i<officials.length;i++) {
-         let legislator = {};
-         if(offices[i] && offices[i]['name'] && 
-           (offices[i]['name'].indexOf('United States Senate') != -1 || offices[i]['name'].indexOf('United States House of Representatives') != -1)){
-        // console.log("offices[i]['name'] " + offices[i]['name']);
-       //console.log("offices[i]['name'].indexOf('United States Senate') " + offices[i]['name'].indexOf('United States Senate'));
-       //console.log("offices[i]['name'].indexOf('United States House of Representatives') " + offices[i]['name'].indexOf('United States House of Representatives'));
-       //console.log("flag " + (offices[i]['name'] && 
-        //   (offices[i]['name'].indexOf('United States Senate') != -1 || offices[i]['name'].indexOf('United States House of Representatives') != -1)));
+          //this.congressDistricts = [];
 
-         legislator['full_name'] = officials[i]['name'];
-         legislator['party'] = officials[i]['party'];
-         legislator['photo_url'] = officials[i]['photoUrl'];  
+          let offices = [];
+          offices = result['offices'];
+          
+          let officials = [];
+          officials = result['officials'];
 
-         if(offices[i]['name'])
-           legislator['role'] = offices[i]['name'];
+         for(var i = 0;i<officials.length;i++) {
+           let legislator = {};
+           if(offices[i] && offices[i]['name'] && 
+             (offices[i]['name'].indexOf('United States Senate') != -1 || 
+               offices[i]['name'].indexOf('United States House of Representatives') != -1)){
+          // console.log("offices[i]['name'] " + offices[i]['name']);
+         //console.log("offices[i]['name'].indexOf('United States Senate') " + offices[i]['name'].indexOf('United States Senate'));
+         //console.log("offices[i]['name'].indexOf('United States House of Representatives') " + offices[i]['name'].indexOf('United States House of Representatives'));
+         //console.log("flag " + (offices[i]['name'] && 
+          //   (offices[i]['name'].indexOf('United States Senate') != -1 || offices[i]['name'].indexOf('United States House of Representatives') != -1)));
 
-         let division:string = offices[i]['divisionId'];
-         if(division.indexOf('state:') != -1){
-           legislator['state'] = division.substr(division.indexOf('state:')+6, 2).toUpperCase();
+           legislator['full_name'] = officials[i]['name'];
+           legislator['party'] = officials[i]['party'];
+           legislator['photo_url'] = officials[i]['photoUrl'];  
+
+           if(offices[i]['name'])
+             legislator['role'] = offices[i]['name'];
+
+           let division:string = offices[i]['divisionId'];
+           legislator['ocdId'] = division; //division id from google civic
+           if(division.indexOf('state:') != -1){
+             legislator['state'] = division.substr(division.indexOf('state:')+6, 2).toUpperCase();
+           }
+
+          if(division.indexOf('cd:') != -1){
+             legislator['district'] = division.substr(division.indexOf('cd:')+3, 2);
+           }
+/*
+           //DISPLAY DISTRICT  
+          let district:any = {};
+          district['name'] = legislator['district'];  
+          district['state'] = legislator['state'];
+          district['ocdId'] = division; //division id from google civic          
+          this.congressDistricts.push(district);
+*/
+
+          if(offices[i]['roles'] && offices[i]['roles'].length > 0){
+            legislator['chamber'] = offices[i]['roles'][0];
+          }
+
+          this.legislators.push(legislator);
+          this.legislator = legislator;
+          }
          }
-
-        if(division.indexOf('cd:') != -1){
-           legislator['district'] = division.substr(division.indexOf('cd:')+3, 2);
-         }
-
-        if(offices[i]['roles'] && offices[i]['roles'].length > 0){
-          legislator['chamber'] = offices[i]['roles'][0];
-        }
-
-        this.legislators.push(legislator);
-        this.legislator = legislator;
-        }
        }
-      }else{
+       else{
+         console.log('Error in getting');
+         this.alertService.error('Error in getting data');
+       }
+      }else{//DATA FOR STATE - OPENSTATES
               for(var i = 0;i<result.length;i++) {
-
-           //retrieving the image from bioguide
-           /*
-              if(result[i].bioguide_id){
-                let intial = result[i].bioguide_id.charAt(0);
-                let imageUrl = 'http://bioguide.congress.gov/bioguide/photo/' + intial + '/' + result[i].bioguide_id + '.jpg';
-                console.log("bioguide image url " + imageUrl);
-                result[i].bioguideImageUrl = imageUrl;
-              }
-            */
-               this.legislator = result[i];
-               this.legislators.push(this.legislator);
-
-
+                 this.legislator = result[i];
+                 this.legislators.push(this.legislator);
 
               }
       }
@@ -296,6 +304,9 @@ private getLatitudeLongitude(callback, address) {
                   let district:any = {};
                   district['name'] = this.legislator['district'];  
                   district['state'] = this.legislator['state'];
+                  if(this.legislator['ocdId']){
+                    district['ocdId'] = this.legislator['ocdId'];
+                  }
                   this.congressDistricts.push(district);   
                 }             
 
@@ -303,13 +314,21 @@ private getLatitudeLongitude(callback, address) {
 
            
 
+            },
+            (error)=>{
+              console.log('Error in getting');
+              this.alertService.error('Error in getting data');
             });
 
   }
 
-  gotoDistrict(district:string){
-    console.log("Navigating to district " + district);
-    let url = '/district/' + district;
+  gotoDistrict(district:JSON){
+    console.log("Navigating to district " + JSON.stringify(district));
+    let districtName:string;
+
+    districtName = district['name'];  
+
+    let url = '/district/' + districtName;
     this.router.navigate([url]);
   }
 /*

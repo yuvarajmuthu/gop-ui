@@ -1,16 +1,52 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ViewChild, ElementRef, ViewContainerRef, TemplateRef} from '@angular/core';
+import {CORE_DIRECTIVES} from '@angular/common';
+
 
 import {DataShareService} from './service/dataShare.service';
 import {PostService} from './service/post.service';
 
 import {Post} from './object/post';
 
+import {FileUploadComponent} from './file-upload/file-upload.component';
+
+import { FileUploader } from './file-upload/file-uploader.class';
+import { FileSelectDirective  } from './file-upload/file-select.directive';
+import { CollapseDirective } from 'ng2-bootstrap/components/collapse';
+
+//import { MODAL_DIRECTVES } from 'ng2-bootstrap/components/modal';
+//import { MODAL_DIRECTVES, BS_VIEW_PROVIDERS, ModalDirective  } from 'ng2-bootstrap';
+
+//import { BsModal } from 'ngx-bootstrap/modal/modal-options.class';
+
+const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
+
 @Component({
   selector: 'newPost-gpx',
   templateUrl: 'app/view/newPost.html',
-  directives: [],
+  directives: [CollapseDirective, FileUploadComponent],
+  //directives: [FileUploadComponent, FileSelectDirective, CollapseDirective],  
   providers:[PostService],
   styles: [`
+label {
+   cursor: pointer;
+   /* Style as you please, it will become the visible UI component. */
+}
+
+#upload-photo {
+   opacity: 0;
+   position: absolute;
+   z-index: -1;
+}
+
+.fileUploadStage{
+  margin-bottom: 40px;
+  
+}
+
+.attachBtn{
+  font-size:1.5em;  
+}
+
   .newPostButton{
 
   }
@@ -18,10 +54,32 @@ import {Post} from './object/post';
   .newPost{
     width:auto;
   }
+
+     .my-drop-zone { border: dotted 3px lightgray; }
+    .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+    .another-file-over-class { border: dotted 3px green; }
+
   `]
 })
 
+
 export class NewPostGPX {
+
+  /*public uploader:FileUploader = new FileUploader({url: URL});
+  public hasBaseDropZoneOver:boolean = false;
+  public hasAnotherDropZoneOver:boolean = false;
+*/ 
+  public isFileStagingAreaCollapsed:boolean = true;
+
+/*
+  public fileOverBase(e:any):void {
+    this.hasBaseDropZoneOver = e;
+  }
+ 
+  public fileOverAnother(e:any):void {
+    this.hasAnotherDropZoneOver = e;
+  }
+*/
   @Output() postEvent: EventEmitter<any> = new EventEmitter();
 
   @Input() parentPost:Post;
@@ -29,7 +87,8 @@ export class NewPostGPX {
   hideInput:boolean = false;
   //clearInput:boolean = false;
 
-  constructor(private postService: PostService, private dataShareService:DataShareService) {  
+
+      constructor(private postService: PostService, private dataShareService:DataShareService) {  
   }
 
   submitPost(text:string){
@@ -61,7 +120,8 @@ export class NewPostGPX {
 */
     //
     let post = {} as Post;
-    post.userName = this.dataShareService.getCurrentUserId();
+    let currentUser = this.dataShareService.getCurrentUser();
+    post.userName = currentUser['userId'];//this.dataShareService.getCurrentUserId();
     post.districtId = this.dataShareService.getCurrentDistrictId();
     post.txtPost = this.txtPost;
 

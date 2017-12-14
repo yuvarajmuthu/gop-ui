@@ -14,7 +14,7 @@
       </div>
       
       <div>{{districtLabel}} 
-        <button *ngFor="let congressDistrict of congressDistricts" type="button" class="btn btn-primary" (click)="gotoDistrict(congressDistrict.name)">{{congressDistrict.name}}</button>
+        <button *ngFor="let congressDistrict of congressDistricts" type="button" class="btn btn-primary" (click)="gotoDistrict(congressDistrict)">{{congressDistrict.name}}</button>
       </div>
       <!--
       <div>

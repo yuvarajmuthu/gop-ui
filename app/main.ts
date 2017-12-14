@@ -12,6 +12,8 @@ import {APP_BASE_HREF} from '@angular/common';
 import {DataShareService} from './service/dataShare.service';
 import { MissionService }     from './service/compCommunication.service';
 import { AlertService } from './_services/index';
+import {UserService} from './service/user.service';
 
 
-bootstrap(AppComponent, [AlertService, MissionService, DataShareService, HTTP_PROVIDERS, JSONP_PROVIDERS, ROUTER_PROVIDERS, {provide: APP_BASE_HREF, useValue : '/' }]);
+bootstrap(AppComponent, [AlertService, MissionService, DataShareService, UserService, 
+	HTTP_PROVIDERS, JSONP_PROVIDERS, ROUTER_PROVIDERS, {provide: APP_BASE_HREF, useValue : '/' }]);
