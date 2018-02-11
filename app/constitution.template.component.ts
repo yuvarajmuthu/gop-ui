@@ -1,7 +1,7 @@
 import { 
     Component, EventEmitter, Input, Output, OnChanges, OnInit, AfterViewInit, OnDestroy, 
-    ViewChild, ViewContainerRef, 
-    ComponentRef, DynamicComponentLoader, Type
+    ViewChild, ViewContainerRef, ViewRef,
+    ComponentRef, TemplateRef, EmbeddedViewRef, DynamicComponentLoader, Type
 } from '@angular/core';
 
 //import { TAB_DIRECTIVES } from 'ng2-bootstrap/components/tabs';
@@ -12,7 +12,7 @@ import {DataShareService} from './service/dataShare.service';
 import { MissionService }     from './service/compCommunication.service';
 import {GroupService} from './service/group.service';
 import {UserService} from './service/user.service';
-
+import {ProfileService} from './service/profile.service';
 
 @Component({
     selector: 'dynamic-content',
@@ -37,6 +37,8 @@ export class DynamicContentComponent extends Type implements OnChanges {
 
     @Input()
     data:string;
+
+    comp:any;
   
 /*    @ViewChild(TemplatePopulationComponent)
     populationComponent: TemplatePopulationComponent;
@@ -88,9 +90,18 @@ export class DynamicContentComponent extends Type implements OnChanges {
 
     private componentRef: ComponentRef<{}>;
 
-    constructor(private loader:DynamicComponentLoader,
+    constructor(private missionService:MissionService, private loader:DynamicComponentLoader,
                   private viewContainerRef: ViewContainerRef, private dataShareService:DataShareService) {
         super();
+        missionService.missionProfileTemplateRemoved$.subscribe(
+        mission => {
+          console.log("mission confirmed " + mission);
+          console.log("this.viewContainerRef.length " + this.viewContainerRef.length);
+          console.log("this.viewContainerRef.indexOf(mission) " + this.viewContainerRef.indexOf(mission));
+          let index:number = this.viewContainerRef.indexOf(mission);
+          this.viewContainerRef.remove(index);
+          //this.viewContainerRef.remove(0);
+        });
     }
 
     getComponentType(typeName: string) {
@@ -107,12 +118,21 @@ export class DynamicContentComponent extends Type implements OnChanges {
       return true;
   }
 */
+
   loadComponentTemplate() {
     console.log('loadComponentTemplate() ' + this.type);
+    let cRef:Promise<ComponentRef<any>>;
     if (this.type) {
       for(let compType of this.type){
         let component = this.mappings[compType];
-        this.loader.loadNextToLocation(component, this.viewContainerRef);
+        this.comp = component;
+        cRef = this.loader.loadNextToLocation(component, this.viewContainerRef);
+        cRef.then((cRef) => {
+          let vRef:ViewRef = cRef.hostView;
+          console.log("vRef " + vRef);
+          this.dataShareService.setDistrictViews(this.comp, vRef);
+        });
+        //component.instance._ref = component;
         /*
         this.loader.loadNextToLocation(component, this.viewContainerRef).then(componentRef=> {
           if(this.isPop(component)){
@@ -158,10 +178,20 @@ abstract class AbstractTemplateComponent {
 
          //getting the available profile templates for this group type
             console.log("loadTemplateData() for template: " +  id);
+            //TODO
+            //call profile service to get the template data
+            /*
+      this.groupService.updateGroup(groupId, JSON.stringify(profileRequest))
+      .subscribe((result) => {
+        console.log("update group response " + result);
+      });
+      */
+
             for (let profileTemplate of this.viewingDistrict['profileTemplates']){
-              console.log("reading profileTemplates properties: " + profileTemplate['profile_template_id']);
-              //this.templateType.push(profileData['profile_template_id']);
-              if(id == profileTemplate['profile_template_id']){
+              console.log("reading profileTemplates properties: " + profileTemplate['profileTemplateId']);
+              console.log("JSON.stringify(this.viewingDistrict['profileTemplates'])" + JSON.stringify(this.viewingDistrict['profileTemplates']));
+              //this.templateType.push(profileData['profileTemplateId']);
+              if(id == profileTemplate['profileTemplateId']){
                 this.templateProperties = profileTemplate['properties'];
 /*
                 for (let property of this.templateProperties){
@@ -177,9 +207,9 @@ abstract class AbstractTemplateComponent {
             //getting the data for this group profile
            if(this.viewingDistrict['profilesData']){ 
             for (let profileData of this.viewingDistrict['profilesData']){
-              console.log("reading profileData properties: " +  profileData['profile_template_id']);
+              console.log("reading profileData properties: " +  profileData['profileTemplateId']);
               //this.templateType.push(profileData['profile_template_id']);
-              if(id == profileData['profile_template_id']){
+              if(id == profileData['profileTemplateId']){
                 this.templateData = profileData['data'];
                 break;  
               }
@@ -468,7 +498,10 @@ main {
 }     
   `]    
 })
+
+//DEPRECATED
 export class TemplateIntroductionComponent extends AbstractTemplateComponent {
+
   groupId = "g0010";
   id:string = "districtIntroTemplate";
   //name:string = "";//"Pennsylvania's 14th congressional district";
@@ -482,7 +515,7 @@ export class TemplateIntroductionComponent extends AbstractTemplateComponent {
   //private templateData = [];
   public connected:boolean = false;
 
-  constructor(private userService:UserService, private groupService:GroupService, private dataShareService1:DataShareService, private missionService: MissionService) {
+  constructor(private userService:UserService, private profileService:ProfileService, private groupService:GroupService, private dataShareService1:DataShareService, private missionService: MissionService) {
       super(dataShareService1);
 
       missionService.missionAnnounced$.subscribe(
@@ -537,6 +570,8 @@ export class TemplateIntroductionComponent extends AbstractTemplateComponent {
     template: `<div>Dynamic Template - Business</div>`
 })
 export class TemplateBusinessComponent extends AbstractTemplateComponent {
+
+
   id:string = "districtBusinessTemplate";
         constructor(private dataShareService2:DataShareService, private missionService: MissionService) {
           super(dataShareService2);
@@ -565,9 +600,15 @@ export class TemplateBusinessComponent extends AbstractTemplateComponent {
 @Component({
     selector: 'district-population',
     directives: [NdvEditComponent],
-    //providers:[DataShareService],
+    providers:[ProfileService],
     template: `
+<ng-template #tpl>
          <div class="container" *ngIf="show">
+           <div>
+             Population Template:
+             <!--<button type="button" class="btn btn-success" (click)="saveTemplateData()">Save</button>-->
+             <button type="button" *ngIf="allowed()" class="btn btn-danger glyphicon glyphicon-trash" (click)="removeTemplateData()">Remove</button>
+           </div>
  
             <div>
                   <h5>Population:</h5>
@@ -600,6 +641,8 @@ export class TemplateBusinessComponent extends AbstractTemplateComponent {
             </div>
 
           </div>  
+          </ng-template>
+
       `,
   styles: [`
     .populationTemplate{
@@ -624,6 +667,7 @@ export class TemplateBusinessComponent extends AbstractTemplateComponent {
 })
 
 export class TemplatePopulationComponent extends AbstractTemplateComponent implements AfterViewInit{
+    obj:any=TemplatePopulationComponent;
     id:string = "districtPopulationTemplate";
   //population:string = "100000";
   //maleCount:string = "40000";
@@ -632,25 +676,72 @@ export class TemplatePopulationComponent extends AbstractTemplateComponent imple
   @Input() show:boolean = true;
   @Output() onAdd = new EventEmitter<TemplatePopulationComponent>();
 
-  constructor(private dataShareService3:DataShareService, private missionService: MissionService) {
+    @ViewChild('tpl', { read: TemplateRef }) tpl: TemplateRef<any>;
+
+view:EmbeddedViewRef<TemplatePopulationComponent>; 
+
+  constructor(private viewContainerRef:ViewContainerRef, private profileService:ProfileService, private dataShareService3:DataShareService, private missionService: MissionService) {
       super(dataShareService3);
 
       missionService.missionAnnounced$.subscribe(
       mission => {
         console.log("Received save Profile message from parent for district " + mission);
-        console.log("Data " + this.getData()); 
+        //console.log("Data " + this.getData()); 
     });
 
     this.loadTemplateData(this.id);  
+
   }
 
+    loadTemplateData(id:string){
 
+         //getting the available profile templates for this group type
+            console.log("loadTemplateData() for template: " +  id);
+            //TODO
+            //call profile service to get the template data
+      this.profileService.getProfileTemplateData(id)
+      .subscribe((result) => {
+        console.log("profile template response " + result[0]);
+        this.templateProperties = result[0]['properties'];
+
+      });
+
+
+
+            //getting the data for this group profile
+           if(this.viewingDistrict['profilesData']){ 
+            for (let profileData of this.viewingDistrict['profilesData']){
+              console.log("reading profileData properties: " +  profileData['profileTemplateId']);
+              //this.templateType.push(profileData['profile_template_id']);
+              if(id == profileData['profileTemplateId']){
+                this.templateData = profileData['data'];
+                break;  
+              }
+            }
+
+            for (let dataObj of this.templateData){
+              let keys = [];
+              keys = Object.keys(dataObj);
+              console.log("Template data keys " + keys[0] + ":" + dataObj[keys[0]]);
+              this[keys[0]] = dataObj[keys[0]];
+            }
+          }
+    
+
+    }
+
+//notify when templatepopulationcomponent is added, 
+//so an instance would be added to constitutionProfile and would be used for saving the profile
 ngAfterViewInit(){
   console.log("ngAfterViewInit() TemplatePopulationComponent");
-  //this.onAdd.emit(this);
-
-  //this.missionService.confirmMission(this.getData());
+  this.missionService.newProfileTemplateAddedMission(this);
+  //this.view= this.tpl.createEmbeddedView(this.tpl);
+  //this.view = this.tpl.createEmbeddedView(this.viewContainerRef);
+        //this.view = this.viewContainerRef.createEmbeddedView(this.tpl);
+    //this.tpl.createEmbeddedView('this is a embedded view')
+//this.viewContainerRef.get()
 }
+
 
     allowed():boolean{
         let permission:boolean = this.dataShareService3.checkPermissions();
@@ -659,16 +750,34 @@ ngAfterViewInit(){
         return permission;
     }
     
-    getData():string{
+    public getData():string{
       let data = {};
-    /*  data["population"] = this.population;
-      data["maleCount"] = this.maleCount;
-      data["femaleCount"] = this.femaleCount;
-      data["othersCount"] = this.othersCount;
-      data["show"] = this.show;
-*/
+      var templateData = [];
+
+      for (let key of this.templateProperties){
+        let property = {};
+        //console.log("Key " + key);
+        if(this[key]){
+          property[key] = this[key];
+        }else{
+          property[key] = '';          
+        }
+        templateData.push(property);        
+      }
+
+      data["profileTemplateId"] = this.id;      
+      data["data"] = templateData;
+
       let dataString:string = JSON.stringify(data);
-      console.log("TemplatePopulationComponent data " + dataString);
+      console.log("TemplatePopulationComponent data " + JSON.stringify(dataString));
       return dataString;
     }
+
+    removeTemplateData(){
+      let vRef:ViewRef = this.dataShareService.getDistrictView(this.obj);
+      this.missionService.removeProfileTemplateMission(vRef);
+      this.missionService.newProfileTemplateAddedMission(null);
+    }
+
+
 }

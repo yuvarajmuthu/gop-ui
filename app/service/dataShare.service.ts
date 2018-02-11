@@ -1,4 +1,4 @@
-import { Injectable, OnChanges } from '@angular/core';
+import { Injectable, OnChanges, ViewRef } from '@angular/core';
 
 @Injectable()
 export class DataShareService {
@@ -16,6 +16,29 @@ export class DataShareService {
   
   public currentDistrictId:string = 'g0010';
   public selectedLegislatorId:string = 'g0010';
+
+  map = new Map();
+
+  public setDistrictViews(comp:any, vRef:ViewRef){
+    console.log("setDistrictViews() comp " + comp);
+    console.log("vRef " + vRef);
+    this.map.set(comp, vRef);
+  } 
+  
+  public getDistrictView(comp:any):any{
+    let component:any;    
+    console.log("getDistrictView() comp " + comp);
+    console.log("this.map.size " + this.map.size);
+    for (var i = 0; i <= this.map.size; i++) {
+      console.log("this.map.get(i) " + this.map.get(i));
+    }
+    if(this.map.has(comp)){
+      component = this.map.get(comp);
+      this.map.delete(comp);
+    }
+
+    return component;
+  } 
 
 
   getCurrentUserId():string{

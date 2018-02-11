@@ -121,16 +121,19 @@ export class NewPostGPX {
     //
     let post = {} as Post;
     let currentUser = this.dataShareService.getCurrentUser();
-    post.userName = currentUser['userId'];//this.dataShareService.getCurrentUserId();
+    post.userId = currentUser['userId'];//this.dataShareService.getCurrentUserId();
     post.districtId = this.dataShareService.getCurrentDistrictId();
-    post.txtPost = this.txtPost;
+    post.postText = this.txtPost;
 
     if(this.parentPost != null){
-      console.log("parent post " + this.parentPost.txtPost + ", post id " + this.parentPost.id);
+      console.log("parent post " + this.parentPost.postText + ", post id " + this.parentPost.id);
       post.parentPostId = this.parentPost.id;    
     }
     
-    this.postService.postComment(post);
+    this.postService.postComment(post)
+    .subscribe((result) => {
+      console.log("post message response " + result);
+    });
 
     if(this.parentPost != null){
        this.postEvent.emit(null);           

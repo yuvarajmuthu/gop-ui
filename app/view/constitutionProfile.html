@@ -16,7 +16,7 @@
 
 	  <ul dropdownMenu class="dropdown-menu" role="menu">
 	    <li role="menuitem" *ngFor="let profileTemplate of profilesTemplates">
-	    	<a class="dropdown-item" (click)="loadTemplate(profileTemplate.profile_template_id)">{{profileTemplate.name}}</a>
+	    	<a class="dropdown-item" (click)="loadTemplate(profileTemplate.profileTemplateId)">{{profileTemplate.name}}</a>
 	    	
 	    </li>
 	  </ul>
@@ -80,7 +80,7 @@
               <tabset type="pills" #staticTabs>
                 <tab heading='Profile'>
 	   				<div>
-					  <dynamic-content [type]="templateType"></dynamic-content>
+						<dynamic-content [type]="templateType"></dynamic-content>
 				    </div>
 
                 </tab>

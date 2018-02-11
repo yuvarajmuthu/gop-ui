@@ -260,6 +260,10 @@ private getLatitudeLongitude(callback, address) {
           if(division.indexOf('cd:') != -1){
              legislator['district'] = division.substr(division.indexOf('cd:')+3, 2);
            }
+
+           //setting DUMMY id
+           //legislator['district'] = "5a5adb1f77b2ae4edc96d0ca";
+           legislator['district'] = "5a6ea6ce77b2ae4ae0099564";
 /*
            //DISPLAY DISTRICT  
           let district:any = {};

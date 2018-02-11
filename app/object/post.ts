@@ -2,8 +2,8 @@ export class Post {
 	constructor(
 		public id:string,
 		public parentPostId:string,		
-		public userName: string,
-		public txtPost: string,
+		public userId: string,
+		public postText: string,
 		public postType:string,
 		public imageUrl:string,
 		public videoUrl:string,
@@ -16,8 +16,8 @@ export class Post {
 	  return {
 	    id:    json["post_id"],
 	    parentPostId: json["parent_post_id"],
-	    userName:     json["user_id"],
-	    txtPost: json["txtPost"],
+	    userId:     json["user_id"],
+	    postText: json["txtPost"],
 	    postType:    json["post_type"],
 	    imageUrl:    json["image_url"],
 	    videoUrl:    json["video_url"],

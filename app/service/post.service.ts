@@ -7,7 +7,8 @@ import {Post} from '../object/post';
 
 @Injectable()
 export class PostService {
-
+  serviceUrl:string = "http://127.0.0.1:8080/post";	
+  
   constructor (private http: Http, private jsonp:Jsonp) {}	
 
   //deprecated
@@ -30,8 +31,8 @@ export class PostService {
 		    post = posts[i];
 		    console.log('reading properties - ' + post['txtPost']);
 
-		    postPromise.userName = 'ymuthu';
-		    postPromise.txtPost = post['txtPost'];
+		    postPromise.userId = 'ymuthu';
+		    postPromise.postText = post['txtPost'];
 
 		    postsPromise.push(postPromise);
 		}
@@ -65,12 +66,21 @@ export class PostService {
 		}
 
       	return postsPromise;      
-          });
+          })
+    .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
 
   }
 
   //post the comment to the server
-  postComment(post:Post){
+  postComment(post:Post):Observable<any>{
   	console.log("postComment post.service " + JSON.stringify(post));
+ 	let bodyString = JSON.stringify(post); // Stringify payload
+    let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
+    let options       = new RequestOptions({ headers: headers }); // Create a request option
+
+	console.log("postComment::post.service invoking service " + this.serviceUrl);
+    return this.http.post(this.serviceUrl, bodyString, options) // ...using post request
+                     .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
+                     .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
   }
 }

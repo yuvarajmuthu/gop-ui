@@ -12,7 +12,11 @@ import {DynamicContentComponent} from './constitution.template.component';
 //import { NdvEditComponent } from 'angular2-click-to-edit/components';
 import { DROPDOWN_DIRECTIVES } from 'ng2-bootstrap/components/dropdown';
 import { CollapseDirective } from 'ng2-bootstrap/components/collapse';
+
+import {TemplateIntroductionComponent} from './constitution.template.component';
 import {TemplatePopulationComponent} from './constitution.template.component';
+import {TemplateBusinessComponent} from './constitution.template.component';
+
 import {PartyListComponentGPX} from './partyList.component';
 import {PostCardGPX} from './postCard.component';
 
@@ -31,7 +35,7 @@ import {Post} from './object/post';
 @Component({
   selector: 'constitutionProfile-gpx',
   templateUrl: 'app/view/constitutionProfile.html',
-  directives: [DynamicContentComponent, TemplatePopulationComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent, PartyListComponentGPX, PostCardGPX],
+  directives: [DynamicContentComponent, TemplateIntroductionComponent, TemplatePopulationComponent, TemplateBusinessComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent, PartyListComponentGPX, PostCardGPX],
   providers:[LegislatorsService, PeopleService, PartyService, GroupService, UserService],
   styles: [`
 
@@ -378,7 +382,7 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
 //      this.loadProfileTemplate();      
       this.dataShareService.setPermission("Editor");   
 
-      this.groupService.getGroupData('').subscribe(
+      this.groupService.getGroupData(this.operation).subscribe(
           data => {
             this.groupData = data;
             console.log("Group data from service: ", this.groupData);
@@ -393,8 +397,8 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
             console.log("this.viewingDistrict['profileTemplates']" + this.viewingDistrict['profileTemplates']);
             if(this.viewingDistrict['profileTemplates']){
                   for (let profileTemplate of this.viewingDistrict['profileTemplates']){
-                    console.log("reading profileTemplates properties: " + profileTemplate['profile_template_id']);
-                    if("districtIntroTemplate" == profileTemplate['profile_template_id']){
+                    console.log("reading profileTemplates properties: " + profileTemplate['profileTemplateId']);
+                    if("districtIntroTemplate" == profileTemplate['profileTemplateId']){
                       let templateProperties = [];
                       templateProperties = profileTemplate['properties'];
 
@@ -418,20 +422,40 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
 
   constructor(private userService:UserService, private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
       console.log("constructor()::constitutionProfile");
+      //listens for any templatepopulationcomponent addition
+      missionService.missionNewProfileTemplateAdded$.subscribe(
+      mission => {
+        console.log("Received templatepopulationcomponent init message");
+        this.populationComponent = mission;
+    });      
+  }
+  
+  setValue(jsonData) {
+      console.log(' saved! the obj  - ' + JSON.stringify(jsonData));
+      for(var key in jsonData){
+        if(jsonData.hasOwnProperty(key)){
+          this[key] = jsonData[key];
+          console.log('New value  - ' + key + " - " + this[key]);
+        }
+      }
   }
 
+//called with district id
   loadData(){
       this.parties = this.partyService.getPartiesByParam('');
       this.connected = this.userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId());
 
       //GETTING PROFILE DATA
-      this.groupService.getGroupData('').subscribe(
+      this.groupService.getGroupData(this.operation).subscribe(
           data => {
             this.groupData = data;
             console.log("Group data from service: ", this.groupData);
 
+          let profileStr = JSON.parse('[{"profileTemplateId":"districtIntroTemplate","name":"Introduction"},{"profileTemplateId":"districtPopulationTemplate","name":"Population"},{"profileTemplateId":"districtBusinessTemplate","name":"Popular Business"}]');
+          
             //getting the available profile templates for this group type
             this.viewingDistrict['profileTemplates'] = this.profilesTemplates = this.groupData['profile'];
+            this.viewingDistrict['profileTemplates'] = this.profilesTemplates = profileStr;           
             console.log("profile templates: ", this.profilesTemplates);
 
             //getting the data for this group profile
@@ -446,14 +470,14 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
             //identifying the profile selected for this group profile, so those components shall be loaded
             let compTypes = [];
             for (let profileData of this.profilesData){
-              console.log("loading template component1: ", profileData['profile_template_id']);
+              console.log("loading template component1: ", profileData['profileTemplateId']);
               //this.templateType.push(profileData['profile_template_id']);
               
 
               //display the intro template data - districtIntroTemplate
-              console.log("profileData['profile_template_id'] " + profileData['profile_template_id']);
+              console.log("profileData['profileTemplateId'] " + profileData['profileTemplateId']);
 
-              if("districtIntroTemplate" == profileData['profile_template_id']){
+              if("districtIntroTemplate" == profileData['profileTemplateId']){
                 for (let dataObj of profileData['data']){
                   let keys = [];
                   keys = Object.keys(dataObj);
@@ -462,7 +486,7 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
                 }
               }else{
                 console.log("Adding dynamic Template");              
-                compTypes.push(profileData['profile_template_id']);
+                compTypes.push(profileData['profileTemplateId']);
               }
 
             }
@@ -501,12 +525,20 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
 
 
   }
-
+/*
   @ViewChild('district-population')
   set populationComponent(content:TemplatePopulationComponent) {
     console.log('setting viewchild ' + content);
     //this.populationComponent = content;
  }
+ */
+
+
+  @ViewChild(TemplateIntroductionComponent) introductionComponent: TemplateIntroductionComponent;        
+  @ViewChild(TemplatePopulationComponent) populationComponent: TemplatePopulationComponent;
+  @ViewChild(TemplateBusinessComponent) businessComponent: TemplateBusinessComponent;  
+  @ViewChild(DynamicContentComponent) dynamicComponent: DynamicContentComponent;
+  
 
 /*
       set populationTemplate(v: TemplatePopulationComponent) {
@@ -598,10 +630,98 @@ getCurrentRepresentatives(type:string){
 }
 
 saveProfile(){
-      console.log("Saving Profile");
-      this.missionService.announceMission("{'districtID':'d001'}");
-      //console.log("printing female count " + this.populationComponent.femaleCount);
-      //this.populationComponent.getData();  
+
+    if(this.operation == "CREATE"){
+      console.log("Creating Group Profile");
+      this.createProfile();
+    }else{
+      console.log("Saving Group Profile");
+      this.updateProfile(this.operation);
+    }
+
+
+}
+
+createProfile(){
+      var profileRequest = {};      
+      var profile = {};      
+      var profilesData = [];
+      var templateData = [];
+////
+      let property = {};
+      property["name"] = this["name"];
+      templateData.push(property);
+
+      property = {};
+      property["description"] = this["description"];
+      templateData.push(property);
+      
+      profile["profileTemplateId"] = "districtIntroTemplate";      
+      profile["data"] = templateData;
+
+      profilesData.push((profile));
+////
+      if(this.populationComponent){
+        profilesData.push(JSON.parse(this.populationComponent.getData()));
+      }
+
+///
+      profileRequest["groupName"] = this["name"];
+      profileRequest["groupLevel"] = "";
+      profileRequest["groupType"] = "";            
+      profileRequest["parentGroupId"] = "";
+      profileRequest["sourceSystem"] = "";
+      profileRequest["sourceId"] = "";            
+
+      profileRequest["profileData"] = profilesData;
+      console.log("Profile data " + JSON.stringify(profileRequest));      
+
+      this.groupService.createGroup(JSON.stringify(profileRequest))
+      .subscribe((result) => {
+        console.log("create group response " + result);
+      });
+
+}
+
+updateProfile(groupId:string){
+      var profileRequest = {};      
+      var profile = {};      
+      var profilesData = [];
+      var templateData = [];
+////collecting data from districtIntroTemplate
+      let property = {};
+      property["name"] = this["name"];
+      templateData.push(property);
+
+      property = {};
+      property["description"] = this["description"];
+      templateData.push(property);
+      
+      profile["profileTemplateId"] = "districtIntroTemplate";      
+      profile["data"] = templateData;
+
+      profilesData.push((profile));
+////collecting data from populationTemplate
+      if(this.populationComponent){
+        profilesData.push(JSON.parse(this.populationComponent.getData()));
+      }
+
+///
+      profileRequest["groupName"] = this["name"];
+      profileRequest["groupLevel"] = "";
+      profileRequest["groupType"] = "";            
+      profileRequest["parentGroupId"] = "";
+      profileRequest["sourceSystem"] = "";
+      profileRequest["sourceId"] = "";            
+
+      profileRequest["profileData"] = profilesData;
+      console.log("Profile data " + JSON.stringify(profileRequest));      
+
+      this.groupService.updateGroup(groupId, JSON.stringify(profileRequest))
+      .subscribe((result) => {
+        console.log("update group response " + result);
+      });
+
 }
 
 followDistrict(){
@@ -632,7 +752,9 @@ onAdd(event){
 }
 
 ngAfterViewInit (){ //not called
-  //console.log("constitutionProfile ngAfterViewInit ()");
+  console.log("constitutionProfile ngAfterViewInit ()");
+  //this.populationComponent.getData();
+  //this.dynamicComponent.allowed();
 }
 
 ngAfterContentInit (){ //not called
