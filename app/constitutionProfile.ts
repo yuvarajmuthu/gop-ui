@@ -20,6 +20,8 @@ import {TemplateBusinessComponent} from './constitution.template.component';
 import {PartyListComponentGPX} from './partyList.component';
 import {PostCardGPX} from './postCard.component';
 
+import {PostGPX} from './post.component';
+
 import {PeopleService} from './service/people.service';
 import {PartyService} from './service/party.service';
 import { LegislatorsService } from './service/legislators.service';
@@ -35,7 +37,7 @@ import {Post} from './object/post';
 @Component({
   selector: 'constitutionProfile-gpx',
   templateUrl: 'app/view/constitutionProfile.html',
-  directives: [DynamicContentComponent, TemplateIntroductionComponent, TemplatePopulationComponent, TemplateBusinessComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent, PartyListComponentGPX, PostCardGPX],
+  directives: [DynamicContentComponent, TemplateIntroductionComponent, TemplatePopulationComponent, TemplateBusinessComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent, PartyListComponentGPX, PostCardGPX, PostGPX],
   providers:[LegislatorsService, PeopleService, PartyService, GroupService, UserService],
   styles: [`
 
@@ -360,13 +362,27 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
   public profilesTemplates = [];
   public profilesData = [];
   private viewingDistrict={};  
-    public connected:boolean = false;
+  public connected:boolean = false;
   posts:Post[] = [];
   operation:string = "";
   followers:number = 0;
   activities:number = 0;
-  //public connected:boolean = false;
-      //private populationComponent: TemplatePopulationComponent;
+
+  @ViewChild(TemplateIntroductionComponent) introductionComponent: TemplateIntroductionComponent;        
+  @ViewChild(TemplatePopulationComponent) populationComponent: TemplatePopulationComponent;
+  @ViewChild(TemplateBusinessComponent) businessComponent: TemplateBusinessComponent;  
+  @ViewChild(DynamicContentComponent) dynamicComponent: DynamicContentComponent;
+
+  constructor(private  router: Router, private userService:UserService, private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
+      console.log("constructor()::constitutionProfile");
+      //listens for any templatepopulationcomponent addition
+      missionService.missionNewProfileTemplateAdded$.subscribe(
+      mission => {
+        console.log("Received templatepopulationcomponent init message");
+        this.populationComponent = mission;
+    });      
+  }
+  
 
   //get invoked automatically before ngOnInit()
   routerOnActivate(curr: RouteSegment): void {
@@ -420,16 +436,6 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
 
   }
 
-  constructor(private userService:UserService, private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
-      console.log("constructor()::constitutionProfile");
-      //listens for any templatepopulationcomponent addition
-      missionService.missionNewProfileTemplateAdded$.subscribe(
-      mission => {
-        console.log("Received templatepopulationcomponent init message");
-        this.populationComponent = mission;
-    });      
-  }
-  
   setValue(jsonData) {
       console.log(' saved! the obj  - ' + JSON.stringify(jsonData));
       for(var key in jsonData){
@@ -443,7 +449,9 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
 //called with district id
   loadData(){
       this.parties = this.partyService.getPartiesByParam('');
-      this.connected = this.userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId());
+      
+      //this.connected = this.userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getViewingDistrict()['id']);
+      //this.getRelation();
 
       //GETTING PROFILE DATA
       this.groupService.getGroupData(this.operation).subscribe(
@@ -464,8 +472,8 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
 
             //getting the data for this group activities
             //SHALL BE REFACTORED TO GET THIS DATA FROM POSTSERVICE
-            this.posts = this.viewingDistrict['activities'] = this.groupData['activities'];
-            console.log("profile activities: ", this.viewingDistrict['activities']);
+            //this.posts = this.viewingDistrict['activities'] = this.groupData['activities'];
+            //console.log("profile activities: ", this.viewingDistrict['activities']);
 
             //identifying the profile selected for this group profile, so those components shall be loaded
             let compTypes = [];
@@ -496,8 +504,10 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
             }
 
             //setting here so it can be accessed globally
-            this.viewingDistrict['id'] = this.groupData['id'];
+            this.viewingDistrict['id'] = this.operation;//this.groupData['id'];
             this.dataShareService.setViewingDistrict(this.viewingDistrict);
+
+            this.getRelation();
 
           }
       );
@@ -534,10 +544,6 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
  */
 
 
-  @ViewChild(TemplateIntroductionComponent) introductionComponent: TemplateIntroductionComponent;        
-  @ViewChild(TemplatePopulationComponent) populationComponent: TemplatePopulationComponent;
-  @ViewChild(TemplateBusinessComponent) businessComponent: TemplateBusinessComponent;  
-  @ViewChild(DynamicContentComponent) dynamicComponent: DynamicContentComponent;
   
 
 /*
@@ -556,6 +562,11 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
       console.log("show activities ");  
     }
 
+/*getActivities(){
+  console.log('consitutionProfile getActivities()');
+
+}
+*/
 getCurrentRepresentatives(type:string){
   //let legislator = {};
 
@@ -725,10 +736,38 @@ updateProfile(groupId:string){
 }
 
 followDistrict(){
-  console.log("followDistrict this.dataShareService.getCurrentUserId() " + this.dataShareService.getCurrentUserId());
-  this.userService.followDistrict(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId());
+  console.log("followDistrict this.dataShareService.getCurrentUserId() " + this.dataShareService.getCurrentUserId() + ", this.dataShareService.getViewingDistrict()['id'] " + this.dataShareService.getViewingDistrict()['id']);
+
+  var followDRequest = {};      
+  followDRequest["userId"] = this.dataShareService.getCurrentUserId();
+  followDRequest["groupId"] = this.dataShareService.getViewingDistrict()['id'];
+  followDRequest["status"] = "FOLLOWING";            
+  console.log("Profile data " + JSON.stringify(followDRequest));      
+
+  this.userService.followDistrict(JSON.stringify(followDRequest))
+  .subscribe((result) => {
+    console.log("followDistrict response " + result);
+    
+    if(result.status == "FOLLOWING")
+      this.connected = true;
+  });
 }
 
+getRelation(){
+  var getRelationRequest = {};      
+  getRelationRequest["userId"] = this.dataShareService.getCurrentUserId();
+  getRelationRequest["groupId"] = this.dataShareService.getViewingDistrict()['id'];
+
+  console.log("getRelationRequest " + JSON.stringify(getRelationRequest));      
+
+  this.userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getViewingDistrict()['id'])
+  .subscribe((result) => {
+    console.log("getRelation response " + result);
+    
+    this.connected = result;
+
+  });
+}
 
 ngAfterViewChecked(){
   //console.log("constitutionProfile ngAfterViewChecked()");

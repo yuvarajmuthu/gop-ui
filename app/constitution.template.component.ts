@@ -526,12 +526,29 @@ export class TemplateIntroductionComponent extends AbstractTemplateComponent {
       });
 
       this.loadTemplateData(this.id);  
-      this.connected = userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId());
-
-
+      //this.connected = userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getCurrentDistrictId());
+//this.connected = true;
+ //this.getRelation();
 
     }
 
+/*
+    getRelation(){
+      var getRelationRequest = {};      
+      getRelationRequest["userId"] = this.dataShareService.getCurrentUserId();
+      getRelationRequest["groupId"] = this.dataShareService.getViewingDistrict()['id'];
+
+      console.log("getRelationRequest " + JSON.stringify(getRelationRequest));      
+
+      this.userService.getRelation(JSON.stringify(getRelationRequest))
+      .subscribe((result) => {
+        console.log("getRelation response " + result);
+        
+        this.connected = result['isFollowing'];
+
+      });
+    }
+*/
     showActivities(){
       console.log("show activities ");  
     }

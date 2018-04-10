@@ -46,15 +46,46 @@ export class PostService {
 
 
   getActivities(type:String) {
-  	 var postJson = {};
+    var postJson = {};
   	var posts:JSON[];
-	var postsPromise : Post[] = [];
+	  var postsPromise : Post[] = [];
+    
+    var serviceUrl = this.serviceUrl + "/getAllPosts";
 
+/////////
+    let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
+    let options       = new RequestOptions({ headers: headers }); // Create a request option
+console.log("gonna get posts");
+    return this.http.get(serviceUrl, options) // ...using post request
+                     .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
+                    .map((posts) => {
+
+                    //posts = data['results'];
+                    console.log('from Post Service - parsed Post length ' + posts.length);
+
+                    for (var i = 0; i < posts.length; i++) {
+                        var post : Post = {} as Post;
+                        console.log('reading properties - ' + JSON.stringify(posts[i]));                        
+                        //post = Post.decodePost(posts[i]);
+                        //console.log('reading properties - ' + post.id);
+
+                        postsPromise.push(posts[i]);
+                    }
+
+                        return postsPromise;      
+                          })                     
+                     .catch((error:any) => {
+                       console.error('UI error handling' + JSON.stringify(error));
+                       return Observable.throw(error.json().error || 'Server error')
+                     });
+ 
+/////////
+/*
     return this.http.get('/app/data/json/fromService/post.json')
     .map(res => {return res.json()})
-    .map((data) => {
+    .map((posts) => {
 
-		posts = data['results'];
+		//posts = data['results'];
 		console.log('from Post Service - parsed Post length ' + posts.length);
 
 		for (var i = 0; i < posts.length; i++) {
@@ -68,6 +99,7 @@ export class PostService {
       	return postsPromise;      
           })
     .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    */
 
   }
 

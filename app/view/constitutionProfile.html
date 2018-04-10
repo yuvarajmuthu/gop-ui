@@ -67,7 +67,7 @@
 
       <div class="right col-lg-2" *ngIf="!allowed()">
 
-       <button *ngIf="!connected" type="button" class="btn btn-primary">Follow</button>
+       <button *ngIf="!connected" type="button" class="btn btn-primary" (click)="followDistrict()">Follow</button>
        <button *ngIf="connected" type="button" class="btn btn-success glyphicon glyphicon-ok">Following</button>       
         
       </div>
@@ -106,7 +106,8 @@
 			    	<party-list></party-list>                	
                 </tab>                            
                 <tab heading='Activities'>
-					<postCard-gpx [post]=post *ngFor="let post of posts"></postCard-gpx>
+					<!-- <postCard-gpx></postCard-gpx> -->
+					<post-gpx [type]="'group'" [groupId]=operation></post-gpx>
                 </tab>                                            
               </tabset>
 </div>              

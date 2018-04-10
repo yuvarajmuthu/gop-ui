@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http, Response, Headers, RequestOptions, URLSearchParams,RequestOptionsArgs } from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 
 // Import RxJs required methods:
@@ -8,7 +8,7 @@ import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class UserService {
-
+  serviceUrl:string = "http://127.0.0.1:8080/api/social";
 	constructor (private http: Http) {}
   
   result:any; 
@@ -37,8 +37,16 @@ export class UserService {
                              .map((response:Response) => response.json());
   }
 
-  followDistrict(userId:string, groupId:string){
-    console.log("user " + userId + " following the group " + groupId);
+  followDistrict(request:string):Observable<any>{
+    let serviceUrl = this.serviceUrl+"/followDistrict";
+    console.log("follow district user.service " + request + " this.serviceUrl " + serviceUrl);
+   //let bodyString = JSON.stringify(post); // Stringify payload
+    let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
+    let options       = new RequestOptions({ headers: headers }); // Create a request option
+
+    return this.http.post(serviceUrl, request, options) // ...using post request
+                     .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
+                     .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
   }
 
   followPerson(userId:string, personIdToConnect:string){
@@ -53,9 +61,18 @@ export class UserService {
 
   }
   */
-    getRelation(userId:string, groupId:string):boolean{
-    console.log("getRelation()::UserService " + userId + " , " + groupId);
-    return false;
+  getRelation(userId:string, districtId:string):Observable<any>{
+    let serviceUrl = this.serviceUrl+"/getRelation";
+    //console.log("follow district user.service " + request + " this.serviceUrl " + serviceUrl);
+   //let bodyString = JSON.stringify(post); // Stringify payload
+    let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
+    let myParams = new URLSearchParams();
+    myParams.append('userId', userId);
+    myParams.append('districtId', districtId);
+    let options       = new RequestOptions({ headers: headers, search:myParams }); // Create a request option
 
+    return this.http.get(serviceUrl, options) // ...using post request
+                     .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
+                     .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
   }
 }

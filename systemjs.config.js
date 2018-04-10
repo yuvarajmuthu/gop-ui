@@ -17,7 +17,9 @@ var routerVer = '@2.0.0-rc.1';
     'ngx-bootstrap':   'node_modules/ngx-bootstrap', 
     'angular2-google-maps' : 'node_modules/angular2-google-maps',
     'd3': 'node_modules/d3',
-
+    //'@angular2-material': 'node_modules/@angular2-material',
+    //'angular2-image-upload': 'node_modules/angular2-image-upload',  
+    'ng2-file-upload':'node_modules/ng2-file-upload'  
     //'register': 'node_modules/register',
     //'userManagement':   'node_modules/userManagement',
     //'identitymgmt':'node_modules/identitymgmt',
@@ -30,7 +32,7 @@ var routerVer = '@2.0.0-rc.1';
     'app':                        { main: 'main.js',  defaultExtension: 'js' },
     'rxjs':                       { defaultExtension: 'js' },
     'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
-    'ng2-bootstrap': { format: 'cjs', main: 'bundles/ng2-bootstrap.umd.js', defaultExtension: 'js' },
+    'ng2-bootstrap': { format: 'cjs', main: 'ng2-bootstrap.js', defaultExtension: 'js' },
     'ngx-bootstrap': { format: 'cjs', main: 'bundles/ngx-bootstrap.umd.js', defaultExtension: 'js' },    
     'moment':                     { main: 'moment.js', defaultExtension: 'js' },
     'node_modules/angular2-google-maps/core': { main: 'index.js', defaultExtension: 'js' },
@@ -38,7 +40,23 @@ var routerVer = '@2.0.0-rc.1';
     '@angular/router' : {main:'index.js', defaultExtension: 'js'},
     //'register' : {main:'app.43a45297bc7249e35ee9.js', defaultExtension: 'js'},
     //'node_modules/identitymgmt': { main: 'app.43a45297bc7249e35ee9.js',  defaultExtension: 'js' },
+    //'@angular2-material/card': { main: 'card.js', defaultExtension: 'js' },
+    //'angular2-image-upload' : {main:'index.js', defaultExtension: 'js'},
+    'ng2-file-upload': {main:'index.js', defaultExtension: 'js'}
   };
+
+var _packageConfig = {};
+
+// Angular Material 2 Packages to load.
+var _materialPackages = [
+  'card'
+];
+
+_materialPackages.forEach(function(item) {
+  // All Material 2 components are prefixed with  @angular2-material and use
+  // the components name as entry point.
+  _packageConfig['@angular2-material/' + item] = { main: item, defaultExtension: 'js' };
+});
 
   var ngPackageNames = [
     'common',

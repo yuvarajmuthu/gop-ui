@@ -14,16 +14,18 @@ export class Post {
 
 	static decodePost(json: JSON): Post {
 	  return {
-	    id:    json["post_id"],
+	    id:    json["_id"],
 	    parentPostId: json["parent_post_id"],
-	    userId:     json["user_id"],
-	    postText: json["txtPost"],
-	    postType:    json["post_type"],
-	    imageUrl:    json["image_url"],
-	    videoUrl:    json["video_url"],
-	    districtId:    json["district_id"],
-	    likedBy:json["likedBy"],
-	    likedByCurrentUser:json["likedByCurrentUser"]
+	    userId:     json["userId"],
+	    postText: json["postText"],
+	    postType:    json["postType"],
+	    imageUrl:    json["imageUrl"],
+	    videoUrl:    json["videoUrl"],
+	    districtId:    json["districtId"]
+	    //,likedBy:json["likedBy"],
+	    //likedByCurrentUser:json["likedByCurrentUser"]
+	    ,likedBy:["u00l"],
+	    likedByCurrentUser:true
 	  };
 	}
 }	
