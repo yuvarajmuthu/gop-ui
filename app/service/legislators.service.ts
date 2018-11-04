@@ -42,6 +42,9 @@ export class LegislatorsService {
 //get district by zipcode
 //https://congress.api.sunlightfoundation.com/districts/locate?zip=11216&apikey=fd1d412896f54a8583fd039670983e59
 
+private google_geocode_api_prefix = 'https://maps.google.com/maps/api/geocode/json?address=';
+private google_geocode_api_suffix = '&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY';
+
 getLegislature(searchParam:string, type:string):Observable<any>{
     //required for using jsonp. JSONP is used to get data from cross domain
     console.log("getLegislature() in legislators service - searchParam " + searchParam);
@@ -53,21 +56,26 @@ getLegislature(searchParam:string, type:string):Observable<any>{
     if(type == 'zipcode'){
       url = this.legislature_service_url_prefix + '/locate?zip=' + searchParam + this.legislature_service_url_suffix;
     }
-    else if(type == 'bioguide_id'){
+    else if(type == 'bioguide_id'){// get State legislator profile by id
       //url = this.legislature_service_url_prefix + '?bioguide_id=' + searchParam + this.legislature_service_url_suffix;
       url = 'https://openstates.org/api/v1/legislators/' + searchParam + '?apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5';
     }
-    else if(type == 'latlong'){
+    else if(type == 'latlong'){// get State legislators by Address
       let locationArr = searchParam.split(',');
       //url = this.legislature_service_url_prefix + '/locate?latitude=' + locationArr[0] + '&longitude=' + locationArr[1] + this.legislature_service_url_suffix;
+      //https://openstates.org/api/v1/legislators/geo/?lat=40.402777&long=-80.058544&apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5
       url = 'https://openstates.org/api/v1/legislators/geo/?lat='+ locationArr[0] + '&long=' + locationArr[1] + '&apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5';
-    } else if(type == 'congress'){
+    } else if(type == 'congress'){ // get Congress legislators by Address
+      //https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY&address=300%20Chatham%20Park%20Drive%2CPittsburgh%2C%20PA%2015220
       url = "https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY&address=" + encodeURIComponent(searchParam);
       //this.getDistrictInfoFromGoogle(url);
-    } else if(type == 'byCongressDistrict'){
+    } else if(type == 'byCongressDistrict'){ // get Congress legislators by Division id
       url = "https://www.googleapis.com/civicinfo/v2/representatives/ocdId?ocdId="+ searchParam +"&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY";
       //this.getDistrictInfoFromGoogle(url);
       //https://www.googleapis.com/civicinfo/v2/representatives/ocdId?ocdId=ocd-division/country:us/state:pa/cd:6&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY
+      //find District
+      //https://www.googleapis.com/civicinfo/v2/divisions?query="ocd-division/country:us/state:pa/cd:6"&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY
+      //https://www.googleapis.com/civicinfo/v2/divisions?query="gettysburg montessori charter school"&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY
     }
 
 
@@ -77,8 +85,11 @@ getLegislature(searchParam:string, type:string):Observable<any>{
 } 
 
 getLocation(term: string):Observable<any> {
-   return this.http.get('http://maps.google.com/maps/api/geocode/json?address=' + term + 'CA&sensor=false')
-                  .map((response:Response) => response.json());
+  let geocodeApi:string = this.google_geocode_api_prefix + term + this.google_geocode_api_suffix;
+  console.log('geocodeApi ', geocodeApi);
+  //return this.http.get(geocodeApi)
+  return this.http.get('/app/data/mock/geoCode.json') 
+  .map((response:Response) => response.json());
 }
 
 getDistrictInfoFromGoogle(url:string):Observable<any>{

@@ -229,7 +229,7 @@ abstract class AbstractTemplateComponent {
     selector: 'user-default-legis',
     directives: [NdvEditComponent],    
     template: `
-      <div>
+      <div class="userProfileHeader">
         <header>
         <!--
           <figure class="profile-banner">
@@ -245,9 +245,12 @@ abstract class AbstractTemplateComponent {
               <li>{{followers}}<span>Followers</span></li>
             </ul>
 
-            <button *ngIf="!allowed()" type="button" class="btn btn-info follow" (click)="followPerson()">
-              Connect
-            </button>
+    <div class="right col-lg-2" *ngIf="!allowed()">
+       <button *ngIf="following" type="button" class="btn btn-success glyphicon glyphicon-ok">Following</button>       
+       <button *ngIf="requestedToFollow" type="button" class="btn btn-success glyphicon glyphicon-ok">Requested to Follow</button>       
+       <button *ngIf="followRequestRejected" type="button" class="btn btn-success glyphicon glyphicon-ok">Follow request rejected</button>       
+       <button *ngIf="!following && !requestedToFollow && !followRequestRejected" type="button" class="btn btn-primary" (click)="followPerson()">Follow</button>
+    </div>
 
           </div>
 
@@ -272,17 +275,17 @@ abstract class AbstractTemplateComponent {
                  <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'lastName'" [placeholder]="lastName" (onSave)="setValue($event)"></ndv-edit>                    
             </div>
     -->        
-            <div id="constitutionDescription" class="constitutionDescription">
+            <div id="userName" class="constitutionDescription">
                  <h5>User Name:</h5>           
                  <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'userName'" [placeholder]="userName" (onSave)="setValue($event)"></ndv-edit>                    
             </div>
 
-            <div id="constitutionDescription" class="constitutionDescription">
+            <div id="userEmailId" class="constitutionDescription">
                  <h5>Email Id:</h5>           
                  <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'emailId'" [placeholder]="emailId" (onSave)="setValue($event)"></ndv-edit>                    
             </div>
 
-            <div id="constitutionDescription" class="constitutionDescription">
+            <div id="userAddress" class="constitutionDescription">
                  <h5>Address:</h5>           
                  <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'address'" [placeholder]="address" (onSave)="setValue($event)"></ndv-edit>                    
             </div>
@@ -313,6 +316,12 @@ h1 {
 h1>small {
   color: #aaaaaa;
   font-size: .5em;
+}
+
+userProfileHeader{
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+  margin:   25px auto 50px;
+  position: relative;
 }
 
 header {
@@ -467,6 +476,10 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
   private templateData = [];
   followers:number = 0;
   isCreateMode:boolean = false;
+
+  following:boolean = false;
+  requestedToFollow:boolean = false;
+  followRequestRejected:boolean = false;
 
   ngOnInit(): void {
     console.log("ngOnInit() userProfile.template TemplateLegisUserDefaultComponent");   
@@ -633,7 +646,26 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
     }
 
     followPerson(){
-      this.userService1.followPerson(this.dataShareService1.getCurrentUserId(), this.profileUserId);
+
+      var followURequest = {};      
+      followURequest["userId"] = this.dataShareService1.getCurrentUserId();
+      followURequest["connectionUserId"] = this.profileUserId;
+      followURequest["status"] = "REQUESTED";            
+      console.log("Profile data " + JSON.stringify(followURequest));      
+
+      this.userService1.followPerson(JSON.stringify(followURequest))
+      .subscribe((result) => {
+        console.log("followDistrict response " + result);
+
+        if(result.status == "REQUESTED"){
+          this.requestedToFollow = true;
+        }else if(result.status == "FOLLOWING"){
+          this.following = true;
+        }else if(result.status == "REJECTED"){
+          this.followRequestRejected = true;
+        }
+
+      });
     }
 
     allowed():boolean{
@@ -672,7 +704,8 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
     directives: [NdvEditComponent],
     //providers:[DataShareService],
     template: `
-    
+    <div>External Data:
+    </div>
           <div class="legisProfileData col-xs-12">
            <table class="table">
 

@@ -373,7 +373,7 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
   @ViewChild(TemplateBusinessComponent) businessComponent: TemplateBusinessComponent;  
   @ViewChild(DynamicContentComponent) dynamicComponent: DynamicContentComponent;
 
-  constructor(private  router: Router, private userService:UserService, private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
+  constructor(private  router: Router, private routeSegment:RouteSegment, private userService:UserService, private groupService:GroupService, private missionService: MissionService, private elementRef:ElementRef, private renderer: Renderer, private legislatorsService:LegislatorsService, private peopleService: PeopleService, private partyService: PartyService, private dataShareService:DataShareService) {  
       console.log("constructor()::constitutionProfile");
       //listens for any templatepopulationcomponent addition
       missionService.missionNewProfileTemplateAdded$.subscribe(
@@ -385,11 +385,20 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
   
 
   //get invoked automatically before ngOnInit()
-  routerOnActivate(curr: RouteSegment): void {
-    if(curr.getParam("id")){
-      this.operation = curr.getParam("id");
-      console.log("from routerOnActivate()::constitutionProfile Param value - operation " + this.operation);
+  routerOnActivate(): void {
+    if(this.routeSegment.getParam("id")){
+      this.viewingDistrict['id'] = this.routeSegment.getParam("id");
+      this.operation = this.viewingDistrict['id'];
+      console.log("from routerOnActivate()::constitutionProfile Param value - id " + this.operation);
     }
+
+    if(this.routeSegment.getParam("externalId")){
+      this.viewingDistrict['externalId'] = this.routeSegment.getParam("externalId");
+      //this.operation = this.viewingDistrict['externalId'];
+      console.log("from routerOnActivate()::constitutionProfile Param value - externalId " + this.viewingDistrict['externalId']);
+
+    }
+
   }
   
   ngOnInit(){
@@ -398,7 +407,7 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
 //      this.loadProfileTemplate();      
       this.dataShareService.setPermission("Editor");   
 
-      this.groupService.getGroupData(this.operation).subscribe(
+      this.groupService.getGroupData(this.operation,'').subscribe(
           data => {
             this.groupData = data;
             console.log("Group data from service: ", this.groupData);
@@ -449,12 +458,11 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
 //called with district id
   loadData(){
       this.parties = this.partyService.getPartiesByParam('');
-      
       //this.connected = this.userService.getRelation(this.dataShareService.getCurrentUserId(), this.dataShareService.getViewingDistrict()['id']);
       //this.getRelation();
 
       //GETTING PROFILE DATA
-      this.groupService.getGroupData(this.operation).subscribe(
+      this.groupService.getGroupData(this.operation, this.viewingDistrict['externalId']).subscribe(
           data => {
             this.groupData = data;
             console.log("Group data from service: ", this.groupData);
@@ -509,6 +517,8 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
 
             this.getRelation();
 
+            //TODO: GET FOLLOWERS COUNT
+
           }
       );
 
@@ -519,7 +529,7 @@ export class ConstitutionProfileGPX implements OnActivate, OnInit{
 
   loadProfileTemplate(){
       //GETTING PROFILE DATA
-      this.groupService.getGroupData('').subscribe(
+      this.groupService.getGroupData('','').subscribe(
           data => {
             this.groupData = data;
             console.log("Group data from service: ", this.groupData);

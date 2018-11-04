@@ -3,13 +3,16 @@ import { Http, Response, Headers, RequestOptions, Jsonp, URLSearchParams  } from
 
 import {Observable} from 'rxjs/Rx';
 import {Post} from '../object/post';
+import {DataShareService} from "./dataShare.service";
 
 
 @Injectable()
 export class PostService {
-  serviceUrl:string = "http://127.0.0.1:8080/post";	
-  
-  constructor (private http: Http, private jsonp:Jsonp) {}	
+  serviceUrl:string;// = "http://127.0.0.1:8080/post";	
+
+  constructor (private http: Http, private jsonp:Jsonp, private dataShareService:DataShareService) {
+    this.serviceUrl = dataShareService.getServiceUrl() + "/post";
+  }
 
   //deprecated
   getPost():Post[] { 

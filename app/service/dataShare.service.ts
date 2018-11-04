@@ -19,6 +19,13 @@ export class DataShareService {
 
   map = new Map();
 
+  //serviceUrl:string = "http://Gpx-env.e2xj3uszee.us-east-2.elasticbeanstalk.com";
+  serviceUrl:string = "http://localhost:5000";
+
+  public getServiceUrl():string{
+    return this.serviceUrl;
+  }
+
   public setDistrictViews(comp:any, vRef:ViewRef){
     console.log("setDistrictViews() comp " + comp);
     console.log("vRef " + vRef);

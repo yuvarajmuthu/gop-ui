@@ -90,6 +90,6 @@ export class TypeaheadGPXComponent {
   }
 
   public typeaheadOnSelect(e:any):void {
-    console.log(`Selected value: ${e.item}`);
+    console.log(`Selected value: ${e.item.name}`);
   }
 }

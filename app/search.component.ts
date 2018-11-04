@@ -248,6 +248,8 @@ private getLatitudeLongitude(callback, address) {
            legislator['party'] = officials[i]['party'];
            legislator['photo_url'] = officials[i]['photoUrl'];  
 
+           console.log("offices[i] " + JSON.stringify(offices[i]));
+
            if(offices[i]['name'])
              legislator['role'] = offices[i]['name'];
 
@@ -262,8 +264,9 @@ private getLatitudeLongitude(callback, address) {
            }
 
            //setting DUMMY id
-           //legislator['district'] = "5a5adb1f77b2ae4edc96d0ca";
-           legislator['district'] = "5a6ea6ce77b2ae4ae0099564";
+           //legislator['district'] = "5a6ea6ce77b2ae4ae0099564";
+           //legislator['district'] = "5afbaa41fdec9538d4c9ddf8"; // from aws
+           //legislator['district'] = "5a6ea3c677b2ae4ae0099561";
 /*
            //DISPLAY DISTRICT  
           let district:any = {};
@@ -310,6 +313,7 @@ private getLatitudeLongitude(callback, address) {
                   district['state'] = this.legislator['state'];
                   if(this.legislator['ocdId']){
                     district['ocdId'] = this.legislator['ocdId'];
+                    district['externalId'] = this.legislator['ocdId'];
                   }
                   this.congressDistricts.push(district);   
                 }             
@@ -333,8 +337,22 @@ private getLatitudeLongitude(callback, address) {
     districtName = district['name'];  
 
     let url = '/district/' + districtName;
-    this.router.navigate([url]);
+     let navigationExtras = {
+      queryParams: {externalId:district['externalId']}
+    };
+
+    //this.router.navigate([url], {this.router.snapshot.queryParams: {externalId:district['externalId']}});
+    this.router.navigate([url, {externalId:this.escapeForwardSlash(district['externalId'])}]);
   }
+
+  escapeForwardSlash(input:string){
+    let output:string;
+    //output = input.split('/').concat('#');
+    output = input.replace(/\//g, '_');
+    console.log('Escaping forward slash ' + input + ' and output is ' + output);
+    return output;
+  }
+
 /*
   gotoLegislator(legislator: Legislator):void{
     this.selectedlegislator = legislator;

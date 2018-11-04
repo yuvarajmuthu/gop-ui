@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http, Jsonp, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import {Observable} from 'rxjs/Rx';
+
+import {DataShareService} from "./dataShare.service";
 
 // Import RxJs required methods:
 import 'rxjs/add/operator/map';
@@ -8,14 +10,38 @@ import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class GroupService {
-  serviceUrl:string = "http://127.0.0.1:8080/group";
+  serviceUrl:string;// = "http://127.0.0.1:8080/group";
 
-	constructor (private http: Http) {}
-  
+  constructor (private http: Http, private jsonp:Jsonp, private dataShareService:DataShareService) {
+    this.serviceUrl = dataShareService.getServiceUrl() + "/group";
+  }
+    
   result:any; 
   resultop:any;
 
-  getGroupData(type:String):Observable<any> { 
+getGroupDataByName_External(searchParam:string, type:string):Observable<any>{
+    //required for using jsonp. JSONP is used to get data from cross domain
+    console.log("getGroupByName() in Group service - searchParam " + searchParam);
+    let params = new URLSearchParams();
+    params.set('format', 'json');
+    params.set('callback', "JSONP_CALLBACK");
+
+    let url:string;
+    if(type == 'googleCivic'){ // get Congress legislators by Division id
+      //find District
+      //searchParam = "gettysburg montessori charter school";
+      url = "https://www.googleapis.com/civicinfo/v2/divisions?key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY&query=" +  searchParam;
+      //https://www.googleapis.com/civicinfo/v2/divisions?query="ocd-division/country:us/state:pa/cd:6"&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY
+      //https://www.googleapis.com/civicinfo/v2/divisions?query="gettysburg montessori charter school"&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY
+    }
+
+
+    console.log('getGroupByName API - ' + url);  
+    return this.jsonp.get(url, { search: params })
+                  .map((response:Response) => response.json());
+} 
+
+  getGroupData(type:string, sourceId:string):Observable<any> { 
     /*
     let groupData = this.http.get('/app/data/json/fromService/group.json')
                              .map((response:Response) => response.json());
@@ -30,7 +56,14 @@ export class GroupService {
       console.log("getGroup group.service this.serviceUrl " + serviceUrl);
      //let bodyString = JSON.stringify(post); // Stringify payload
       let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
-      let options       = new RequestOptions({ headers: headers }); // Create a request option
+      
+      let params = new URLSearchParams();
+      params.append("externalId", sourceId);
+      if(sourceId != null){
+        serviceUrl = serviceUrl + "?externalId=" + sourceId;
+      }
+
+      let options       = new RequestOptions({ headers: headers}); // Create a request option
 
       return this.http.get(serviceUrl, options) // ...using post request
                        .map((res:Response) => res.json()) // ...and calling .json() on the response to return data

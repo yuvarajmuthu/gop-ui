@@ -2,15 +2,19 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 
+import {DataShareService} from "./dataShare.service";
+
 // Import RxJs required methods:
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class ProfileService {
-  serviceUrl:string = "http://127.0.0.1:8080/profile/template";
+  serviceUrl:string;// = "http://127.0.0.1:8080/profile/template";
 
-	constructor (private http: Http) {}
+  constructor (private http: Http, private dataShareService:DataShareService) {
+    this.serviceUrl = dataShareService.getServiceUrl() + "/profile/template";
+  }
   
   result:any; 
   resultop:any;
