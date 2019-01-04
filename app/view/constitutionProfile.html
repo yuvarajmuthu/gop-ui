@@ -63,7 +63,11 @@
         <p class="desc">Description:                  
         	<ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'description'" [placeholder]="description" (onSave)="setValue($event)"></ndv-edit>
         </p>
-      </div>
+        <p class="desc">Source Id:                  
+        	<ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'sourceId'" [placeholder]="sourceId" (onSave)="setValue($event)"></ndv-edit>
+        </p>
+
+			</div>
 
       <div class="right col-lg-2" *ngIf="!allowed()">
 
@@ -85,6 +89,12 @@
 
                 </tab>
                 <tab heading='Current Legislators'>
+										<div class="form-group">
+											Tag Legislators:
+											<typeahead-gpx></typeahead-gpx>
+											<button type="submit" class="btn btn-default glyphicon glyphicon-search" aria-hidden="true"></button>
+									</div>
+
 				    <ul style="list-style-type:none;padding-left:0;">
 						<li *ngFor="let electedPerson of electedPersons"
 						        [class.selected]="selectedPerson === electedPerson"

@@ -90,6 +90,7 @@ export class SearchLegislatorComponentGPX implements OnInit {
     //this.setCurrentPosition();
   }
 
+  //invoked from searchLegis.html
   loadStateData(){
     this.stateData = true;
     this.congressData = false;
@@ -99,6 +100,7 @@ export class SearchLegislatorComponentGPX implements OnInit {
     this.districtLabel = "Your State Legislative District(s):";
   }
 
+  //invoked from searchLegis.html
   loadCongressData(){
     this.stateData = false;
     this.congressData = true;
@@ -177,6 +179,7 @@ private getLatitudeLongitude(callback, address) {
   }
 
 
+  //DEPRECATED
   //using CONGRESS API  
   getDistrict(searchParam:string, type:string){
      console.log("getDistrict() searchParam" + searchParam + ',type ' + type);
@@ -324,8 +327,8 @@ private getLatitudeLongitude(callback, address) {
 
             },
             (error)=>{
-              console.log('Error in getting');
-              this.alertService.error('Error in getting data');
+              console.log('Error in getting Legislators ', error['_body']);
+              this.alertService.error(error['_body']);
             });
 
   }
@@ -337,13 +340,12 @@ private getLatitudeLongitude(callback, address) {
     districtName = district['name'];  
 
     let url = '/district/' + districtName;
-     let navigationExtras = {
-      queryParams: {externalId:district['externalId']}
-    };
 
-    //this.router.navigate([url], {this.router.snapshot.queryParams: {externalId:district['externalId']}});
-    this.router.navigate([url, {externalId:this.escapeForwardSlash(district['externalId'])}]);
-  }
+    if(district['externalId'] != undefined)
+      this.router.navigate([url, {externalId:this.escapeForwardSlash(district['externalId'])}]);
+    else
+      this.router.navigate([url]);
+    }
 
   escapeForwardSlash(input:string){
     let output:string;

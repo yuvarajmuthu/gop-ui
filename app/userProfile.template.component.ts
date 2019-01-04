@@ -131,6 +131,7 @@ abstract class AbstractTemplateComponent {
   public bioguideImageUrl:string;
   resultop:any;
   public keys = [];
+  public displayProperties = [];
   public committeeKeys = [];
   public committees = [];
   public committeesLength:number = 0;
@@ -228,234 +229,8 @@ abstract class AbstractTemplateComponent {
 @Component({
     selector: 'user-default-legis',
     directives: [NdvEditComponent],    
-    template: `
-      <div class="userProfileHeader">
-        <header>
-        <!--
-          <figure class="profile-banner">
-            <img src="{{imageUrl}}" />
-          </figure>
-          -->
-          <figure class="profile-picture" 
-          [ngStyle]="{'background-image': 'url(' + bioguideImageUrl + ')'}">
-          </figure>
-          <div class="profile-stats">
-            <ul>
-              <li *ngIf="committeesLength > 0">{{committeesLength}}    <span>Committees</span></li>
-              <li>{{followers}}<span>Followers</span></li>
-            </ul>
-
-    <div class="right col-lg-2" *ngIf="!allowed()">
-       <button *ngIf="following" type="button" class="btn btn-success glyphicon glyphicon-ok">Following</button>       
-       <button *ngIf="requestedToFollow" type="button" class="btn btn-success glyphicon glyphicon-ok">Requested to Follow</button>       
-       <button *ngIf="followRequestRejected" type="button" class="btn btn-success glyphicon glyphicon-ok">Follow request rejected</button>       
-       <button *ngIf="!following && !requestedToFollow && !followRequestRejected" type="button" class="btn btn-primary" (click)="followPerson()">Follow</button>
-    </div>
-
-          </div>
-
-          <h1>
-<!--            {{firstName}} {{lastName}}-->
-                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'firstName'" [placeholder]="firstName" (onSave)="setValue($event)"></ndv-edit>
-                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'lastName'" [placeholder]="lastName" (onSave)="setValue($event)"></ndv-edit>                             
-          </h1>
-
-        </header>
-      </div>
-
-         <div class="districtTemplate">
-<!-- 
-            <div id="constitutionHeader" class="constitutionHeader">
-                  <h5>First Name:</h5>
-                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'firstName'" [placeholder]="firstName" (onSave)="setValue($event)"></ndv-edit>
-            </div>
-
-            <div id="constitutionDescription" class="constitutionDescription">
-                 <h5>Last Name:</h5>           
-                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'lastName'" [placeholder]="lastName" (onSave)="setValue($event)"></ndv-edit>                    
-            </div>
-    -->        
-            <div id="userName" class="constitutionDescription">
-                 <h5>User Name:</h5>           
-                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'userName'" [placeholder]="userName" (onSave)="setValue($event)"></ndv-edit>                    
-            </div>
-
-            <div id="userEmailId" class="constitutionDescription">
-                 <h5>Email Id:</h5>           
-                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'emailId'" [placeholder]="emailId" (onSave)="setValue($event)"></ndv-edit>                    
-            </div>
-
-            <div id="userAddress" class="constitutionDescription">
-                 <h5>Address:</h5>           
-                 <ndv-edit [permission]="allowed()" [min]="2" [max]="50"  [title]="'address'" [placeholder]="address" (onSave)="setValue($event)"></ndv-edit>                    
-            </div>
-          </div>  
-
-    `,
-  styles: [`
-    .districtTemplate{
-      border: 2px solid lightblue;    
-      position: relative;
-      padding: 1em;
-      margin: 1em;
-
-    }
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  margin-bottom: 100px;
-}
-
-h1 {
-  display: block;
-  font-size: 50px;
-  margin: 25px auto 0;
-
-}
-
-h1>small {
-  color: #aaaaaa;
-  font-size: .5em;
-}
-
-userProfileHeader{
-  box-shadow: 1px 1px 4px rgba(0,0,0,0.5);
-  margin:   25px auto 50px;
-  position: relative;
-}
-
-header {
-  box-shadow: 1px 1px 4px rgba(0,0,0,0.5);
-  margin:   25px auto 50px;
-  height:   75px;
-  position: relative;
-  
-}
-
-figure.profile-banner {
-  left:     0;
-  overflow: hidden;
-  position: absolute;
-  top:      0;
-  z-index:  1;
-}
-
-figure.profile-picture {
-  background-position: center center;
-  background-size: cover;
-  border: 5px #efefef solid;
-  border-radius: 50%;
-  bottom: -50px;
-  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.2), 1px 1px 4px rgba(0,0,0,0.3);
-  height: 148px;
-  left: 150px;
-  position: absolute;
-  width: 148px;
-  z-index: 3;
-}
-
-div.profile-stats {
-  bottom: 0;
-  border-top: 1px solid rgba(0,0,0,0.5);
-  left: 0;
-  padding: 15px 15px 15px 350px;
-  position: absolute;
-  right: 0;
-  z-index: 2;
-  
-  /* Generated Gradient */
-  background: -moz-linear-gradient(top,  rgba(255,255,255,0.5) 0%, rgba(0,0,0,0.51) 3%, rgba(0,0,0,0.75) 61%, rgba(0,0,0,0.5) 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.5)), color-stop(3%,rgba(0,0,0,0.51)), color-stop(61%,rgba(0,0,0,0.75)), color-stop(100%,rgba(0,0,0,0.5)));
-  background: -webkit-linear-gradient(top,  rgba(255,255,255,0.5) 0%,rgba(0,0,0,0.51) 3%,rgba(0,0,0,0.75) 61%,rgba(0,0,0,0.5) 100%);
- background: -o-linear-gradient(top,  rgba(255,255,255,0.5) 0%,rgba(0,0,0,0.51) 3%,rgba(0,0,0,0.75) 61%,rgba(0,0,0,0.5) 100%);
-  background: -ms-linear-gradient(top,  rgba(255,255,255,0.5) 0%,rgba(0,0,0,0.51) 3%,rgba(0,0,0,0.75) 61%,rgba(0,0,0,0.5) 100%);
-  background: linear-gradient(to bottom,  rgba(255,255,255,0.5) 0%,rgba(0,0,0,0.51) 3%,rgba(0,0,0,0.75) 61%,rgba(0,0,0,0.5) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80ffffff', endColorstr='#80000000',GradientType=0 );
-
-}
-
-div.profile-stats ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-div.profile-stats ul li {
-  color: #efefef;
-  display: block;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  margin-right: 50px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.7)
-}
-
-div.profile-stats li span {
-  display: block;
-  font-size: 16px;
-  font-weight: normal;
-}
-
-button.follow {
-  float: right;
-}
-
-div.profile-stats a.follow {
-  display: block;
-  float: right;color: #ffffff;
-  margin-top: 5px;
-  text-decoration: none;
-  
-  /* This is a copy and paste from Bootstrap */
-  background-color: #49afcd;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  background-color: #49afcd;
-  background-image: -moz-linear-gradient(top, #5bc0de, #2f96b4);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#5bc0de), to(#2f96b4));
-  background-image: -webkit-linear-gradient(top, #5bc0de, #2f96b4);
-  background-image: -o-linear-gradient(top, #5bc0de, #2f96b4);
-  background-image: linear-gradient(to bottom, #5bc0de, #2f96b4);
-  background-repeat: repeat-x;
-  border-color: #2f96b4 #2f96b4 #1f6377;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5bc0de', endColorstr='#ff2f96b4', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-  display: inline-block;
-  padding: 4px 12px;
-  margin-bottom: 0;
-  font-size: 14px;
-  line-height: 20px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
-}
-
-div.profile-stats a.follow.followed {
-  
-  /* Once again copied from Boostrap */
-  color: #ffffff;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  background-color: #5bb75b;
-  background-image: -moz-linear-gradient(top, #62c462, #51a351);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
-  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
-  background-image: -o-linear-gradient(top, #62c462, #51a351);
-  background-image: linear-gradient(to bottom, #62c462, #51a351);
-  background-repeat: repeat-x;
-  border-color: #51a351 #51a351 #387038;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff51a351', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-}
-
-header>h1 {
-  bottom: -50px;
-  color: #354B63;
-  font-size: 40px;
-  left: 350px;
-  position: absolute;
-  z-index: 5;
-}    
-  `]    
+    templateUrl: `/app/view/profileTemplates/userBannerTemplate.html`,
+    styleUrls: [`../css/userBannerTemplate.css`]    
 })
 export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent implements OnInit{
   //userId = "u001";
@@ -475,6 +250,7 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
   private templateProperties = [];
   private templateData = [];
   followers:number = 0;
+  connections:number = 0;
   isCreateMode:boolean = false;
 
   following:boolean = false;
@@ -489,12 +265,26 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
       this.followers = 0;
       this.isCreateMode = true;
     }else{
-      if(!(this.viewingUser['isLegislator'])){
+      //LEGISLATORs
+      if (this.viewingUser['isLegislator'] && this.viewingUser['externalData']){
+        console.log("this.viewingUser['externalData']['id'] ", this.viewingUser['externalData']['id']);
+
+
+      }else{//Users
         this.loadTemplateDataV1();
       }
 
+      //get CONNECTIONS count
+      if(this.viewingUser['connections']){
+        this.connections = this.viewingUser['connections'].length;
+      }
+
+      this.getRelation("user", this.profileUserId);
+
       //get FOLLOWERS count
-      //this.followers = 0;
+      if(this.viewingUser['followers']){
+        this.followers = this.viewingUser['followers'].length;
+      }
     } 
   }
     
@@ -517,6 +307,51 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
 
     }
 
+    getRelation(entity:string, profileId:string){
+      this.requestedToFollow = false;
+      this.following = false;
+      this.followRequestRejected = false;
+      var isProfileRelated = false;
+
+      console.log("this.viewingUser['connections'].length ", this.viewingUser['connections'].length);
+
+      this.viewingUser['connections'].forEach(connection => {
+        if((entity === "user" && connection["users"]) ||
+           (entity === "group" && connection["groups"]) ||
+           (entity === "position" && connection["positions"])){
+
+          let connectedEntities = null;
+          if((entity === "user" && connection["users"])){
+            connectedEntities = connection["users"];
+           }else if((entity === "group" && connection["groups"])){
+            connectedEntities = connection["groups"];
+           }else if((entity === "position" && connection["positions"])){
+            connectedEntities = connection["positions"];
+           }
+          
+          connectedEntities.forEach(connectedEntity => {      
+            if(connectedEntity["entityId"] === profileId){
+              isProfileRelated = true;
+
+              if(connectedEntity["connectionStatus"] == "REQUESTED"){
+                this.requestedToFollow = true;
+              }else if(connectedEntity["connectionStatus"] == "FOLLOWING"){
+                this.following = true;
+              }else if(connectedEntity["connectionStatus"] == "REJECTED"){
+                this.followRequestRejected = true;
+              }
+  
+            }
+
+            if(isProfileRelated){
+              //exit the for loop
+            }
+          });
+          //exit the for loop
+        }
+      });
+    }
+    
     //load the TEMPLATE for CREATE process
     loadTemplate(operation:string){
       //getting the available profile templates for this user type
@@ -601,7 +436,7 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
 
 /*DEPRECATED - NOT BEING USED*/
     loadTemplateData(){
-        this.userService1.getUserData(this.profileUserId).subscribe(
+        this.userService1.getUserData(this.profileUserId, false).subscribe(
           data => {
           this.userData = data;
           console.log("User data from service: ", this.userData);
@@ -654,18 +489,22 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
       console.log("Profile data " + JSON.stringify(followURequest));      
 
       this.userService1.followPerson(JSON.stringify(followURequest))
-      .subscribe((result) => {
-        console.log("followDistrict response " + result);
+      .subscribe(
+        (result) => {
+            console.log("followDistrict response " + result);
 
-        if(result.status == "REQUESTED"){
-          this.requestedToFollow = true;
-        }else if(result.status == "FOLLOWING"){
-          this.following = true;
-        }else if(result.status == "REJECTED"){
-          this.followRequestRejected = true;
-        }
+            if(result.status == "REQUESTED"){
+              this.requestedToFollow = true;
+            }else if(result.status == "FOLLOWING"){
+              this.following = true;
+            }else if(result.status == "REJECTED"){
+              this.followRequestRejected = true;
+            }
 
-      });
+          },
+        (err) => {
+          console.log("Error ", err);
+        });
     }
 
     allowed():boolean{
@@ -703,29 +542,8 @@ export class TemplateLegisUserDefaultComponent extends AbstractTemplateComponent
     selector: 'legis-congress',
     directives: [NdvEditComponent],
     //providers:[DataShareService],
-    template: `
-    <div>External Data:
-    </div>
-          <div class="legisProfileData col-xs-12">
-           <table class="table">
-
-              <tbody>
-                  <tr class="info" *ngFor="let key of keys">
-                    <td>{{key}}</td>
-                    <td>{{legislator[key]}}</td>
-
-                  </tr>
-
-              </tbody>
-           </table>     
-          </div> 
-     
-    `,
-  styles: [`
-      .legisProfileData{
-      display:inline-block;
-    }
-`]    
+    templateUrl: `/app/view/profileTemplates/userLegisSummaryTemplate.html`,
+    styleUrls: [`../css/userLegisSummaryTemplate.css`]
 })
 
 export class TemplateLegisCongressProfileComponent extends AbstractTemplateComponent  implements OnInit{
@@ -806,13 +624,26 @@ export class TemplateLegisCongressProfileComponent extends AbstractTemplateCompo
       });
 
       //this.loadTemplateData();  
+      //OVERRIDE KEYS - CUSTOMIZED DISPLAY
+      this.loadDisplayProperties();
 
 
+    }
+    
+    loadDisplayProperties(){
+      for (let profileTemplates of this.viewingUser['profileTemplates']){
+        //console.log("reading template component properties: ", profileTemplates['profile_template_id']);
+        //this.templateType.push(profileData['profile_template_id']);
+        if(this.id == profileTemplates['profile_template_id']){
+          this.displayProperties = profileTemplates['properties'];
+          break;  
+        }
+      }
 
     }
 
     loadTemplateData(){
-        this.userService2.getUserData(this.profileUserId).subscribe(
+        this.userService2.getUserData(this.profileUserId, true).subscribe(
           data => {
           this.userData = data;
           console.log("User data from service: ", this.userData);
@@ -889,26 +720,8 @@ export class TemplateLegisCongressProfileComponent extends AbstractTemplateCompo
 /* Legislator L000551 */
 @Component({
     selector: 'legis-committee',
-    template: `
-          <div class="committeeData col-xs-12" *ngFor="let committee of committees">
-           <table class="table">
-
-              <tbody>
-                  <tr class="info" *ngFor="let key of committeeKeys">
-                    <td>{{key}}</td>
-                    <td>{{committee[key]}}</td>
-                  </tr>
-
-              </tbody>
-           </table>     
-          </div> 
-     
-    `,
-  styles: [`
-      .committeeData{
-      display:inline-block;
-    }
-`]    
+    templateUrl: `/app/view/profileTemplates/userLegisCommitteeTemplate.html`,
+    styleUrls: [`../css/userLegisCommitteeTemplate.css`]    
 })
 
 export class TemplateLegisCongressCommitteeComponent extends AbstractTemplateComponent  implements OnInit{

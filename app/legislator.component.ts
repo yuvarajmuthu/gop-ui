@@ -180,7 +180,7 @@ export class LegislatorComponentGPX implements OnInit{
     console.log('selected legislator - ' +  legislator);
     this.dataShareService.setViewingUser(legislator);    
     //this.router.navigate(['/user', legislator.leg_id]);
-    this.router.navigate(['/user', 'legis']);
+    this.router.navigate(['/user', 'external']);
   }
 
 }

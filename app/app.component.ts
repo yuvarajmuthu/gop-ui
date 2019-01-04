@@ -58,13 +58,14 @@ import 'rxjs/add/operator/catch';
     {path: "/", component: SearchLegislatorComponentGPX },
     {path: "/legislator/:id", component: LegislatorComponentGPX },
     {path: "/district/:id", component: ConstitutionProfileGPX },
-    {path: "/user/:id", component: UserProfileGPX },    
+    {path: "/user/:id", component: UserProfileGPX },
+    {path: "/user/legis/:id", component: UserProfileGPX },    
     {path: "/map", component: MapGPXComponent },
     {path: "/parties", component: PartyListComponentGPX },
     {path: "/party/:id", component: PartyListProfileComponentGPX },    
     {path: "/partyProfile", component: PartyProfileGPX },    
     {path: "/post", component: NewPostGPX},
-    {path: "/news", component: PostGPX }    
+    {path: "/news", component: PostGPX}    
 
 
 ])
@@ -82,7 +83,7 @@ export class AppComponent  implements OnInit, AfterViewInit {
       });
       
       //SHOULD BE PART OF LOGIN PROCESS
-      this.userService.getUserData(this.dataShareService.getCurrentUserId()).subscribe(
+      this.userService.getUserData(this.dataShareService.getCurrentUserId(), false).subscribe(
           data => {
             this.dataShareService.setCurrentUser(data);
             console.log("this.dataShareService.getCurrentUser() " + JSON.stringify(this.dataShareService.getCurrentUser()));  

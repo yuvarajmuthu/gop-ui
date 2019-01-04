@@ -48,7 +48,7 @@ export class PostService {
   }
 
 
-  getActivities(type:String) {
+  getActivities(requestData:string) {
     var postJson = {};
   	var posts:JSON[];
 	  var postsPromise : Post[] = [];
@@ -56,9 +56,14 @@ export class PostService {
     var serviceUrl = this.serviceUrl + "/getAllPosts";
 
 /////////
+    let requestJson = JSON.parse(requestData);
+    let requestParams = new URLSearchParams();
+    requestParams.set("entityId", requestJson['entityId']);
+    requestParams.set("entityType", requestJson['entityType']);
+
     let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
-    let options       = new RequestOptions({ headers: headers }); // Create a request option
-console.log("gonna get posts");
+    let options       = new RequestOptions({ headers: headers, search:requestParams }); // Create a request option
+    console.log("gonna get posts");
     return this.http.get(serviceUrl, options) // ...using post request
                      .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
                     .map((posts) => {

@@ -28,90 +28,7 @@ import { LegislatorsService } from './service/legislators.service';
   templateUrl: 'app/view/userProfile.html',
   directives: [DynamicContentComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent],
   providers:[LegislatorsService, PeopleService, PartyService],
-  styles: [`
-
-     .legisBoundary{
-      border: 1px solid lightblue;
-      border-radius: 5px;
-      margin: 10px;
-    }
-
-    .legisBoundary:hover{
-      border: 2px solid lightblue;
-    }
-
-
-    .constitutionTop{
-      padding: .1px 1.5em;
-      background: #f5f2f0;
-      margin-top: 1.5em;
-      margin-bottom: 1.5em;
-    }
-    
-    .constitutionTop{
-      padding-bottom: 5px;
-    }
-
-    .constitutionHeader,
-    .constitutionDescription{
-      border: 1px solid lightblue;
-      border-radius: 5px;
-    }
-
-    .constitutionProfile .banner{
-        max-width: 100%;
-        height: auto;
-        width:auto/9;
-    }
-
-    .selected {
-      background-color: #CFD8DC !important;
-      color: white;
-    }
-    .heroes {
-      margin: 0 0 2em 0;
-      list-style-type: none;
-      padding: 0;
-
-    }
-    .heroes li {
-      cursor: pointer;
-      position: relative;
-      left: 0;
-      background-color: #EEE;
-      border-radius: 1px;
-    }
-    .heroes li.selected:hover {
-      background-color: #BBD8DC !important;
-      color: white;
-    }
-    .heroes li:hover {
-      color: #607D8B;
-      background-color: #DDD;
-      left: .1em;
-    }
-    .heroes .text {
-      position: relative;
-
-    }
-    .heroes .badge {
-      display: inline-block;
-      font-size: small;
-      color: white;
-      padding: 0.8em 0.7em 0 0.7em;
-      background-color: #607D8B;
-      line-height: 1em;
-      position: relative;
-      left: -1px;
-      top: -4px;
-      height: 1.8em;
-      margin-right: .8em;
-      border-radius: 4px 0 0 4px;
-    }
-
-
-
-  `]
+  styleUrls: [`../css/userProfile.css`]
 })
 
 export class UserProfileGPX implements OnActivate, OnInit{
@@ -174,36 +91,41 @@ export class UserProfileGPX implements OnActivate, OnInit{
 
 
     }else{  
-      if(this.profileUserId == 'legis'){
+      if(this.profileUserId == 'external'){
         this.isLegislator = true; // may not be required
         this.viewingUser['isLegislator'] = true;
         this.viewingUser['externalData'] = this.dataShareService.getViewingUser();
-
+        this.profileUserId = this.viewingUser['externalData']['id'];
+        this.viewingUser['external'] = true;
+        //this.viewingUser['userId'] = this.profileUserId;
       } else{
          this.isLegislator = false; // may not be required
+         this.viewingUser['external'] = false;
         this.viewingUser['isLegislator'] = false;             
       }
-      console.log("User isLegislator: ", this.viewingUser['isLegislator']);
+      this.viewingUser['userId'] = this.profileUserId;
+      //console.log("User isLegislator: ", this.viewingUser['isLegislator']);
 
 
 
       //the user that is being viewed
-      this.dataShareService.setViewingUserId(this.profileUserId);
-      this.viewingUser['userId'] = this.profileUserId;
+      //this.dataShareService.setViewingUserId(this.profileUserId);
+      
 
-      this.userService.getUserData(this.profileUserId).subscribe(
+      this.userService.getUserData(this.viewingUser['userId'], this.viewingUser['external']).subscribe(
           data => {
             this.userData = data;
             console.log("User data from service: ", this.userData);
 
-            this.connections = this.userData['connections'];
+            //this.connections = this.userData['connections'];
             this.viewingUser['connections'] = this.userData['connections'];
-            console.log("User connections: ", this.connections);
-            if(this.connections){
-              for(let connection of this.connections){
+            this.viewingUser['followers'] = this.userData['followers'];
+            // console.log("User connections: ", this.connections);
+            // if(this.connections){
+            //   for(let connection of this.connections){
                
-              }
-            }
+            //   }
+            // }
 
      
             //getting the available profile templates for this user type - publicUser
@@ -236,7 +158,7 @@ export class UserProfileGPX implements OnActivate, OnInit{
   }
 
   loadProfileTemplates(operation:string){
-      this.userService.getUserData(operation).subscribe(
+      this.userService.getUserData(operation, false).subscribe(
         data => {
         this.userData = data;
         console.log("loadTemplate()::userprofile.template - User data from service: ", this.userData);

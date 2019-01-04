@@ -34,27 +34,33 @@ export class PostGPX  implements OnInit{
   ngOnInit(): void {
     //this.imageName = '../../images/'+this.party.profileImage;
     console.log("ngOnInit() post.component");
+    let entityId:string;
     if(this.type == "group" && this.groupId){
-      console.log("Activities for group " + this.groupId);
+      
+      entityId=this.groupId;
     }else if(this.type == "user"){
-
+      entityId=this.dataShareService.currentUserId;
     }
 
-
-    this.getPost();
+    console.log("Activities for " + entityId);
+    this.getPost(entityId, this.type);
 
   }
 
-  getPost():void{
-    this.postService.getActivities('').subscribe((result) => 
+  getPost(entityId:string, entityType:string):void{
+    var getPostRequest = {};      
+    getPostRequest["entityId"] = entityId;
+    getPostRequest["entityType"] = entityType;
+
+    this.postService.getActivities(JSON.stringify(getPostRequest)).subscribe((result) => 
     {
       this.posts = result;
-      //this.reloadPost();
+      //this.reloadPost(entity, entityType);
     });    
   }
 
-  reloadPost():void{
-    Observable.timer(5000).first().subscribe(()=>this.getPost());
+  reloadPost(entity:string, entityType:string):void{
+    Observable.timer(5000).first().subscribe(()=>this.getPost(entity, entityType));
   }
 
 /*

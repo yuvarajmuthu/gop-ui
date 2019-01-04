@@ -7,7 +7,7 @@ export class DataShareService {
   public displayMode:boolean = false;
 
   //currentUserId will be set with logged in userid
-  public currentUserId:string = 'u001';
+  public currentUserId:string = 'yuvarajm1';//'u001'; 
   public currentUser = {};
   
   public viewingUserId:string; //SHOULD BE DEPRECATED

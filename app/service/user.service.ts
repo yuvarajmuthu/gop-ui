@@ -11,6 +11,7 @@ import 'rxjs/add/operator/catch';
 @Injectable()
 export class UserService {
   serviceUrl:string;// = "http://127.0.0.1:8080/api/social";
+  devMode:boolean = true;
 
 	constructor (private http: Http, private dataShareService:DataShareService) {
     this.serviceUrl = dataShareService.getServiceUrl() + "/api/social";
@@ -19,7 +20,7 @@ export class UserService {
   result:any; 
   resultop:any;
 
-  getUserData(userId:String):Observable<any> { 
+  getUserData(userId:String, external:boolean):Observable<any> { 
     /*
     let groupData = this.http.get('/app/data/json/fromService/group.json')
                              .map((response:Response) => response.json());
@@ -32,7 +33,7 @@ export class UserService {
     //if(userId.length == 7){
 
     //legis represent legislator      
-    if(userId == 'legis'){  
+    if(external){  
       url = '/app/data/json/fromService/user-legis.json';
     }else{
       url = '/app/data/json/fromService/user.json';

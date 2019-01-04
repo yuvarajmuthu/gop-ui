@@ -1,0 +1,15 @@
+<div>Legislative Data:
+</div>
+      <div class="legisProfileData col-xs-12">
+       <table class="table">
+
+          <tbody>
+              <tr class="info" *ngFor="let displayProperty of displayProperties">
+                <td>{{displayProperty.displayLabel}}</td>
+                <td>{{legislator[displayProperty.propId]}}</td>
+
+              </tr>
+
+          </tbody>
+       </table>     
+      </div> 

@@ -12,7 +12,7 @@ import {DynamicContentComponent} from './constitution.template.component';
 //import { NdvEditComponent } from 'angular2-click-to-edit/components';
 import { DROPDOWN_DIRECTIVES } from 'ng2-bootstrap/components/dropdown';
 import { CollapseDirective } from 'ng2-bootstrap/components/collapse';
-
+import {TypeaheadGPXComponent} from './typeahead.component';
 import {TemplateIntroductionComponent} from './constitution.template.component';
 import {TemplatePopulationComponent} from './constitution.template.component';
 import {TemplateBusinessComponent} from './constitution.template.component';
@@ -37,7 +37,7 @@ import {Post} from './object/post';
 @Component({
   selector: 'constitutionProfile-gpx',
   templateUrl: 'app/view/constitutionProfile.html',
-  directives: [DynamicContentComponent, TemplateIntroductionComponent, TemplatePopulationComponent, TemplateBusinessComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent, PartyListComponentGPX, PostCardGPX, PostGPX],
+  directives: [DynamicContentComponent, TemplateIntroductionComponent, TemplatePopulationComponent, TemplateBusinessComponent, BannerGPXComponent, TAB_DIRECTIVES, DROPDOWN_DIRECTIVES, TypeaheadGPXComponent, LegislatorComponentGPX, PeopleComponentGPX, CollapseDirective, RatingComponent, NdvEditComponent, PartyListComponentGPX, PostCardGPX, PostGPX],
   providers:[LegislatorsService, PeopleService, PartyService, GroupService, UserService],
   styles: [`
 

@@ -19,6 +19,7 @@ export class GroupService {
   result:any; 
   resultop:any;
 
+//NOT USED  
 getGroupDataByName_External(searchParam:string, type:string):Observable<any>{
     //required for using jsonp. JSONP is used to get data from cross domain
     console.log("getGroupByName() in Group service - searchParam " + searchParam);
@@ -41,15 +42,21 @@ getGroupDataByName_External(searchParam:string, type:string):Observable<any>{
                   .map((response:Response) => response.json());
 } 
 
+//GET THE GROUP INFO BY 
+//-GROUP ID OR EXTERNAL SOURCE ID
+//OTHERWISE SHOULD CREATE THE GROUP WITH DEFAULT PROFILE INFORMATION
   getGroupData(type:string, sourceId:string):Observable<any> { 
     /*
     let groupData = this.http.get('/app/data/json/fromService/group.json')
                              .map((response:Response) => response.json());
     console.log("group data " + groupData);
     return groupData;
-*/  if(type == "CREATE"){
+*/  
+  if(type == "CREATE"){
       return this.http.get('/app/data/json/fromService/group.json')
-                               .map((response:Response) => response.json());  
+                               .map((response:Response) => response.json());
+      //TODO
+      //DO NOT SHOW SOURCEID IN THIS CASE OR SHOULD HAVE GROUP ID                           
     }else{
       let serviceUrl = this.serviceUrl + "/" + type;
       //this.serviceUrl = this.serviceUrl + "/" + type;
@@ -57,19 +64,47 @@ getGroupDataByName_External(searchParam:string, type:string):Observable<any>{
      //let bodyString = JSON.stringify(post); // Stringify payload
       let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
       
-      let params = new URLSearchParams();
-      params.append("externalId", sourceId);
       if(sourceId != null){
         serviceUrl = serviceUrl + "?externalId=" + sourceId;
       }
 
       let options       = new RequestOptions({ headers: headers}); // Create a request option
-
+      /*
+      .switchMap(
+        
+        res1 => {
+          if(res1.status === 200){
+            this.http.get('/app/data/json/fromService/group.json');
+          }
+        }
+       
+      )
+       */
       return this.http.get(serviceUrl, options) // ...using post request
-                       .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
+                       .map((res:Response) => {
+                       }) // ...and calling .json() on the response to return data
                        .catch((error:any) => {
-                         console.error('UI error handling' + JSON.stringify(error));
-                         return Observable.throw(error.json().error || 'Server error')
+                          if(error.status === 404){//NOT FOUND
+                            return this.http.get('/app/data/json/fromService/group.json')
+                            .map((response:Response) => {
+                              //response.json()
+                              let outputJson:JSON = response.json();
+                              let output = JSON.parse(response.text());
+                              let data:[{}] =output['profileData'][0].data;
+                              //TODO
+                              //searched District does not exist in the system, user shall create one
+                              if(sourceId != null){
+                                output['profileData'][0].data.push({"sourceId":sourceId});
+                                response = output;//JSON.parse(output);
+                                console.log('Modified response ', JSON.stringify(response));
+                              }
+                              return response;
+                            });
+
+                          }else{
+                            console.error('UI error handling' + JSON.stringify(error));
+                            return Observable.throw(error.json().error || 'Server error')
+                        }
                        });
     }
 

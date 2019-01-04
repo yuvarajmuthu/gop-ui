@@ -6,6 +6,7 @@ import {Observable} from 'rxjs/Rx';
 // Import RxJs required methods:
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import { stringify } from '@angular/common/src/facade/lang';
 
 @Injectable()
 export class LegislatorsService {
@@ -17,10 +18,22 @@ export class LegislatorsService {
   legislators: Array<Legislator> = [];
   resultop:any;
   //apikey_openstate = c7ba0e13-03f6-4477-b9f1-8e8832169ee5
+  //BY LEGISLATOR ID
   //https://openstates.org/api/v1/legislators/DCL000012?apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5
+  //BY GEOLOCATION
   //https://openstates.org/api/v1/legislators/geo/?lat=35.79&long=-78.78&apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5
+  //BY STATE/CHAMBER
   //https://openstates.org/api/v1/legislators/?state=dc&chamber=upper&apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5
-	
+  
+  
+  //STATE DISTRICT - ALL
+  //LOWER
+  //https://openstates.org/api/v1/districts/nc/lower?apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5
+  //UPPER
+  //https://openstates.org/api/v1/districts/nc/upper?apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5
+
+
+
   private legislature_by_zipcode_service_url_prefix = 'https://congress.api.sunlightfoundation.com/legislators/locate?zip=';
   private legislature_service_url_prefix = 'https://congress.api.sunlightfoundation.com/legislators';//?bioguide_id=B001296&apikey=fd1d412896f54a8583fd039670983e59
   private legislature_service_url_suffix = '&apikey=fd1d412896f54a8583fd039670983e59';
@@ -44,7 +57,7 @@ export class LegislatorsService {
 
 private google_geocode_api_prefix = 'https://maps.google.com/maps/api/geocode/json?address=';
 private google_geocode_api_suffix = '&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY';
-
+private devMode:boolean = true;
 getLegislature(searchParam:string, type:string):Observable<any>{
     //required for using jsonp. JSONP is used to get data from cross domain
     console.log("getLegislature() in legislators service - searchParam " + searchParam);
@@ -65,10 +78,16 @@ getLegislature(searchParam:string, type:string):Observable<any>{
       //url = this.legislature_service_url_prefix + '/locate?latitude=' + locationArr[0] + '&longitude=' + locationArr[1] + this.legislature_service_url_suffix;
       //https://openstates.org/api/v1/legislators/geo/?lat=40.402777&long=-80.058544&apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5
       url = 'https://openstates.org/api/v1/legislators/geo/?lat='+ locationArr[0] + '&long=' + locationArr[1] + '&apikey=c7ba0e13-03f6-4477-b9f1-8e8832169ee5';
+      if(this.devMode){
+        url='/app/data/mock/stateLegislatorsByGeoLocation.json';
+      }
     } else if(type == 'congress'){ // get Congress legislators by Address
       //https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY&address=300%20Chatham%20Park%20Drive%2CPittsburgh%2C%20PA%2015220
       url = "https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY&address=" + encodeURIComponent(searchParam);
       //this.getDistrictInfoFromGoogle(url);
+      if(this.devMode){
+        url='/app/data/mock/congressLegislatorsByGeoLocation.json';
+      }
     } else if(type == 'byCongressDistrict'){ // get Congress legislators by Division id
       url = "https://www.googleapis.com/civicinfo/v2/representatives/ocdId?ocdId="+ searchParam +"&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY";
       //this.getDistrictInfoFromGoogle(url);
@@ -76,19 +95,35 @@ getLegislature(searchParam:string, type:string):Observable<any>{
       //find District
       //https://www.googleapis.com/civicinfo/v2/divisions?query="ocd-division/country:us/state:pa/cd:6"&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY
       //https://www.googleapis.com/civicinfo/v2/divisions?query="gettysburg montessori charter school"&key=AIzaSyBShZOVB_EtWokgbL0e6ZWHpAHpwVY5vZY
+      if(this.devMode){
+        url='/app/data/mock/congressLegislatorsByDivisionId.json';
+      }
     }
 
 
-    console.log('getLegislature API - ' + url);  
+    console.log('getLegislature API - ' + url);
+    if(!this.devMode){  
     return this.jsonp.get(url, { search: params })
                   .map((response:Response) => response.json());
+    }else{
+    return this.http.get(url) 
+    .map((response:Response) => response.json());
+    }
+                  
 } 
 
 getLocation(term: string):Observable<any> {
   let geocodeApi:string = this.google_geocode_api_prefix + term + this.google_geocode_api_suffix;
-  console.log('geocodeApi ', geocodeApi);
   //return this.http.get(geocodeApi)
-  return this.http.get('/app/data/mock/geoCode.json') 
+  let url:string;
+  if(this.devMode){
+    url = '/app/data/mock/geoCode.json';
+  }else{
+    url = geocodeApi;
+  }
+  console.log('geocodeApi ', url);
+
+  return this.http.get(url) 
   .map((response:Response) => response.json());
 }
 
@@ -106,7 +141,7 @@ getDistrictInfoFromGoogle(url:string):Observable<any>{
                   });
 }
 
-
+//DEPRECATED
   getDistrict(value:string, category:string):Observable<any>{
     let url:string;
     //required for using jsonp. JSONP is used to get data from cross domain
